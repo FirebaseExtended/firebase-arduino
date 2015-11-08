@@ -1,7 +1,7 @@
 Fritzing Design
 ===============
 
-![design](https://github.com/googlesamples/raw/master/design/tiny/tiny.png)
+![design](https://github.com/googlesamples/firebase-iot-button/raw/master/design/tiny/tiny.png)
 
 Bill of Materials
 =================
