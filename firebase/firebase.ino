@@ -18,14 +18,13 @@
 #include <WiFiClientSecure.h>
 #include <EEPROM.h>
 
-const char* ssid = "GoogleGuest";
-const char* password = "";
-
 const char* host = "burning-heat-7044.firebaseio.com";
 const int httpsPort = 443;
 const char* fingerprint = "C1 56 CD D8 49 A3 7D D2 1D 49 60 7E 0D 59 A7 7C C1 0E 58 D2";
 struct Credential {
   char token[148];
+  char ssid[32];
+  char password[32];
 } cred;
 
 String buffer;
@@ -33,21 +32,33 @@ String buffer;
 void setup() {
   Serial.begin(115200);
   
-  EEPROM.begin(512);
+  EEPROM.begin(4096);
   EEPROM.get(0, cred);
   Serial.println();
-  Serial.println("!I #!/dev/chiplet");
+  Serial.println("!I #!/dev/fail");
   Serial.print("!I token: ");
   Serial.println(cred.token);
+  if (strlen(cred.ssid) > 0) {
+    wifiConnect();
+  }
+}
+
+bool wifiConnect() {
   Serial.print("!I connecting to wifi");
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  WiFi.begin(cred.ssid, cred.password);
+  for (int i = 0; i < 20; i++) {
     delay(500);
     Serial.print(".");
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.println("");
+      Serial.print("!I wifi connected: ");
+      Serial.println(WiFi.localIP());  
+      return true;
+    }
   }
   Serial.println("");
-  Serial.print("!I wifi connected: ");
-  Serial.println(WiFi.localIP());
+  Serial.println("!I wifi connection failed");
+  return false;
 }
 
 String buildRequest(String data) {
@@ -82,12 +93,24 @@ void loop() {
        EEPROM.put(0, cred);
        EEPROM.commit();
        Serial.println(String("!I token updated: ") + cred.token);
+    } else if (data.startsWith("AT+CWJAP=")) {
+      String ssidPwd = data.substring(9);
+      int i = ssidPwd.indexOf(",");
+      ssidPwd.substring(0, i).toCharArray(cred.ssid, sizeof(cred.token));
+      ssidPwd.substring(i+1).toCharArray(cred.password, sizeof(cred.password));
+      Serial.println("!I ssid: " + String(cred.ssid));
+      Serial.println("!I password: " + String(cred.password));
+      if (wifiConnect()) {
+       EEPROM.put(0, cred);
+       EEPROM.commit();        
+      }
     } else {
        Serial.println("!E usage:");
        Serial.println("!E GET /path");
        Serial.println("!E POST /path");
        Serial.println("!E      payload");
        Serial.println("!E TOKEN token");
+       Serial.println("!E AT+CWJAP=ssid,passwd");
     }
   }
 
