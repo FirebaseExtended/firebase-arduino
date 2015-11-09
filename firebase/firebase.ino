@@ -27,47 +27,102 @@ struct Credential {
   char password[32];
 } cred;
 const int maxWifiConnectAttemps = 20;
-
+WiFiServer telnetServer(23);
+WiFiClient telnetClient;
 String buffer;
+
+struct MultiSerial {
+  MultiSerial(HardwareSerial& serial, WiFiClient& telnetClient) : _serial(serial), _telnetClient(telnetClient) {
+    _current = &serial;
+  }
+  HardwareSerial& _serial;
+  WiFiClient& _telnetClient;
+  Stream *_current;
+  
+  int available() {
+    int serialAvailable = _serial.available();
+    if (serialAvailable > 0) {
+      _current = &_serial;
+      return serialAvailable;
+    }
+    if (_telnetClient.connected()) {
+      int telnetAvailable = _telnetClient.available();
+      if (telnetAvailable > 0) {
+        _current = &_telnetClient;
+        return telnetAvailable;
+      }
+    }
+    return 0;
+  }
+  String readStringUntil(char c) {
+    return _current->readStringUntil(c);
+  }
+  void println() {
+    _current->println();
+  }
+  void print(const char* str) {
+    _current->print(str);
+  }
+  template<typename T>
+  void println(T arg) {
+    _current->println(arg);
+  }
+} WSerial{Serial, telnetClient};
+
+
 
 void setup() {
   Serial.begin(115200);
   
   EEPROM.begin(4096);
   EEPROM.get(0, cred);
-  Serial.println();
-  Serial.println("!I #!/dev/fail");
-  Serial.print("!I token: ");
-  Serial.println(cred.token);
+  WSerial.println();
+  WSerial.println("!I #!/dev/fail");
+  WSerial.print("!I token: ");
+  WSerial.println(cred.token);
   bool connected = false;
   if (strlen(cred.ssid) > 0) {
     connected = wifiConnect();
   }
   if (!connected) {
-    Serial.println("!E no wifi connection");
+    WSerial.println("!E no wifi connection");
   }
+  softAP("FAIL");
 }
 
 bool wifiConnect() {
-  Serial.println("!I connecting to wifi");
-  Serial.print("!I ssid: ");
-  Serial.println(cred.ssid);
-  Serial.print("!I ");
+  WSerial.println("!I connecting to wifi");
+  WSerial.print("!I ssid: ");
+  WSerial.println(cred.ssid);
+  WSerial.print("!I ");
   WiFi.begin(cred.ssid, cred.password);
   for (int i = 0; i < maxWifiConnectAttemps; i++) {
     delay(500);
-    Serial.print(".");
+    WSerial.print(".");
     if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("");
-      Serial.println("!I wifi connected");
-      Serial.print("!I ip: ");
-      Serial.println(WiFi.localIP());
+      WSerial.println("");
+      WSerial.println("!I wifi connected");
+      WSerial.print("!I ip: ");
+      WSerial.println(WiFi.localIP());
       return true;
     }
   }
-  Serial.println("");
-  Serial.println("!E wifi connection failed");
+  WSerial.println("");
+  WSerial.println("!E wifi connection failed");
   return false;
+}
+
+void softAP(String ssid) {
+    WSerial.println("!I starting soft AP");
+    WSerial.print("!I ssid: ");
+    WSerial.println(ssid.c_str());
+    WiFi.softAP(ssid.c_str());
+    WSerial.print("!I ip: ");
+    WSerial.println(WiFi.softAPIP());
+    telnetServer.begin();
+    telnetServer.setNoDelay(true);
+    WSerial.println("!I telnet serial started");
+    WSerial.println("!I port: 23");   
 }
 
 String buildRequest(String data) {
@@ -85,30 +140,40 @@ String unquote(String s) {
 }
 
 void loop() {
-  String request;
   
-  if (Serial.available() > 0) {
-    String data = Serial.readStringUntil('\n');
-    data.trim();
-    
+  if (telnetServer.hasClient()) {
+    if (telnetClient.connected()) {
+      telnetClient.stop();
+    }
+    telnetClient = telnetServer.available();
+  }
+  String request;
+  if (WSerial.available() > 0) {
+    String data = WSerial.readStringUntil('\n');
+    data.trim();    
     if (data.startsWith("GET")) {
-       Serial.println(String("!I request: ") + data);
+       WSerial.print("!I request: ");
+       WSerial.println(data);
        request = buildRequest(data) + "\r\n";
     } else if (data.startsWith("POST")) {
-       Serial.println(String("!I request: ") + data);
-       Serial.println("!I waiting for payload");
+       WSerial.print("!I request: ");
+       WSerial.println(data);
+       WSerial.println("!I waiting for payload");
        buffer = buildRequest(data);
     } else if (buffer.startsWith("POST")) {
        // send POST request when complete
-       Serial.println(String("!I payload: ") + data);
-       Serial.println(String("!I content-length: ") + data.length());
+       WSerial.print("!I payload: ");
+       WSerial.println(data);
+       WSerial.print("!I content-length: ");
+       WSerial.println(data.length());
        request = buffer + "Content-Length: " + data.length() + "\r\n\r\n" + data;
        buffer = "";
     } else if (data.startsWith("TOKEN")) {
        data.substring(6).toCharArray(cred.token, sizeof(cred.token));
        EEPROM.put(0, cred);
        EEPROM.commit();
-       Serial.println(String("!I token updated: ") + cred.token);
+       WSerial.print("!I token updated: ");
+       WSerial.println(cred.token);
     } else if (data.startsWith("AT+CWJAP=")) {
       String ssidPwd = data.substring(9);
       int i = ssidPwd.indexOf(",");
@@ -118,48 +183,53 @@ void loop() {
       } else {
         cred.password[0] = '\0';
       }
-      Serial.println("!I ssid: " + String(cred.ssid));
-      Serial.println("!I password: " + String(cred.password));
       if (wifiConnect()) {
        EEPROM.put(0, cred);
        EEPROM.commit();
-       Serial.println("OK");
+       WSerial.println("OK");
       }
+    } else if (data.startsWith("AT+CWSAP=")) {
+      String ssid = unquote(data.substring(9));
+      softAP(ssid);
     } else {
-       Serial.println("!E usage:");
-       Serial.println("!E GET /path");
-       Serial.println("!E POST /path");
-       Serial.println("!E      payload");
-       Serial.println("!E TOKEN token");
-       Serial.println("!E AT+CWJAP=ssid,passwd");
-       Serial.println("!E AT+CWSAP=ssid");
+       WSerial.println("!E usage:");
+       WSerial.println("!E GET /path");
+       WSerial.println("!E POST /path");
+       WSerial.println("!E      payload");
+       WSerial.println("!E TOKEN token");
+       WSerial.println("!E AT+CWJAP=ssid,passwd");
+       WSerial.println("!E AT+CWSAP=ssid");
     }
   }
 
   if (request.length() > 0) {
-    WiFiClientSecure client;
-    if (!client.connect(host, httpsPort)) {
-      Serial.println("!E connection failed");
+    WSerial.println("!I request");
+    WiFiClientSecure httpClient;
+    if (!httpClient.connect(host, httpsPort)) {
+      WSerial.println("!E connection failed");
       return;
     }
-    if (!client.verify(fingerprint, host)) {
-      Serial.println("!E certificate doesn't match");
+    if (!httpClient.verify(fingerprint, host)) {
+      WSerial.println("!E certificate doesn't match");
       return;
     }
-    Serial.println("!I connected");
-    client.print(request);
+    WSerial.println("!I connected");
+    httpClient.print(request);
     request.trim();
     request.replace("\r\n", "\r\n!> ");
-    Serial.println(String("!> ") + request);
-    Serial.println("!I headers");
-    while (client.connected()) { 
-       String data = client.readStringUntil('\n');
-       Serial.println("!< " + data);
+    WSerial.print("!> ");
+    WSerial.println(request);
+    WSerial.println("!I headers");
+    while (httpClient.connected()) { 
+       String data = httpClient.readStringUntil('\n');
+       WSerial.print("!< ");
+       WSerial.println(data);
     }
-    Serial.println("!I body");
-    while(client.available() > 0) {
-      String data = client.readStringUntil('\n');
-      Serial.println(data);
+    WSerial.println("!I body");
+    while(httpClient.available() > 0) {
+      String data = httpClient.readStringUntil('\n');
+      WSerial.println(data);
     }
+    WSerial.println("!I end of request");
   }
 }
