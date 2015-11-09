@@ -26,6 +26,7 @@ struct Credential {
   char ssid[32];
   char password[32];
 } cred;
+const int maxWifiConnectAttemps = 20;
 
 String buffer;
 
@@ -38,26 +39,34 @@ void setup() {
   Serial.println("!I #!/dev/fail");
   Serial.print("!I token: ");
   Serial.println(cred.token);
+  bool connected = false;
   if (strlen(cred.ssid) > 0) {
-    wifiConnect();
+    connected = wifiConnect();
+  }
+  if (!connected) {
+    Serial.println("!E no wifi connection");
   }
 }
 
 bool wifiConnect() {
-  Serial.print("!I connecting to wifi");
+  Serial.println("!I connecting to wifi");
+  Serial.print("!I ssid: ");
+  Serial.println(cred.ssid);
+  Serial.print("!I ");
   WiFi.begin(cred.ssid, cred.password);
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < maxWifiConnectAttemps; i++) {
     delay(500);
     Serial.print(".");
     if (WiFi.status() == WL_CONNECTED) {
       Serial.println("");
-      Serial.print("!I wifi connected: ");
-      Serial.println(WiFi.localIP());  
+      Serial.println("!I wifi connected");
+      Serial.print("!I ip: ");
+      Serial.println(WiFi.localIP());
       return true;
     }
   }
   Serial.println("");
-  Serial.println("!I wifi connection failed");
+  Serial.println("!E wifi connection failed");
   return false;
 }
 
@@ -66,6 +75,13 @@ String buildRequest(String data) {
        "Host: " + host + "\r\n" +
        "User-Agent: Chiplet\r\n" +
        "Connection: close\r\n";
+}
+
+String unquote(String s) {
+  if (s[0] == '"' && s[s.length()-1] == '"') {
+    return s.substring(1, s.length()-1);
+  }
+  return s;
 }
 
 void loop() {
@@ -96,13 +112,18 @@ void loop() {
     } else if (data.startsWith("AT+CWJAP=")) {
       String ssidPwd = data.substring(9);
       int i = ssidPwd.indexOf(",");
-      ssidPwd.substring(0, i).toCharArray(cred.ssid, sizeof(cred.token));
-      ssidPwd.substring(i+1).toCharArray(cred.password, sizeof(cred.password));
+      unquote(ssidPwd.substring(0, i)).toCharArray(cred.ssid, sizeof(cred.token));
+      if (i != -1) {
+        unquote(ssidPwd.substring(i+1)).toCharArray(cred.password, sizeof(cred.password));
+      } else {
+        cred.password[0] = '\0';
+      }
       Serial.println("!I ssid: " + String(cred.ssid));
       Serial.println("!I password: " + String(cred.password));
       if (wifiConnect()) {
        EEPROM.put(0, cred);
-       EEPROM.commit();        
+       EEPROM.commit();
+       Serial.println("OK");
       }
     } else {
        Serial.println("!E usage:");
@@ -111,6 +132,7 @@ void loop() {
        Serial.println("!E      payload");
        Serial.println("!E TOKEN token");
        Serial.println("!E AT+CWJAP=ssid,passwd");
+       Serial.println("!E AT+CWSAP=ssid");
     }
   }
 
