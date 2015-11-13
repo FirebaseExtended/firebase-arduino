@@ -14,7 +14,11 @@
 // limitations under the License.
 //
 
-// Firebase is an helper library for build Firebase request.
+// Firebase is an helper library for building Firebase request.
+// TODO(proppy): add value() method for GET.
+// TODO(proppy): add update() method for PATCH.
+// TODO(proppy): add remove() method for DELETE.
+// TODO(proppy): add helper for decoding response.
 #ifndef firebase_h
 #define firebase_h
 
