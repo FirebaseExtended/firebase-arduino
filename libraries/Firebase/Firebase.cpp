@@ -13,9 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
 #include "Firebase.h"
-#include "Client.h"
+
+const char* firebaseFingerprint = "C1 56 CD D8 49 A3 7D D2 1D 49 60 7E 0D 59 A7 7C C1 0E 58 D2";
+const uint16_t firebasePort = 443;
+
+FirebaseRoot Firebase;
 
 FirebaseRef::FirebaseRef(FirebaseRoot& root, const String& path) : _root(root), _path(path) {
 }
@@ -24,16 +27,12 @@ FirebaseRef& FirebaseRef::root()  {
   return _root;
 }
 
-String FirebaseRef::value() {
-  return _root.makeRequest("GET", _path, "");
-}
-
-String FirebaseRef::set(const String& key, const String& value) {
-  return _root.makeRequest("PUSH", _path + "/" + key, value);
+String FirebaseRef::set(const String& value) {
+  return _root.buildRequest("PUT", _path, value);
 }
 
 String FirebaseRef::push(const String& value) {
-  return _root.makeRequest("POST", _path, value);
+  return _root.buildRequest("POST", _path, value);
 }
 
 FirebaseRef FirebaseRef::child(const String& key) {
@@ -43,8 +42,7 @@ FirebaseRef FirebaseRef::child(const String& key) {
 FirebaseRoot::FirebaseRoot() : FirebaseRef(*this, "") {
 }
 
-void FirebaseRoot::begin(Client& client, const String& host) {
-  _client = &client;
+void FirebaseRoot::begin(const String& host) {
   _host = host;
 }
 
@@ -52,23 +50,13 @@ void FirebaseRoot::auth(const String& token) {
   _token = token;
 }
 
-void FirebaseRoot::setError(const String& err) {
-  _err = err;
+FirebaseRef FirebaseRoot::child(const String& key) {
+  return FirebaseRef(*this, key);
 }
 
-const String& FirebaseRoot::error() {
-  return _err;
-}
-
-String FirebaseRoot::makeRequest(const String& method, const String& path, const String& data) {
-  _err = "";
-  
-  if (!_client->connect(_host.c_str(), 443)) {
-    setError("failed to connect");
-    return "";
-  }    
+String FirebaseRoot::buildRequest(const String& method, const String& path, const String& data) {
   String req;
-  req += method + " " + path + ".json";
+  req += method + " /" + path + ".json";
   if (_token.length() > 0) {
     req += "?auth=" + _token;
   }
@@ -82,12 +70,17 @@ String FirebaseRoot::makeRequest(const String& method, const String& path, const
     req += "\r\n\r\n";
     req += data;
   }
-  _client->print(req);
-  String resp;
-  while(_client->available() > 0) {
-    resp += _client->readStringUntil('\n');
-  }
-  return resp;
+  return req;
 }
 
-FirebaseRoot Firebase;
+const char* FirebaseRoot::host() const {
+  return _host.c_str();
+}
+
+uint16_t FirebaseRoot::port() const {
+  return firebasePort;
+}
+
+const char* FirebaseRoot::fingerprint() const {
+  return firebaseFingerprint;
+}

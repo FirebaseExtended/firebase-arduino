@@ -14,20 +14,25 @@
 // limitations under the License.
 //
 
+// Firebase is an helper library for build Firebase request.
 #ifndef firebase_h
 #define firebase_h
 
-#include "WString.h"
+#include "Arduino.h"
 
 class Client;
 class FirebaseRoot;
 
+// FirebaseRef is a reference in the firebase hierarchy.
+//
+// Methods `set()` and `push()` returns the HTTP request as a raw
+// `String`, the requests then need be sent using an Arduino Wifi,
+// Ethernet or GSM `Client`.
 class FirebaseRef {
  public:
   FirebaseRef(FirebaseRoot& root, const String& path);
   FirebaseRef& root();
-  String value();
-  String set(const String& key, const String& value);
+  String set(const String& value);
   String push(const String& value);
   FirebaseRef child(const String& key);
  private:
@@ -35,20 +40,24 @@ class FirebaseRef {
   String _path;  
 };
 
+// FirebaseRoot is a root of firebase hierarchy.
+//
+// A global `Firebase` instance is available for convenience, and need
+// to be initialized with the `begin()` and `auth()` methods.
 class FirebaseRoot : public FirebaseRef {
   friend FirebaseRef;
  public:
   FirebaseRoot();
-  void begin(Client& client, const String& host);
+  void begin(const String& host);
   void auth(const String& token);
-  void setError(const String& err);
-  const String& error();
+  const char* host() const;
+  uint16_t port() const;
+  const char* fingerprint() const;
+  FirebaseRef child(const String& key);  
  private:
-  String makeRequest(const String& method, const String& path, const String& data);
-  Client* _client;
+  String buildRequest(const String& method, const String& path, const String& data);
   String _host;
   String _token;
-  String _err;  
 };
 
 extern FirebaseRoot Firebase;
