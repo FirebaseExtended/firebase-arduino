@@ -1,4 +1,4 @@
-# firebase-iot-button
+# firebase-arduino
 
 This sample show how to call firebase from an arduino sketch.
 
