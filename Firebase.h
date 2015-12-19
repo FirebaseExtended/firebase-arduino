@@ -14,29 +14,33 @@
 // limitations under the License.
 //
 
-// Firebase is an helper library for building Firebase request.
-// TODO(proppy): add value() method for GET.
+// firebase-arduino is an Arduino client for Firebase.
+// It is currently limited to the ESP8266 board family.
+
+// TODO(proppy): add set() method for PUT.
 // TODO(proppy): add update() method for PATCH.
 // TODO(proppy): add remove() method for DELETE.
-// TODO(proppy): add helper for decoding response.
+// TODO(proppy): add connect() + non blocking
 #ifndef firebase_h
 #define firebase_h
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+#include <ESP8266HTTPClient.h>
 
-class Client;
 class FirebaseRoot;
 
-// FirebaseRef is a reference in the firebase hierarchy.
+// FirebaseRef is a node in the firebase hierarchy.
 //
-// Methods `set()` and `push()` returns the HTTP request as a raw
-// `String`, the requests then need be sent using an Arduino Wifi,
-// Ethernet or GSM `Client`.
+// Methods val() and push() performs respectivly HTTP GET and POST
+// requests on the corresponding child reference and return the
+// response body.
 class FirebaseRef {
  public:
   FirebaseRef(FirebaseRoot& root, const String& path);
   FirebaseRef& root();
-  String set(const String& value);
+  String val();  
   String push(const String& value);
   FirebaseRef child(const String& key);
  private:
@@ -44,7 +48,25 @@ class FirebaseRef {
   String _path;  
 };
 
-// FirebaseRoot is a root of firebase hierarchy.
+
+// FirebaseError is a string representation of a firebase HTTP error.
+class FirebaseError {
+ public:
+  operator bool() const { return _code < 0; }
+  int code() const { return _code; }
+  const String& message() const { return _message; }
+  void reset() { set(0, ""); }
+  void set(int code, const String& message) {
+    _code = code;
+    _message = message;
+  }
+ private:
+  int _code = 0;
+  String _message = "";
+};
+
+
+// FirebaseRoot is the root node of firebase hierarchy.
 //
 // A global `Firebase` instance is available for convenience, and need
 // to be initialized with the `begin()` and `auth()` methods.
@@ -52,16 +74,16 @@ class FirebaseRoot : public FirebaseRef {
   friend FirebaseRef;
  public:
   FirebaseRoot();
-  void begin(const String& host);
-  void auth(const String& token);
-  const char* host() const;
-  uint16_t port() const;
-  const char* fingerprint() const;
-  FirebaseRef child(const String& key);  
+  FirebaseRoot& begin(const String& host);
+  FirebaseRoot& auth(const String& auth);
+  FirebaseRef child(const String& key);
+  const FirebaseError& error() { return _error; }
  private:
-  String buildRequest(const String& method, const String& path, const String& data);
+  String sendRequest(const char* method, const String& path, uint8_t* value = NULL, size_t size = 0);
+  HTTPClient _http;
   String _host;
-  String _token;
+  String _auth;
+  FirebaseError _error;
 };
 
 extern FirebaseRoot Firebase;
