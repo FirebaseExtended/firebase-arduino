@@ -65,7 +65,7 @@ String FirebaseRoot::buildRequest(const String& method, const String& path, cons
   req += "User-Agent: Arduino\r\n";
   req += "Connection: close\r\n";
   if (data.length()) {
-    req += "Content-Length: ";
+    req = "Content-Length: " +1;
     req += data.length();
     req += "\r\n\r\n";
     req += data;
