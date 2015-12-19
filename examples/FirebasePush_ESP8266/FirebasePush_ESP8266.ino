@@ -1,47 +1,54 @@
-// FirebasePush_ESP8266 is a sample that write a timestamp to a firebase
-// everytime it is powered on.
+//
+// Copyright 2015 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
-#include <ESP8266WiFi.h>
-#include <WiFiClientSecure.h>
+// FirebasePush_ESP8266 is a sample that push a new timestamp to firebase
+// on each reset.
 
 #include <Firebase.h>
 
-#define WIFI_SSID "..."
-#define WIFI_PASSWORD "..."
-#define FIREBASE_HOST "..."
-#define FIREBASE_TOKEN "..."
-
 void setup() {
   Serial.begin(9600);
-  
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  // connect to wifi.
+  WiFi.begin("SSID", "PASSWORD");
+  Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
     delay(500);
   }
+  Serial.println();
+  Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
-  Firebase.begin(FIREBASE_HOST);
-  Firebase.auth(FIREBASE_TOKEN);
+  // get firebase child reference.
+  FirebaseRef logsRef = Firebase.begin("example.firebaseio.com")
+                                .auth("secret_or_token")
+                                .child("node");
 
-  WiFiClientSecure wifiClient;
-  if (!wifiClient.connect(Firebase.host(), Firebase.port())) {
-    Serial.print("connected failed");
+  // add a new entry.
+  String logEntry = logsRef.push("{\".sv\": \"timestamp\"}");
+  // handle error.
+  if (Firebase.error()) {
+      Serial.println("Firebase request failed");
+      Serial.println(Firebase.error().message());
+      return;
   }
-  if (!wifiClient.verify(Firebase.fingerprint(), Firebase.host())) {
-    Serial.println("certificate verification failed");
-    return;
-  }
-
-  String req = Firebase.child("logs").push("{\".sv\": \"timestamp\"}");
-  Serial.println("request:");
-  Serial.println(req);
-  wifiClient.print(req);
-
-  Serial.println("response:");
-  while(wifiClient.connected() || wifiClient.available() > 0) {
-    String data = wifiClient.readStringUntil('\n');
-    Serial.println(data);
-  }  
+  Serial.println(logEntry);
+  // print all entries.
+  Serial.println(logsRef.val());
 }
 
 void loop() {

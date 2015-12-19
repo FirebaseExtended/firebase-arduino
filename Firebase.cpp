@@ -15,7 +15,7 @@
 //
 #include "Firebase.h"
 
-const char* firebaseFingerprint = "C1 56 CD D8 49 A3 7D D2 1D 49 60 7E 0D 59 A7 7C C1 0E 58 D2";
+const char* firebaseFingerprint = "7A 54 06 9B DC 7A 25 B3 86 8D 66 53 48 2C 0B 96 42 C7 B3 0A";
 const uint16_t firebasePort = 443;
 
 FirebaseRoot Firebase;
@@ -27,12 +27,12 @@ FirebaseRef& FirebaseRef::root()  {
   return _root;
 }
 
-String FirebaseRef::set(const String& value) {
-  return _root.buildRequest("PUT", _path, value);
+String FirebaseRef::val() {
+  return _root.sendRequest("GET", _path);
 }
 
 String FirebaseRef::push(const String& value) {
-  return _root.buildRequest("POST", _path, value);
+  return _root.sendRequest("POST", _path, (uint8_t*)value.c_str(), value.length());
 }
 
 FirebaseRef FirebaseRef::child(const String& key) {
@@ -40,47 +40,37 @@ FirebaseRef FirebaseRef::child(const String& key) {
 }
 
 FirebaseRoot::FirebaseRoot() : FirebaseRef(*this, "") {
+  _http.setReuse(true);
 }
 
-void FirebaseRoot::begin(const String& host) {
+FirebaseRoot& FirebaseRoot::begin(const String& host) {
   _host = host;
+  return *this;
 }
 
-void FirebaseRoot::auth(const String& token) {
-  _token = token;
+FirebaseRoot& FirebaseRoot::auth(const String& auth) {
+  _auth = auth;
+  return *this;
 }
 
 FirebaseRef FirebaseRoot::child(const String& key) {
   return FirebaseRef(*this, key);
 }
 
-String FirebaseRoot::buildRequest(const String& method, const String& path, const String& data) {
-  String req;
-  req += method + " /" + path + ".json";
-  if (_token.length() > 0) {
-    req += "?auth=" + _token;
+String FirebaseRoot::sendRequest(const char* method, const String& path, uint8_t* value, size_t size) {
+  _error.reset();
+  String url = "/" + path + ".json";
+  if (_auth.length() > 0) {
+    url += "?auth=" + _auth;
   }
-  req += " HTTP/1.1\r\n";
-  req += "Host: " + _host + "\r\n";
-  req += "User-Agent: Arduino\r\n";
-  req += "Connection: close\r\n";
-  if (data.length()) {
-    req += "Content-Length: ";
-    req += data.length();
-    req += "\r\n\r\n";
-    req += data;
+  _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
+  int statusCode = _http.sendRequest(method, value, size);
+  if (statusCode < 0) {
+    _error.set(statusCode,
+	       String(method) + " " + url + ": "
+	       + HTTPClient::errorToString(statusCode));
+    return "";
   }
-  return req;
-}
-
-const char* FirebaseRoot::host() const {
-  return _host.c_str();
-}
-
-uint16_t FirebaseRoot::port() const {
-  return firebasePort;
-}
-
-const char* FirebaseRoot::fingerprint() const {
-  return firebaseFingerprint;
+  return _http.getString();
+  // NOTE: no end() because reuse.
 }
