@@ -16,7 +16,7 @@
 #include "Firebase.h"
 
 const char* firebaseFingerprint = "C1 56 CD D8 49 A3 7D D2 1D 49 60 7E 0D 59 A7 7C C1 0E 58 D2";
-const uint16_t firebasePort = 443;
+const int firebasePort = 443;
 
 FirebaseRoot Firebase;
 
