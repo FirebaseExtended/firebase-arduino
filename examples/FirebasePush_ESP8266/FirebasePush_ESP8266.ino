@@ -46,6 +46,7 @@ void setup() {
       Serial.println(logs.error().message());
       return;
   }
+  // print response.
   Serial.println(l);
   // print all entries.
   Serial.println(logs.val());
