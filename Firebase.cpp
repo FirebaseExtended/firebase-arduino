@@ -57,3 +57,22 @@ String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
   // no _http.end() because of connection reuse.
   return _http.getString();
 }
+
+Firebase& Firebase::stream() {
+  _http.begin(_host.c_str(), firebasePort, _path.c_str(), true, firebaseFingerprint);
+  _http.addHeader("Accept", "text/event-stream");
+  int statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  return *this;
+}
+
+bool Firebase::connected() {
+  return _http.connected();
+}
+
+bool Firebase::available() {
+  return false;
+}
+
+String Firebase::read() {
+  return "";
+}
