@@ -42,8 +42,6 @@ String Firebase::push(const String& value) {
 
 String Firebase::sendRequest(const char* method, const String& path, uint8_t* value, size_t size) {
   _error.reset();
-  Serial.print("host:");
-  Serial.println(_host);
   String url = "/" + path + ".json";
   if (_auth.length() > 0) {
     url += "?auth=" + _auth;
