@@ -18,47 +18,32 @@
 const char* firebaseFingerprint = "7A 54 06 9B DC 7A 25 B3 86 8D 66 53 48 2C 0B 96 42 C7 B3 0A";
 const uint16_t firebasePort = 443;
 
-FirebaseRoot Firebase;
-
-FirebaseRef::FirebaseRef(FirebaseRoot& root, const String& path) : _root(root), _path(path) {
-}
-
-FirebaseRef& FirebaseRef::root()  {
-  return _root;
-}
-
-String FirebaseRef::val() {
-  return _root.sendRequest("GET", _path);
-}
-
-String FirebaseRef::push(const String& value) {
-  return _root.sendRequest("POST", _path, (uint8_t*)value.c_str(), value.length());
-}
-
-FirebaseRef FirebaseRef::child(const String& key) {
-  return FirebaseRef(_root, _path + "/" + key);
-}
-
-FirebaseRoot::FirebaseRoot() : FirebaseRef(*this, "") {
+Firebase::Firebase(const String& host) : _host(host) {
   _http.setReuse(true);
 }
 
-FirebaseRoot& FirebaseRoot::begin(const String& host) {
-  _host = host;
-  return *this;
-}
-
-FirebaseRoot& FirebaseRoot::auth(const String& auth) {
+Firebase& Firebase::auth(const String& auth) {
   _auth = auth;
   return *this;
 }
 
-FirebaseRef FirebaseRoot::child(const String& key) {
-  return FirebaseRef(*this, key);
+Firebase& Firebase::child(const String& key) {
+  _path += key;
+  return *this;
 }
 
-String FirebaseRoot::sendRequest(const char* method, const String& path, uint8_t* value, size_t size) {
+String Firebase::val() {
+  return sendRequest("GET", _path);
+}
+
+String Firebase::push(const String& value) {
+  return sendRequest("POST", _path, (uint8_t*)value.c_str(), value.length());
+}
+
+String Firebase::sendRequest(const char* method, const String& path, uint8_t* value, size_t size) {
   _error.reset();
+  Serial.print("host:");
+  Serial.println(_host);
   String url = "/" + path + ".json";
   if (_auth.length() > 0) {
     url += "?auth=" + _auth;
@@ -71,6 +56,6 @@ String FirebaseRoot::sendRequest(const char* method, const String& path, uint8_t
 	       + HTTPClient::errorToString(statusCode));
     return "";
   }
+  // no _http.end() because of connection reuse.
   return _http.getString();
-  // NOTE: no end() because reuse.
 }

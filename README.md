@@ -12,7 +12,7 @@ This sample shows how to call [Firebase](https://www.firebase.com/) from the [ES
 
 - Clone the repo in your Arduino libraries directory.
 - open the `FirebasePush_ESP8266` example.
-- Replace `SSID` `PASSWORD` `example.firebaseio.com` `secret_or_token` `node` placeholders.
+- Replace `SSID` `PASSWORD` `example.firebaseio.com` `secret_or_token` `child_node` placeholders.
 
 ## Run
 
