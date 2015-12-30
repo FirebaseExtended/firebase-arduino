@@ -40,6 +40,27 @@ String Firebase::push(const String& value) {
   return sendRequest("POST", (uint8_t*)value.c_str(), value.length());
 }
 
+Firebase& Firebase::stream() {
+  String url = "/" + _path + ".json";
+  const char* headers[] = {"Location"};
+  _http.setReuse(false);  
+  _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
+  _http.collectHeaders(headers, 1);
+  _http.addHeader("Accept", "text/event-stream");
+  int statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  String location = _http.header("Location");
+  Serial.println(location);
+  _http.setReuse(false);    
+  _http.begin(location, firebaseFingerprint);
+  _http.collectHeaders(headers, 1);
+  statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  location = _http.header("Location");
+  Serial.println(location);
+  _http.setReuse(false);  
+  _http.begin(location, firebaseFingerprint);
+  statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+}
+
 String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
   _error.reset();
   String url = "/" + _path + ".json";
@@ -56,13 +77,6 @@ String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
   }
   // no _http.end() because of connection reuse.
   return _http.getString();
-}
-
-Firebase& Firebase::stream() {
-  _http.begin(_host.c_str(), firebasePort, _path.c_str(), true, firebaseFingerprint);
-  _http.addHeader("Accept", "text/event-stream");
-  int statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
-  return *this;
 }
 
 bool Firebase::connected() {
