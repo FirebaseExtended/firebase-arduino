@@ -20,7 +20,6 @@
 #include <Firebase.h>
 
 Firebase node = Firebase("example.firebaseio.com")
-                   .auth("secret_or_token")
                    .child("child_node");
 void setup() {
   Serial.begin(9600);
@@ -35,7 +34,7 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-
+  
   node.stream();
 }
 
@@ -46,6 +45,8 @@ void loop() {
     Serial.println(node.error().message());
   }
   if (node.available()) {
-    Serial.print(node.read());
-  } 
+     Serial.print("data:");
+     Serial.print(node.read());
+     Serial.println();
+  }
 }

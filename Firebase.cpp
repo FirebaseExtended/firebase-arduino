@@ -48,17 +48,20 @@ Firebase& Firebase::stream() {
   _http.collectHeaders(headers, 1);
   _http.addHeader("Accept", "text/event-stream");
   int statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  // first redirect
   String location = _http.header("Location");
   Serial.println(location);
   _http.setReuse(false);    
   _http.begin(location, firebaseFingerprint);
   _http.collectHeaders(headers, 1);
+  // second redirect
   statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
   location = _http.header("Location");
   Serial.println(location);
-  _http.setReuse(false);  
+  _http.setReuse(true);  
   _http.begin(location, firebaseFingerprint);
   statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  return *this;
 }
 
 String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
@@ -84,9 +87,14 @@ bool Firebase::connected() {
 }
 
 bool Firebase::available() {
-  return false;
+  return _http.getStreamPtr()->available();
 }
 
 String Firebase::read() {
-  return "";
+  String event;
+  auto client = _http.getStreamPtr();
+  client->readStringUntil('\n'); // ignore event type
+  event = client->readStringUntil('\n').substring(6); 
+  client->readStringUntil('\n'); // consume separator
+  return event;
 }
