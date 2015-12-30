@@ -28,21 +28,21 @@ Firebase& Firebase::auth(const String& auth) {
 }
 
 Firebase& Firebase::child(const String& key) {
-  _path += key;
+  _path = key;
   return *this;
 }
 
 String Firebase::val() {
-  return sendRequest("GET", _path);
+  return sendRequest("GET");
 }
 
 String Firebase::push(const String& value) {
-  return sendRequest("POST", _path, (uint8_t*)value.c_str(), value.length());
+  return sendRequest("POST", (uint8_t*)value.c_str(), value.length());
 }
 
-String Firebase::sendRequest(const char* method, const String& path, uint8_t* value, size_t size) {
+String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
   _error.reset();
-  String url = "/" + path + ".json";
+  String url = "/" + _path + ".json";
   if (_auth.length() > 0) {
     url += "?auth=" + _auth;
   }

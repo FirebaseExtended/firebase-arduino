@@ -54,7 +54,7 @@ class Firebase {
   String val();
   String push(const String& value);  
  private:
-  String sendRequest(const char* method, const String& path, uint8_t* value = NULL, size_t size = 0);
+  String sendRequest(const char* method, uint8_t* value = NULL, size_t size = 0);
   HTTPClient _http;
   String _host;
   String _auth;
