@@ -17,10 +17,6 @@
 // firebase-arduino is an Arduino client for Firebase.
 // It is currently limited to the ESP8266 board family.
 
-// TODO(proppy): add set() method for PUT.
-// TODO(proppy): add update() method for PATCH.
-// TODO(proppy): add remove() method for DELETE.
-// TODO(proppy): add connect() + non blocking
 #ifndef firebase_h
 #define firebase_h
 
@@ -29,27 +25,8 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
 
-class FirebaseRoot;
-
-// FirebaseRef is a node in the firebase hierarchy.
-//
-// Methods val() and push() performs respectivly HTTP GET and POST
-// requests on the corresponding child reference and return the
-// response body.
-class FirebaseRef {
- public:
-  FirebaseRef(FirebaseRoot& root, const String& path);
-  FirebaseRef& root();
-  String val();  
-  String push(const String& value);
-  FirebaseRef child(const String& key);
- private:
-  FirebaseRoot& _root;
-  String _path;  
-};
-
-
-// FirebaseError is a string representation of a firebase HTTP error.
+// FirebaseError represents a Firebase API error with a code and a
+// message.
 class FirebaseError {
  public:
   operator bool() const { return _code < 0; }
@@ -65,27 +42,25 @@ class FirebaseError {
   String _message = "";
 };
 
-
-// FirebaseRoot is the root node of firebase hierarchy.
-//
-// A global `Firebase` instance is available for convenience, and need
-// to be initialized with the `begin()` and `auth()` methods.
-class FirebaseRoot : public FirebaseRef {
-  friend FirebaseRef;
+// Firebase is the connection to firebase.
+class Firebase {
  public:
-  FirebaseRoot();
-  FirebaseRoot& begin(const String& host);
-  FirebaseRoot& auth(const String& auth);
-  FirebaseRef child(const String& key);
-  const FirebaseError& error() { return _error; }
+  Firebase(const String& host);
+  Firebase& auth(const String& auth);
+  Firebase& child(const String& key);
+  const FirebaseError& error() const {
+    return _error;
+  }
+  String val();
+  String push(const String& value);  
  private:
-  String sendRequest(const char* method, const String& path, uint8_t* value = NULL, size_t size = 0);
+  String sendRequest(const char* method, uint8_t* value = NULL, size_t size = 0);
   HTTPClient _http;
   String _host;
   String _auth;
+  String _path;    
   FirebaseError _error;
 };
 
-extern FirebaseRoot Firebase;
 
 #endif // firebase_h

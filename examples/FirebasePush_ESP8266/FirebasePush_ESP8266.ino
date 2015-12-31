@@ -19,6 +19,11 @@
 
 #include <Firebase.h>
 
+// create firebase client.
+Firebase logs = Firebase("example.firebaseio.com")
+                   .auth("secret_or_token")
+                   .child("child_node");
+
 void setup() {
   Serial.begin(9600);
 
@@ -33,22 +38,18 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
-  // get firebase child reference.
-  FirebaseRef logsRef = Firebase.begin("example.firebaseio.com")
-                                .auth("secret_or_token")
-                                .child("node");
-
   // add a new entry.
-  String logEntry = logsRef.push("{\".sv\": \"timestamp\"}");
+  String l = logs.push("{\".sv\": \"timestamp\"}");
   // handle error.
-  if (Firebase.error()) {
+  if (logs.error()) {
       Serial.println("Firebase request failed");
-      Serial.println(Firebase.error().message());
+      Serial.println(logs.error().message());
       return;
   }
-  Serial.println(logEntry);
+  // print response.
+  Serial.println(l);
   // print all entries.
-  Serial.println(logsRef.val());
+  Serial.println(logs.val());
 }
 
 void loop() {
