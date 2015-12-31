@@ -41,26 +41,28 @@ String Firebase::push(const String& value) {
 }
 
 Firebase& Firebase::stream() {
+  _error.reset();  
   String url = "/" + _path + ".json";
   const char* headers[] = {"Location"};
-  _http.setReuse(false);  
+  _http.setReuse(true);  
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
   _http.collectHeaders(headers, 1);
   _http.addHeader("Accept", "text/event-stream");
   int statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
-  // first redirect
-  String location = _http.header("Location");
-  Serial.println(location);
-  _http.setReuse(false);    
-  _http.begin(location, firebaseFingerprint);
-  _http.collectHeaders(headers, 1);
-  // second redirect
-  statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
-  location = _http.header("Location");
-  Serial.println(location);
-  _http.setReuse(true);  
-  _http.begin(location, firebaseFingerprint);
-  statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  String location;
+  while (statusCode == 307) {
+    location = _http.header("Location");
+    _http.setReuse(false);
+    _http.end();
+    _http.setReuse(true);    
+    _http.begin(location, firebaseFingerprint);
+    statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  }
+  if (statusCode != 200) {
+    _error.set(statusCode,
+	       "stream " + location + ": "
+	       + HTTPClient::errorToString(statusCode));
+  }
   return *this;
 }
 
