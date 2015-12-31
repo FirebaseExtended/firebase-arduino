@@ -43,6 +43,9 @@ String Firebase::push(const String& value) {
 Firebase& Firebase::stream() {
   _error.reset();  
   String url = "/" + _path + ".json";
+  if (_auth.length() > 0) {
+    url += "?auth=" + _auth;
+  }
   const char* headers[] = {"Location"};
   _http.setReuse(true);  
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
@@ -92,11 +95,18 @@ bool Firebase::available() {
   return _http.getStreamPtr()->available();
 }
 
-String Firebase::read() {
-  String event;
+Firebase::Event Firebase::read(String& event) {
   auto client = _http.getStreamPtr();
-  client->readStringUntil('\n'); // ignore event type
-  event = client->readStringUntil('\n').substring(6); 
+  Event type;;
+  String typeStr = client->readStringUntil('\n').substring(7);
+  if (typeStr == "put") {
+    type = Firebase::Event::PUT;
+  } else if (typeStr == "patch") {
+    type = Firebase::Event::PATCH;
+  } else {
+    type = Firebase::Event::UNKNOWN;
+  }
+  event = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
-  return event;
+  return type;
 }

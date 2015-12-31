@@ -53,10 +53,15 @@ class Firebase {
   }
   String val();
   String push(const String& value);
-  Firebase& stream();
   bool connected();
+  Firebase& stream();
   bool available();
-  String read();
+  enum Event {
+    UNKNOWN,
+    PUT,
+    PATCH
+  };
+  Event read(String& event);
  private:
   String sendRequest(const char* method, uint8_t* value = NULL, size_t size = 0);
   HTTPClient _http;

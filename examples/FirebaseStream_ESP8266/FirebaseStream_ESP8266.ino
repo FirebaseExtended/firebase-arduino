@@ -45,8 +45,13 @@ void loop() {
     Serial.println(node.error().message());
   }
   if (node.available()) {
-     Serial.print("data:");
-     Serial.print(node.read());
-     Serial.println();
-  }
+     String event;
+     auto type = node.read(event);
+     Serial.print("event: ");
+     Serial.println(type);
+     if (type != Firebase::Event::UNKNOWN) {
+       Serial.print("data: ");
+       Serial.println(event);
+     }
+  } 
 }
