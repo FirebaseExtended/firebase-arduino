@@ -53,6 +53,7 @@ Firebase& Firebase::stream() {
   _http.addHeader("Accept", "text/event-stream");
   int statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
   String location;
+  // TODO(proppy): Add a max redirect check
   while (statusCode == 307) {
     location = _http.header("Location");
     _http.setReuse(false);
