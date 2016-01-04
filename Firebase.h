@@ -52,7 +52,16 @@ class Firebase {
     return _error;
   }
   String val();
-  String push(const String& value);  
+  String push(const String& value);
+  bool connected();
+  Firebase& stream();
+  bool available();
+  enum Event {
+    UNKNOWN,
+    PUT,
+    PATCH
+  };
+  Event read(String& event);
  private:
   String sendRequest(const char* method, uint8_t* value = NULL, size_t size = 0);
   HTTPClient _http;
@@ -61,6 +70,5 @@ class Firebase {
   String _path;    
   FirebaseError _error;
 };
-
 
 #endif // firebase_h

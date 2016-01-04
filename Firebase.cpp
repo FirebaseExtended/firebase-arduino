@@ -40,6 +40,36 @@ String Firebase::push(const String& value) {
   return sendRequest("POST", (uint8_t*)value.c_str(), value.length());
 }
 
+Firebase& Firebase::stream() {
+  _error.reset();  
+  String url = "/" + _path + ".json";
+  if (_auth.length() > 0) {
+    url += "?auth=" + _auth;
+  }
+  const char* headers[] = {"Location"};
+  _http.setReuse(true);  
+  _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
+  _http.collectHeaders(headers, 1);
+  _http.addHeader("Accept", "text/event-stream");
+  int statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  String location;
+  // TODO(proppy): Add a max redirect check
+  while (statusCode == 307) {
+    location = _http.header("Location");
+    _http.setReuse(false);
+    _http.end();
+    _http.setReuse(true);    
+    _http.begin(location, firebaseFingerprint);
+    statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
+  }
+  if (statusCode != 200) {
+    _error.set(statusCode,
+	       "stream " + location + ": "
+	       + HTTPClient::errorToString(statusCode));
+  }
+  return *this;
+}
+
 String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
   _error.reset();
   String url = "/" + _path + ".json";
@@ -56,4 +86,28 @@ String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
   }
   // no _http.end() because of connection reuse.
   return _http.getString();
+}
+
+bool Firebase::connected() {
+  return _http.connected();
+}
+
+bool Firebase::available() {
+  return _http.getStreamPtr()->available();
+}
+
+Firebase::Event Firebase::read(String& event) {
+  auto client = _http.getStreamPtr();
+  Event type;;
+  String typeStr = client->readStringUntil('\n').substring(7);
+  if (typeStr == "put") {
+    type = Firebase::Event::PUT;
+  } else if (typeStr == "patch") {
+    type = Firebase::Event::PATCH;
+  } else {
+    type = Firebase::Event::UNKNOWN;
+  }
+  event = client->readStringUntil('\n').substring(6);
+  client->readStringUntil('\n'); // consume separator
+  return type;
 }
