@@ -19,8 +19,8 @@
 
 #include <Firebase.h>
 
-Firebase node = Firebase("example.firebaseio.com")
-                   .child("child_node");
+Firebase fbase = Firebase("example.firebaseio.com");
+
 void setup() {
   Serial.begin(9600);
 
@@ -35,18 +35,18 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
   
-  node.stream();
+  fbase.stream("/chat");
 }
 
 
 void loop() {
-  if (node.error()) {
+  if (fbase.error()) {
     Serial.println("streaming error");
-    Serial.println(node.error().message());
+    Serial.println(fbase.error().message());
   }
-  if (node.available()) {
+  if (fbase.available()) {
      String event;
-     auto type = node.read(event);
+     auto type = fbase.read(event);
      Serial.print("event: ");
      Serial.println(type);
      if (type != Firebase::Event::UNKNOWN) {

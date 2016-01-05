@@ -27,25 +27,17 @@ Firebase& Firebase::auth(const String& auth) {
   return *this;
 }
 
-Firebase& Firebase::child(const String& key) {
-  _path = key;
-  return *this;
+String Firebase::val(const String& path) {
+  return sendRequest("GET", path);
 }
 
-String Firebase::val() {
-  return sendRequest("GET");
+String Firebase::push(const String& path, const String& value) {
+  return sendRequest("POST", path, value);
 }
 
-String Firebase::push(const String& value) {
-  return sendRequest("POST", (uint8_t*)value.c_str(), value.length());
-}
-
-Firebase& Firebase::stream() {
-  _error.reset();  
-  String url = "/" + _path + ".json";
-  if (_auth.length() > 0) {
-    url += "?auth=" + _auth;
-  }
+Firebase& Firebase::stream(const String& path) {
+  _error.reset();
+  String url = makeURL(path); 
   const char* headers[] = {"Location"};
   _http.setReuse(true);  
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
@@ -70,14 +62,23 @@ Firebase& Firebase::stream() {
   return *this;
 }
 
-String Firebase::sendRequest(const char* method, uint8_t* value, size_t size) {
-  _error.reset();
-  String url = "/" + _path + ".json";
+String Firebase::makeURL(const String& path) {
+  String url;
+  if (path[0] != '/') {
+    url = "/";
+  }
+  url += path + ".json";
   if (_auth.length() > 0) {
     url += "?auth=" + _auth;
   }
+  return url;
+}
+
+String Firebase::sendRequest(const char* method, const String& path, const String& value) {
+  _error.reset();
+  String url = makeURL(path);
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
-  int statusCode = _http.sendRequest(method, value, size);
+  int statusCode = _http.sendRequest(method, (uint8_t*)value.c_str(), value.length());
   if (statusCode < 0) {
     _error.set(statusCode,
 	       String(method) + " " + url + ": "

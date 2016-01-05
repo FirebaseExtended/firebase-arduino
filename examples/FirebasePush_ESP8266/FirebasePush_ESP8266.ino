@@ -20,9 +20,8 @@
 #include <Firebase.h>
 
 // create firebase client.
-Firebase logs = Firebase("example.firebaseio.com")
-                   .auth("secret_or_token")
-                   .child("child_node");
+Firebase fbase = Firebase("example.firebaseio.com")
+                     .auth("secret_or_token");
 
 void setup() {
   Serial.begin(9600);
@@ -39,17 +38,17 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   // add a new entry.
-  String l = logs.push("{\".sv\": \"timestamp\"}");
+  String l = fbase.push("/logs", "{\".sv\": \"timestamp\"}");
   // handle error.
-  if (logs.error()) {
+  if (fbase.error()) {
       Serial.println("Firebase request failed");
-      Serial.println(logs.error().message());
+      Serial.println(fbase.error().message());
       return;
   }
   // print response.
   Serial.println(l);
   // print all entries.
-  Serial.println(logs.val());
+  Serial.println(fbase.val("/logs"));
 }
 
 void loop() {
