@@ -57,7 +57,7 @@ void loop() {
      auto type = fbase.read(event);
      Serial.print("event: ");
      Serial.println(type);
-     if (type != Firebase::Event::UNKNOWN) {       
+     if (type != Firebase::Event::UNKNOWN) {
        Serial.print("data: ");
        Serial.println(event);
      
