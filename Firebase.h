@@ -47,14 +47,13 @@ class Firebase {
  public:
   Firebase(const String& host);
   Firebase& auth(const String& auth);
-  Firebase& child(const String& key);
   const FirebaseError& error() const {
     return _error;
   }
-  String val();
-  String push(const String& value);
+  String val(const String& path);
+  String push(const String& path, const String& value);
   bool connected();
-  Firebase& stream();
+  Firebase& stream(const String& path);
   bool available();
   enum Event {
     UNKNOWN,
@@ -63,11 +62,11 @@ class Firebase {
   };
   Event read(String& event);
  private:
-  String sendRequest(const char* method, uint8_t* value = NULL, size_t size = 0);
+  String makeURL(const String& path);
+  String sendRequest(const char* method, const String& path, const String& value = "");
   HTTPClient _http;
   String _host;
   String _auth;
-  String _path;    
   FirebaseError _error;
 };
 
