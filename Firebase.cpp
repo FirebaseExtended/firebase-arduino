@@ -27,7 +27,7 @@ Firebase& Firebase::auth(const String& auth) {
   return *this;
 }
 
-String Firebase::val(const String& path) {
+String Firebase::get(const String& path) {
   return sendRequest("GET", path);
 }
 
