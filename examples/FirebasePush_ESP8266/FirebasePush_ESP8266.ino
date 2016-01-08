@@ -48,7 +48,7 @@ void setup() {
   // print response.
   Serial.println(l);
   // print all entries.
-  Serial.println(fbase.val("/logs"));
+  Serial.println(fbase.get("/logs"));
 }
 
 void loop() {

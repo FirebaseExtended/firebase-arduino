@@ -50,7 +50,7 @@ class Firebase {
   const FirebaseError& error() const {
     return _error;
   }
-  String val(const String& path);
+  String get(const String& path);
   String push(const String& path, const String& value);
   bool connected();
   Firebase& stream(const String& path);
