@@ -14,15 +14,23 @@
 // limitations under the License.
 //
 
-// FirebaseStream_ESP8266 is a sample that stream on a firebase child
-// node.
+// FirebaseStream_ESP8266 is a sample that stream bitcoin price from a
+// public Firebase and optionally display them on a OLED i2c screen.
 
 #include <Firebase.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
-Firebase fbase = Firebase("example.firebaseio.com");
+#define OLED_RESET 10
+Adafruit_SSD1306 display(OLED_RESET);
+
+Firebase fbase = Firebase("publicdata-cryptocurrency.firebaseio.com");
 
 void setup() {
   Serial.begin(9600);
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
+  display.display();
 
   // connect to wifi.
   WiFi.begin("SSID", "PASSWORD");
@@ -35,7 +43,7 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
   
-  fbase.stream("/chat");
+  fbase.stream("/bitcoin");
 }
 
 
@@ -52,6 +60,14 @@ void loop() {
      if (type != Firebase::Event::UNKNOWN) {
        Serial.print("data: ");
        Serial.println(event);
+     
+       // TODO(proppy): parse JSON object.
+       display.clearDisplay();
+       display.setTextSize(1);
+       display.setTextColor(WHITE);
+       display.setCursor(0,0);
+       display.println(event);
+       display.display();
      }
   } 
 }
