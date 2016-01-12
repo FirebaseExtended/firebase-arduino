@@ -28,9 +28,13 @@
 class FirebaseResult {
  public:
   FirebaseResult(int status);
+  FirebaseResult(int status, const String& response);
+  FirebaseResult(const FirebaseResult& result);
+
   bool isError() const;
   bool isOk() const;
   String errorMessage() const;
+  const String& response() const;
 
   int httpStatus() const {
     return status_;
@@ -38,19 +42,7 @@ class FirebaseResult {
 
  protected:
   int status_;
-};
-
-class FirebaseResultWithMessage : public FirebaseResult {
- public:
-  FirebaseResultWithMessage(int status, const String& message);
-  FirebaseResultWithMessage(const FirebaseResult& result,
-                            const String& message);
-
-  // Check isError() before calling this.
-  const String& message() const;
-
- private:
-  String message_ ;
+  String response_;
 };
 
 class FirebaseConnection {
@@ -71,8 +63,8 @@ class FirebaseConnection {
   FirebaseResult sendRequest(const char* method, const String& path, const String& value);
   FirebaseResult sendRequest(const char* method, const String& path);
 
-  FirebaseResultWithMessage sendRequestGetBody(const char* method, const String& path);
-  FirebaseResultWithMessage sendRequestGetBody(const char* method, const String& path, const String& value);
+  FirebaseResult sendRequestGetBody(const char* method, const String& path);
+  FirebaseResult sendRequestGetBody(const char* method, const String& path, const String& value);
 
  private:
   HTTPClient http_;
@@ -88,10 +80,10 @@ class Firebase {
 
   // Fetch result at "path" to a local variable. If the value is too large you will exceed
   // local memory.
-  FirebaseResultWithMessage get(const String& path);
+  FirebaseResult get(const String& path);
 
   // Add new value to list at "path", will return child name of new item.
-  FirebaseResultWithMessage push(const String& path, const String& value);
+  FirebaseResult push(const String& path, const String& value);
 
   // Deletes value at "path" from server.
   FirebaseResult remove(const String& path);
