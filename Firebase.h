@@ -25,26 +25,36 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
 
+//TODO(edcoyne) split these into multiple files.
+
+// Result from call to Firebase backend. ALWAYS check isError() before
+// expecting any data.
 class FirebaseResult {
  public:
   FirebaseResult(int status);
   FirebaseResult(int status, const String& response);
   FirebaseResult(const FirebaseResult& result);
 
+  // True if there was an error completeing call.
   bool isError() const;
-  bool isOk() const;
   String errorMessage() const;
+
+  // True if http status code is 200(OK).
+  bool isOk() const;
+  // Message sent back from Firebase backend.
   const String& response() const;
 
   int httpStatus() const {
     return status_;
   }
 
- protected:
+ private:
   int status_;
   String response_;
 };
 
+// Low level connection to Firebase backend, you probably want the
+// Firebase class below.
 class FirebaseConnection {
  public:
   FirebaseConnection(const String& host);
@@ -72,7 +82,7 @@ class FirebaseConnection {
   String auth_;
 };
 
-// Firebase is the connection to firebase.
+// Primary client to the Firebase backend.
 class Firebase {
  public:
   Firebase(const String& host);
@@ -104,14 +114,19 @@ class FirebaseEventStream {
   FirebaseEventStream(const String& host);
   FirebaseEventStream& auth(const String& auth);
 
+  // Connect to backend and start receiving events.
   FirebaseResult connect(const String& path);
+  // Read next event in stream.
   Event read(String& event);
 
+  // True if connected to backend.
   bool connected();
+
+  // True if there is an event available.
   bool available();
+
  private:
   FirebaseConnection connection_;
 };
-
 
 #endif // firebase_h
