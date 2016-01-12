@@ -25,21 +25,59 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
 
-// FirebaseError represents a Firebase API error with a code and a
-// message.
-class FirebaseError {
+class FirebaseResult {
  public:
-  operator bool() const { return _code < 0; }
-  int code() const { return _code; }
-  const String& message() const { return _message; }
-  void reset() { set(0, ""); }
-  void set(int code, const String& message) {
-    _code = code;
-    _message = message;
+  FirebaseResult(int status);
+  bool isError() const;
+  bool isOk() const;
+  String errorMessage() const;
+
+  int httpStatus() const {
+    return status_;
   }
+
+ protected:
+  int status_;
+};
+
+class FirebaseResultWithMessage : public FirebaseResult {
+ public:
+  FirebaseResultWithMessage(int status, const String& message);
+  FirebaseResultWithMessage(const FirebaseResult& result,
+                            const String& message);
+
+  // Check isError() before calling this.
+  const String& message() const;
+
  private:
-  int _code = 0;
-  String _message = "";
+  String message_ ;
+};
+
+class FirebaseConnection {
+ public:
+  FirebaseConnection(const String& host);
+  FirebaseConnection& auth(const String& auth);
+
+  const String& host() {
+    return host_;
+  }
+
+  HTTPClient& httpClient(){
+    return http_;
+  }
+
+  String makeURL(const String& path);
+
+  FirebaseResult sendRequest(const char* method, const String& path, const String& value);
+  FirebaseResult sendRequest(const char* method, const String& path);
+
+  FirebaseResultWithMessage sendRequestGetBody(const char* method, const String& path);
+  FirebaseResultWithMessage sendRequestGetBody(const char* method, const String& path, const String& value);
+
+ private:
+  HTTPClient http_;
+  const String host_;
+  String auth_;
 };
 
 // Firebase is the connection to firebase.
@@ -47,31 +85,41 @@ class Firebase {
  public:
   Firebase(const String& host);
   Firebase& auth(const String& auth);
-  const FirebaseError& error() const {
-    return _error;
-  }
-  String get(const String& path);
-  String push(const String& path, const String& value);
-  bool remove(const String& path);
-  bool connected();
-  Firebase& stream(const String& path);
-  bool available();
+
+  // Fetch result at "path" to a local variable. If the value is too large you will exceed
+  // local memory.
+  FirebaseResultWithMessage get(const String& path);
+
+  // Add new value to list at "path", will return child name of new item.
+  FirebaseResultWithMessage push(const String& path, const String& value);
+
+  // Deletes value at "path" from server.
+  FirebaseResult remove(const String& path);
+
+ private:
+  FirebaseConnection connection_;
+};
+
+// Listens on a stream of events from Firebase backend.
+class FirebaseEventStream {
+ public:
   enum Event {
     UNKNOWN,
     PUT,
     PATCH
   };
-  Event read(String& event);
- private:
-  String makeURL(const String& path);
-  int sendRequest(const char* method, const String& path, const String& value = "");
-  String sendRequestGetBody(const char* method, const String& path, const String& value = "");
-  void setError(const char* method, const String& url, int status_code);
 
-  HTTPClient _http;
-  String _host;
-  String _auth;
-  FirebaseError _error;
+  FirebaseEventStream(const String& host);
+  FirebaseEventStream& auth(const String& auth);
+
+  FirebaseResult connect(const String& path);
+  Event read(String& event);
+
+  bool connected();
+  bool available();
+ private:
+  FirebaseConnection connection_;
 };
+
 
 #endif // firebase_h

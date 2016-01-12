@@ -37,18 +37,22 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
-  // add a new entry.
-  String l = fbase.push("/logs", "{\".sv\": \"timestamp\"}");
-  // handle error.
-  if (fbase.error()) {
+   // add a new entry.
+  FirebaseResultWithMessage push = fbase.push("/logs", "{\".sv\": \"timestamp\"}");
+  if (push.isError()) {
       Serial.println("Firebase request failed");
-      Serial.println(fbase.error().message());
+      Serial.println(push.errorMessage());  
       return;
   }
+
   // print response.
-  Serial.println(l);
+  Serial.println(push.message());
+  
   // print all entries.
-  Serial.println(fbase.get("/logs"));
+  FirebaseResultWithMessage fetch = fbase.get("/logs");
+  if (!fetch.isError()) {
+    Serial.println(fetch.message());
+  }
 }
 
 void loop() {
