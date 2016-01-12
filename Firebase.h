@@ -52,6 +52,7 @@ class Firebase {
   }
   String get(const String& path);
   String push(const String& path, const String& value);
+  bool remove(const String& path);
   bool connected();
   Firebase& stream(const String& path);
   bool available();
@@ -63,7 +64,10 @@ class Firebase {
   Event read(String& event);
  private:
   String makeURL(const String& path);
-  String sendRequest(const char* method, const String& path, const String& value = "");
+  int sendRequest(const char* method, const String& path, const String& value = "");
+  String sendRequestGetBody(const char* method, const String& path, const String& value = "");
+  void setError(const char* method, const String& url, int status_code);
+
   HTTPClient _http;
   String _host;
   String _auth;
