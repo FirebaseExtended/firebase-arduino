@@ -65,7 +65,7 @@ class Firebase {
  private:
   String makeURL(const String& path);
   int sendRequest(const char* method, const String& path, const String& value = "");
-  String sendRequestGetBody(const char* method, const String& path, const String& value = "");
+  String getBody();
   void checkResponse(const char* method, const String& url, int status_code);
 
   HTTPClient _http;

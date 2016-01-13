@@ -28,11 +28,13 @@ Firebase& Firebase::auth(const String& auth) {
 }
 
 String Firebase::get(const String& path) {
-  return sendRequestGetBody("GET", path);
+  sendRequest("GET", path);
+  return getBody();
 }
 
 String Firebase::push(const String& path, const String& value) {
-  return sendRequestGetBody("POST", path, value);
+  sendRequest("POST", path, value);
+  return getBody();
 }
 
 bool Firebase::remove(const String& path) {
@@ -87,8 +89,7 @@ int Firebase::sendRequest(const char* method, const String& path, const String& 
   return statusCode;
 }
 
-String Firebase::sendRequestGetBody(const char* method, const String& path, const String& value) {
-  sendRequest(method, path, value);
+String Firebase::getBody() {
   if (_error.code() != 0) {
     return "";
   }
