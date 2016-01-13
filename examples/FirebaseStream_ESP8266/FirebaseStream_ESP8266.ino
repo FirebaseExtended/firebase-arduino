@@ -53,21 +53,25 @@ void loop() {
     Serial.println(fbase.error().message());
   }
   if (fbase.available()) {
-     String event;
-     auto type = fbase.read(event);
-     Serial.print("event: ");
-     Serial.println(type);
-     if (type != Firebase::Event::UNKNOWN) {
+     if (fbase.read().event() == "put" {
+       const JsonObject& json = fbase.json();
+       if (!json.success()) {
+        Serial.println("streaming error");
+        return;
+       }
+       Serial.print("path: ");
+       Serial.println((const char*)json["path"]);     
        Serial.print("data: ");
-       Serial.println(event);
-     
-       // TODO(proppy): parse JSON object.
-       display.clearDisplay();
-       display.setTextSize(1);
-       display.setTextColor(WHITE);
-       display.setCursor(0,0);
-       display.println(event);
-       display.display();
+       Serial.println((const char*)json["data"]);
+       if (String((const char*)json["path"]) != "/_updated") {   
+         display.clearDisplay();
+         display.setTextSize(2);
+         display.setTextColor(WHITE);
+         display.setCursor(0,0);
+         display.println((const char*)json["path"]+1);
+         display.println((const char*)json["data"]);
+         display.display();
+       }
      }
   } 
 }
