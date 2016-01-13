@@ -83,7 +83,7 @@ int Firebase::sendRequest(const char* method, const String& path, const String& 
   String url = makeURL(path);
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
   int statusCode =  _http.sendRequest(method, (uint8_t*)value.c_str(), value.length());
-  setError(method, url, statusCode);
+  checkResponse(method, url, statusCode);
   return statusCode;
 }
 
@@ -96,7 +96,7 @@ String Firebase::sendRequestGetBody(const char* method, const String& path, cons
   return _http.getString();
 }
 
-void Firebase::setError(const char* method, const String& url, int statusCode) {
+void Firebase::checkResponse(const char* method, const String& url, int statusCode) {
   _error.reset();
   if (statusCode < 0) {
     _error.set(statusCode,
