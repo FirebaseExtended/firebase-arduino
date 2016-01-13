@@ -27,13 +27,20 @@ Firebase& Firebase::auth(const String& auth) {
   return *this;
 }
 
-String Firebase::get(const String& path) {
-  return sendRequest("GET", path);
+Firebase& Firebase::get(const String& path) {
+  sendRequest("GET", path);
+  return *this;
 }
 
-String Firebase::push(const String& path, const String& value) {
-  return sendRequest("POST", path, value);
+Firebase& Firebase::push(const String& path, const String& value) {
+  sendRequest("POST", path, value);
+  return *this;  
 }
+
+//Firebase& Firebase::push(const String& path, const JsonObject& value) {
+//  sendRequest("POST", path, value);
+//  return *this;
+//}
 
 Firebase& Firebase::stream(const String& path) {
   _error.reset();
@@ -74,7 +81,7 @@ String Firebase::makeURL(const String& path) {
   return url;
 }
 
-String Firebase::sendRequest(const char* method, const String& path, const String& value) {
+void Firebase::sendRequest(const char* method, const String& path, const String& value) {
   _error.reset();
   String url = makeURL(path);
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
@@ -83,10 +90,11 @@ String Firebase::sendRequest(const char* method, const String& path, const Strin
     _error.set(statusCode,
 	       String(method) + " " + url + ": "
 	       + HTTPClient::errorToString(statusCode));
-    return "";
+    return;
   }
   // no _http.end() because of connection reuse.
-  return _http.getString();
+  _data = _http.getString();
+  return;
 }
 
 bool Firebase::connected() {
@@ -97,18 +105,22 @@ bool Firebase::available() {
   return _http.getStreamPtr()->available();
 }
 
-Firebase::Event Firebase::read(String& event) {
+Firebase& Firebase::read() {
   auto client = _http.getStreamPtr();
-  Event type;;
-  String typeStr = client->readStringUntil('\n').substring(7);
-  if (typeStr == "put") {
-    type = Firebase::Event::PUT;
-  } else if (typeStr == "patch") {
-    type = Firebase::Event::PATCH;
-  } else {
-    type = Firebase::Event::UNKNOWN;
-  }
-  event = client->readStringUntil('\n').substring(6);
+  _event = client->readStringUntil('\n').substring(7);
+  _data = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
-  return type;
+  Serial.println(_event);
+  Serial.println(_data);
+  return *this;
+}
+
+JsonObject& Firebase::create() {
+  return _json.createObject();
+}
+
+JsonObject& Firebase::json() {
+  _json = StaticJsonBuffer<200>();
+  JsonObject& obj = _json.parseObject((char*)_data.c_str());
+  return obj;
 }
