@@ -25,7 +25,6 @@
 Adafruit_SSD1306 display(OLED_RESET);
 
 Firebase fbase = Firebase("publicdata-cryptocurrency.firebaseio.com");
-FirebaseEventStream stream;
 
 void setup() {
   Serial.begin(9600);
@@ -43,12 +42,11 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  
-  stream = fbase.stream("/bitcoin");
 }
 
 
 void loop() {  
+  static FirebaseEventStream stream = fbase.stream("/bitcoin");
   if (stream.isError()) {
     Serial.println("streaming error");
     Serial.println(stream.errorMessage());
