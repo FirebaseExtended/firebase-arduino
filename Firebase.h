@@ -27,6 +27,34 @@
 
 //TODO(edcoyne) split these into multiple files.
 
+class FirebaseCall;
+class FirebaseEventStream;
+
+// Primary client to the Firebase backend.
+class Firebase {
+ public:
+  Firebase(const String& host);
+  Firebase& auth(const String& auth);
+
+  // Fetch result at "path" to a local variable. If the value is too large you will exceed
+  // local memory.
+  FirebaseCall get(const String& path);
+
+  // Add new value to list at "path", will return child name of new item.
+  FirebaseCall push(const String& path, const String& value);
+
+  // Deletes value at "path" from server.
+  FirebaseCall remove(const String& path);
+
+  // Starts a stream of events that effect object at "path".
+  FirebaseEventStream stream(const String& path);
+
+ private:
+  HTTPClient http_;
+  String host_;
+  String auth_;
+};
+
 class FirebaseCall {
  public:
   FirebaseCall(const String& host, const String& auth,
@@ -90,28 +118,4 @@ class FirebaseEventStream {
   String error_message_;
 };
 
-// Primary client to the Firebase backend.
-class Firebase {
- public:
-  Firebase(const String& host);
-  Firebase& auth(const String& auth);
-
-  // Fetch result at "path" to a local variable. If the value is too large you will exceed
-  // local memory.
-  FirebaseCall get(const String& path);
-
-  // Add new value to list at "path", will return child name of new item.
-  FirebaseCall push(const String& path, const String& value);
-
-  // Deletes value at "path" from server.
-  FirebaseCall remove(const String& path);
-
-  // Starts a stream of events that effect object at "path".
-  FirebaseEventStream stream(const String& path);
-
- private:
-  HTTPClient http_;
-  String host_;
-  String auth_;
-};
 #endif // firebase_h
