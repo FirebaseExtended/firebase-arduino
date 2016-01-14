@@ -27,59 +27,67 @@
 
 //TODO(edcoyne) split these into multiple files.
 
-// Result from call to Firebase backend. ALWAYS check isError() before
-// expecting any data.
-class FirebaseResult {
+class FirebaseCall {
  public:
-  FirebaseResult(int status);
-  FirebaseResult(int status, const String& response);
-  FirebaseResult(const FirebaseResult& result);
+  FirebaseCall(const String& host, const String& auth,
+               const char* method, const String& path, const String& value,
+               HTTPClient* http);
+  FirebaseCall(const String& host, const String& auth,
+               const char* method, const String& path,
+               HTTPClient* http);
 
-  // True if there was an error completeing call.
+
+  // True if there was an error completing call.
   bool isError() const;
   String errorMessage() const;
 
   // True if http status code is 200(OK).
   bool isOk() const;
-  // Message sent back from Firebase backend.
-  const String& response() const;
+
+  // Message sent back from Firebase backend. This pulls value to local memory,
+  // be careful if value can be large.
+  String rawResponse();
 
   int httpStatus() const {
     return status_;
   }
 
  private:
+  FirebaseCall(HTTPClient* http);
+
+  HTTPClient* http_;
+
   int status_;
-  String response_;
+  String error_message_;
 };
 
-// Low level connection to Firebase backend, you probably want the
-// Firebase class below.
-class FirebaseConnection {
+class FirebaseEventStream {
  public:
-  FirebaseConnection(const String& host);
-  FirebaseConnection& auth(const String& auth);
+  enum Event {
+    UNKNOWN,
+    PUT,
+    PATCH
+  };
 
-  const String& host() {
-    return host_;
-  }
+  FirebaseEventStream(const String& host, const String& auth, const String& path);
 
-  HTTPClient& httpClient(){
-    return http_;
-  }
+  // Read next event in stream.
+  Event read(String& event);
 
-  String makeURL(const String& path);
+  // True if connected to backend.
+  bool connected();
 
-  FirebaseResult sendRequest(const char* method, const String& path, const String& value);
-  FirebaseResult sendRequest(const char* method, const String& path);
+  // True if there is an event available.
+  bool available();
 
-  FirebaseResult sendRequestGetBody(const char* method, const String& path);
-  FirebaseResult sendRequestGetBody(const char* method, const String& path, const String& value);
+  // True if there was an error.
+  bool isError() const;
+  String errorMessage() const;
 
  private:
   HTTPClient http_;
-  const String host_;
-  String auth_;
+  int status_;
+  String error_message_;
 };
 
 // Primary client to the Firebase backend.
@@ -90,43 +98,20 @@ class Firebase {
 
   // Fetch result at "path" to a local variable. If the value is too large you will exceed
   // local memory.
-  FirebaseResult get(const String& path);
+  FirebaseCall get(const String& path);
 
   // Add new value to list at "path", will return child name of new item.
-  FirebaseResult push(const String& path, const String& value);
+  FirebaseCall push(const String& path, const String& value);
 
   // Deletes value at "path" from server.
-  FirebaseResult remove(const String& path);
+  FirebaseCall remove(const String& path);
+
+  // Starts a stream of events that effect object at "path".
+  FirebaseEventStream stream(const String& path);
 
  private:
-  FirebaseConnection connection_;
+  HTTPClient http_;
+  String host_;
+  String auth_;
 };
-
-// Listens on a stream of events from Firebase backend.
-class FirebaseEventStream {
- public:
-  enum Event {
-    UNKNOWN,
-    PUT,
-    PATCH
-  };
-
-  FirebaseEventStream(const String& host);
-  FirebaseEventStream& auth(const String& auth);
-
-  // Connect to backend and start receiving events.
-  FirebaseResult connect(const String& path);
-  // Read next event in stream.
-  Event read(String& event);
-
-  // True if connected to backend.
-  bool connected();
-
-  // True if there is an event available.
-  bool available();
-
- private:
-  FirebaseConnection connection_;
-};
-
 #endif // firebase_h

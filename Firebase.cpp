@@ -18,72 +18,81 @@
 namespace {
 const char* kFirebaseFingerprint = "7A 54 06 9B DC 7A 25 B3 86 8D 66 53 48 2C 0B 96 42 C7 B3 0A";
 const uint16_t kFirebasePort = 443;
+
+String makeUrl(const String& path, const String& auth) {
+  String url;
+  if (path[0] != '/') {
+    url = "/";
+  }
+  url += path + ".json";
+  if (auth.length() > 0) {
+    url += "?auth=" + auth;
+  }
+  return url;
+}
+
 }  // namespace
 
-Firebase::Firebase(const String& host) : connection_(host) {
+Firebase::Firebase(const String& host) : host_(host) {
+  http_.setReuse(true);
 }
 
 Firebase& Firebase::auth(const String& auth) {
-  connection_.auth(auth);
+  auth_ = auth;
   return *this;
 }
 
-FirebaseResult Firebase::get(const String& path) {
-  return connection_.sendRequestGetBody("GET", path);
+FirebaseCall Firebase::get(const String& path) {
+  return FirebaseCall(host_, auth_, "GET", path, &http_);
 }
 
-FirebaseResult Firebase::push(const String& path, const String& value) {
-  return connection_.sendRequestGetBody("POST", path, value);
+FirebaseCall Firebase::push(const String& path, const String& value) {
+  return FirebaseCall(host_, auth_, "POST", path, value, &http_);
 }
 
-FirebaseResult Firebase::remove(const String& path) {
-  return connection_.sendRequest("DELETE", path);
+FirebaseCall Firebase::remove(const String& path) {
+  return FirebaseCall(host_, auth_, "DELETE", path, &http_);
+}
+
+FirebaseEventStream Firebase::stream(const String& path) {
+  return FirebaseEventStream(host_, auth_, path);
 }
 
 /* FirebaseEventStream */
 
-FirebaseEventStream::FirebaseEventStream(const String& host) : connection_(host) {
-}
-
-FirebaseEventStream& FirebaseEventStream::auth(const String& auth) {
-  connection_.auth(auth);
-  return *this;
-}
-
-FirebaseResult FirebaseEventStream::connect(const String& path) {
-  String url = connection_.makeURL(path);
-  auto& http = connection_.httpClient();
-  http.setReuse(true);
-  http.begin(connection_.host().c_str(), kFirebasePort, url.c_str(), true,
-             kFirebaseFingerprint);
+FirebaseEventStream::FirebaseEventStream(const String& host, const String& auth,
+                                         const String& path) {
+  const String url = makeUrl(path, auth);
+  http_.setReuse(true);
+  http_.begin(host.c_str(), kFirebasePort, url.c_str(), true,
+              kFirebaseFingerprint);
   const char* headers[] = {"Location"};
-  http.collectHeaders(headers, 1);
-  http.addHeader("Accept", "text/event-stream");
-  int statusCode = http.sendRequest("GET", (uint8_t*)NULL, 0);
+  http_.collectHeaders(headers, 1);
+  http_.addHeader("Accept", "text/event-stream");
+  status_ = http_.sendRequest("GET", (uint8_t*)NULL, 0);
 
   String location;
   // TODO(proppy): Add a max redirect check
-  while (statusCode == HTTP_CODE_TEMPORARY_REDIRECT) {
-    location = http.header("Location");
-    http.setReuse(false);
-    http.end();
-    http.setReuse(true);
-    http.begin(location, kFirebaseFingerprint);
-    statusCode = http.sendRequest("GET", (uint8_t*)NULL, 0);
+  while (status_ == HTTP_CODE_TEMPORARY_REDIRECT) {
+    location = http_.header("Location");
+    http_.setReuse(false);
+    http_.end();
+    http_.setReuse(true);
+    http_.begin(location, kFirebaseFingerprint);
+    status_ = http_.sendRequest("GET", (uint8_t*)NULL, 0);
   }
-  return FirebaseResult(statusCode);
 }
 
 bool FirebaseEventStream::connected() {
-  return connection_.httpClient().connected();
+  return http_.connected();
 }
 
 bool FirebaseEventStream::available() {
-  return connection_.httpClient().getStreamPtr()->available();
+  return http_.getStreamPtr()->available();
 }
 
 FirebaseEventStream::Event FirebaseEventStream::read(String& event) {
-  auto client = connection_.httpClient().getStreamPtr();
+  auto client = http_.getStreamPtr();
   Event type;
   String typeStr = client->readStringUntil('\n').substring(7);
   if (typeStr == "put") {
@@ -98,75 +107,43 @@ FirebaseEventStream::Event FirebaseEventStream::read(String& event) {
   return type;
 }
 
-/* FirebaseConnection */
-
-FirebaseConnection::FirebaseConnection(const String& host) : host_(host) {
-  http_.setReuse(true);
-}
-
-FirebaseConnection& FirebaseConnection::auth(const String& auth) {
-  auth_ = auth;
-  return *this;
-}
-
-FirebaseResult FirebaseConnection::sendRequest(const char* method, const String& path) {
-  return sendRequest(method, path, "");
-}
-
-FirebaseResult FirebaseConnection::sendRequest(const char* method, const String& path, const String& value) {
-  const String url = makeURL(path);
-  http_.begin(host_.c_str(), kFirebasePort, url.c_str(), true, kFirebaseFingerprint);
-  int statusCode =  http_.sendRequest(method, (uint8_t*)value.c_str(), value.length());
-  return FirebaseResult(statusCode);
-}
-
-FirebaseResult FirebaseConnection::sendRequestGetBody(const char* method, const String& path) {
-  return sendRequestGetBody(method, path, "");
-}
-
-FirebaseResult FirebaseConnection::sendRequestGetBody(const char* method, const String& path, const String& value) {
-  FirebaseResult result = sendRequest(method, path, value);
-  return FirebaseResult(result.httpStatus(), http_.getString());
-}
-
-String FirebaseConnection::makeURL(const String& path) {
-  String url;
-  if (path[0] != '/') {
-    url = "/";
-  }
-  url += path + ".json";
-  if (auth_.length() > 0) {
-    url += "?auth=" + auth_;
-  }
-  return url;
-}
-
-/* FirebaseResult */
-
-FirebaseResult::FirebaseResult(int status) : status_(status) {
-}
-
-FirebaseResult::FirebaseResult(int status, const String& response)
-  : status_(status), response_(response) {
-}
-
-FirebaseResult::FirebaseResult(const FirebaseResult& other) {
-  status_ = other.status_;
-  response_ = other.response_;
-}
-
-bool FirebaseResult::isOk() const {
-  return status_ == HTTP_CODE_OK;
-}
-
-bool FirebaseResult::isError() const {
+bool FirebaseEventStream::isError() const {
   return status_ < 0;
 }
 
-String FirebaseResult::errorMessage() const {
-  return HTTPClient::errorToString(status_);
+String FirebaseEventStream::errorMessage() const {
+  return error_message_;
 }
 
-const String& FirebaseResult::response() const {
-  return response_;
+/* FirebaseCall */
+FirebaseCall::FirebaseCall(const String& host, const String& auth,
+                           const char* method, const String& path, const String& value,
+                           HTTPClient* http) : http_(http) {
+  const String url = makeUrl(path, auth);
+  http_->begin(host.c_str(), kFirebasePort, url.c_str(), true, kFirebaseFingerprint);
+  status_ =  http_->sendRequest(method, (uint8_t*)value.c_str(), value.length());
+  if (isError()) {
+    error_message_ = String(method) + " " + url + ": " + HTTPClient::errorToString(status_);
+  }
+}
+
+FirebaseCall::FirebaseCall(const String& host, const String& auth,
+                           const char* method, const String& path,
+                           HTTPClient* http) : FirebaseCall(host, auth, method, path, "", http) {
+}
+
+bool FirebaseCall::isOk() const {
+  return status_ == HTTP_CODE_OK;
+}
+
+bool FirebaseCall::isError() const {
+  return status_ < 0;
+}
+
+String FirebaseCall::errorMessage() const {
+  return error_message_;
+}
+
+String FirebaseCall::rawResponse() {
+  return http_->getString();
 }
