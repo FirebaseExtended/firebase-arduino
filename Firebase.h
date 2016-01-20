@@ -51,6 +51,11 @@ class Firebase {
     return _error;
   }
   String get(const String& path);
+  // write a new JSON `value` to the given `path`.
+  // Note: A String `value` must include double quotes to be valid json.
+  String set(const String& path, const String& value);
+  // append a new JSON `value` to the given `path`.
+  // Note: A String `value` must include double quotes to be valid json.
   String push(const String& path, const String& value);
   void remove(const String& path);
   bool connected();
