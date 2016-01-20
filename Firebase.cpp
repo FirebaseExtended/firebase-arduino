@@ -41,6 +41,11 @@ void Firebase::remove(const String& path) {
   sendRequest("DELETE", path);
 }
 
+String Firebase::set(const String& path, const String& value) {
+  sendRequest("PUT", path, value);
+  return readBody();
+}
+
 Firebase& Firebase::stream(const String& path) {
   _error.reset();
   String url = makeURL(path); 
