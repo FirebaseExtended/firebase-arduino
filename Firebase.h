@@ -24,6 +24,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
 
 // FirebaseError represents a Firebase API error with a code and a
 // message.
@@ -50,24 +51,27 @@ class Firebase {
   const FirebaseError& error() const {
     return _error;
   }
-  String get(const String& path);
-  String push(const String& path, const String& value);
+  Firebase& get(const String& path);
+  Firebase& push(const String& path, const String& value);
+  //  Firebase& push(const String& path, const JsonObject& value);  
   bool connected();
   Firebase& stream(const String& path);
   bool available();
-  enum Event {
-    UNKNOWN,
-    PUT,
-    PATCH
-  };
-  Event read(String& event);
+  Firebase& read();
+  JsonObject& create();
+  const String& event() const { return _event; };
+  const String& data() const { return _data; }
+  JsonObject& json();
  private:
   String makeURL(const String& path);
-  String sendRequest(const char* method, const String& path, const String& value = "");
+  void sendRequest(const char* method, const String& path, const String& value = "");
   HTTPClient _http;
   String _host;
   String _auth;
   FirebaseError _error;
+  String _event;
+  String _data;
+  StaticJsonBuffer<200> _json;
 };
 
 #endif // firebase_h
