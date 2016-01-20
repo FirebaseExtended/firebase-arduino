@@ -29,17 +29,16 @@ Firebase& Firebase::auth(const String& auth) {
 
 String Firebase::get(const String& path) {
   sendRequest("GET", path);
-  return getBody();
+  return readBody();
 }
 
 String Firebase::push(const String& path, const String& value) {
   sendRequest("POST", path, value);
-  return getBody();
+  return readBody();
 }
 
-bool Firebase::remove(const String& path) {
-  int status = sendRequest("DELETE", path);
-  return status == HTTP_CODE_OK;
+void Firebase::remove(const String& path) {
+  sendRequest("DELETE", path);
 }
 
 Firebase& Firebase::stream(const String& path) {
@@ -81,29 +80,24 @@ String Firebase::makeURL(const String& path) {
   return url;
 }
 
-int Firebase::sendRequest(const char* method, const String& path, const String& value) {
+void Firebase::sendRequest(const char* method, const String& path, const String& value) {
   String url = makeURL(path);
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
   int statusCode =  _http.sendRequest(method, (uint8_t*)value.c_str(), value.length());
-  checkResponse(method, url, statusCode);
-  return statusCode;
-}
-
-String Firebase::getBody() {
-  if (_error.code() != 0) {
-    return "";
-  }
-  // no _http.end() because of connection reuse.
-  return _http.getString();
-}
-
-void Firebase::checkResponse(const char* method, const String& url, int statusCode) {
   _error.reset();
   if (statusCode < 0) {
     _error.set(statusCode,
                String(method) + " " + url + ": "
                + HTTPClient::errorToString(statusCode));
+  }  
+}
+
+String Firebase::readBody() {
+  if (_error.code() != 0) {
+    return "";
   }
+  // no _http.end() because of connection reuse.
+  return _http.getString();
 }
 
 bool Firebase::connected() {
