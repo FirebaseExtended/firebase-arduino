@@ -27,23 +27,21 @@ Firebase& Firebase::auth(const String& auth) {
   return *this;
 }
 
-Firebase& Firebase::get(const String& path) {
-  sendRequest("GET", path);
-  return *this;
+FirebaseObject Firebase::create() {
+  return FirebaseObject{};
 }
 
-Firebase& Firebase::push(const String& path, const String& value) {
-  sendRequest("POST", path, value);
-  return *this;  
+FirebaseObject Firebase::get(const String& path) {
+  return sendRequest("GET", path);
 }
 
-//Firebase& Firebase::push(const String& path, const JsonObject& value) {
-//  sendRequest("POST", path, value);
-//  return *this;
-//}
+FirebaseObject Firebase::push(const String& path, const FirebaseObject& value) {
+  char buffer[256];
+  value.json.printTo(buffer, sizeof(buffer));
+  return sendRequest("POST", path, buffer);
+}
 
-Firebase& Firebase::stream(const String& path) {
-  _error.reset();
+FirebaseObject Firebase::stream(const String& path) {
   String url = makeURL(path); 
   const char* headers[] = {"Location"};
   _http.setReuse(true);  
@@ -62,11 +60,11 @@ Firebase& Firebase::stream(const String& path) {
     statusCode = _http.sendRequest("GET", (uint8_t*)NULL, 0);
   }
   if (statusCode != 200) {
-    _error.set(statusCode,
-	       "stream " + location + ": "
-	       + HTTPClient::errorToString(statusCode));
+    return FirebaseObject(FirebaseError(statusCode,
+					"stream " + location + ": "
+					+ HTTPClient::errorToString(statusCode)));
   }
-  return *this;
+  return FirebaseObject{};
 }
 
 String Firebase::makeURL(const String& path) {
@@ -81,20 +79,17 @@ String Firebase::makeURL(const String& path) {
   return url;
 }
 
-void Firebase::sendRequest(const char* method, const String& path, const String& value) {
-  _error.reset();
+FirebaseObject Firebase::sendRequest(const char* method, const String& path, const String& value) {
   String url = makeURL(path);
   _http.begin(_host.c_str(), firebasePort, url.c_str(), true, firebaseFingerprint);
   int statusCode = _http.sendRequest(method, (uint8_t*)value.c_str(), value.length());
   if (statusCode < 0) {
-    _error.set(statusCode,
-	       String(method) + " " + url + ": "
-	       + HTTPClient::errorToString(statusCode));
-    return;
+    return FirebaseObject(FirebaseError(statusCode,
+					String(method) + " " + url + ": "
+					+ HTTPClient::errorToString(statusCode)));
   }
   // no _http.end() because of connection reuse.
-  _data = _http.getString();
-  return;
+  return FirebaseObject(_http.getString());
 }
 
 bool Firebase::connected() {
@@ -105,22 +100,12 @@ bool Firebase::available() {
   return _http.getStreamPtr()->available();
 }
 
-Firebase& Firebase::read() {
+FirebaseObject Firebase::read() {
   auto client = _http.getStreamPtr();
-  _event = client->readStringUntil('\n').substring(7);
-  _data = client->readStringUntil('\n').substring(6);
+  String event = client->readStringUntil('\n').substring(7);
+  String data = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
-  Serial.println(_event);
-  Serial.println(_data);
-  return *this;
-}
-
-JsonObject& Firebase::create() {
-  return _json.createObject();
-}
-
-JsonObject& Firebase::json() {
-  _json = StaticJsonBuffer<200>();
-  JsonObject& obj = _json.parseObject((char*)_data.c_str());
-  return obj;
+  FirebaseObject result(data);
+  result.json["event"] = event;
+  return result;
 }

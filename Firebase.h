@@ -26,52 +26,57 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
-// FirebaseError represents a Firebase API error with a code and a
-// message.
-class FirebaseError {
- public:
-  operator bool() const { return _code < 0; }
-  int code() const { return _code; }
-  const String& message() const { return _message; }
-  void reset() { set(0, ""); }
-  void set(int code, const String& message) {
-    _code = code;
-    _message = message;
+// FirebaseError is an error for a given firebase API call.
+struct FirebaseError {
+  FirebaseError() {}
+  FirebaseError(int c, const String& m) : code(c), message(m) {}  
+  FirebaseError(int c, const char* m) : code(c), message(m) {}
+  int code = 0;
+  String message = "";
+  operator bool() const {
+    return code < 0;
   }
- private:
-  int _code = 0;
-  String _message = "";
 };
 
-// Firebase is the connection to firebase.
+// FirebaseObject is a payload or a result for a given firebase API call.
+class FirebaseObject {
+ public:
+  FirebaseObject() : json(_buf.createObject()) {
+  }
+  FirebaseObject(const String& data) : _data(data), json(_buf.parseObject((char*)_data.c_str())) {
+    if (!json.success()) {
+      error = FirebaseError{-1, "error parsing json"};
+    }
+  }
+  FirebaseObject(const FirebaseError& err) : error{err}, json(_buf.createObject()) {
+  }
+ private:
+  StaticJsonBuffer<200> _buf;
+  String _data;
+ public:
+  FirebaseError error;
+  JsonObject& json;
+};
+
+// Firebase is a client for a given firebase host.
 class Firebase {
  public:
   Firebase(const String& host);
   Firebase& auth(const String& auth);
-  const FirebaseError& error() const {
-    return _error;
-  }
-  Firebase& get(const String& path);
-  Firebase& push(const String& path, const String& value);
-  //  Firebase& push(const String& path, const JsonObject& value);  
+  FirebaseObject get(const String& path);
+  FirebaseObject push(const String& path, const FirebaseObject& value);
   bool connected();
-  Firebase& stream(const String& path);
+  FirebaseObject stream(const String& path);
   bool available();
-  Firebase& read();
-  JsonObject& create();
-  const String& event() const { return _event; };
-  const String& data() const { return _data; }
-  JsonObject& json();
+  FirebaseObject read();
+  FirebaseObject create();
  private:
   String makeURL(const String& path);
-  void sendRequest(const char* method, const String& path, const String& value = "");
+  FirebaseObject sendRequest(const char* method, const String& path, const String& value = "");
   HTTPClient _http;
   String _host;
   String _auth;
-  FirebaseError _error;
-  String _event;
-  String _data;
-  StaticJsonBuffer<200> _json;
 };
+
 
 #endif // firebase_h

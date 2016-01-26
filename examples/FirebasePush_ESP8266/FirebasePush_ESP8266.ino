@@ -20,7 +20,7 @@
 #include <Firebase.h>
 
 // create firebase client.
-Firebase fbase = Firebase("example.firebaseio.com")
+Firebase fbase = Firebase("firebase-arduino-example.firebaseio-demo.com")
                      .auth("secret_or_token");
 
 void setup() {
@@ -38,17 +38,19 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   // add a new entry.
-  fbase.push("/logs", "{\".sv\": \"timestamp\"}");
+  FirebaseObject obj = fbase.create();
+  obj.json[".sv"] = "timestamp";
+  FirebaseObject result = fbase.push("/logs", obj);
+
   // handle error.
-  if (fbase.error()) {
-      Serial.println("Firebase request failed");
-      Serial.println(fbase.error().message());
+  if (result.error) {
+      Serial.print("firebase request failed: ");
+      Serial.println(result.error);
       return;
   }
-  // print response.
-  Serial.println(fbase.data());
-  // print all entries.
-  Serial.println(fbase.get("/logs").data());
+  
+  // print result.
+  Serial.println(result.json["name"]);
 }
 
 void loop() {

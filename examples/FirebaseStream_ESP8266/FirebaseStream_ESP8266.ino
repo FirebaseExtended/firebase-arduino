@@ -48,28 +48,27 @@ void setup() {
 
 
 void loop() {
-  if (fbase.error()) {
-    Serial.println("streaming error");
-    Serial.println(fbase.error().message());
-  }
   if (fbase.available()) {
-     if (fbase.read().event() == "put" {
-       const JsonObject& json = fbase.json();
-       if (!json.success()) {
-        Serial.println("streaming error");
-        return;
-       }
+    FirebaseObject result = fbase.read();
+    if (result.error) {
+      Serial.println("firebase streaming error");
+      Serial.println(result.error);
+      return;
+    }
+    if (result.json["event"] == "put") {
+       String path = result.json["path"];
+       float data = result.json["data"];
        Serial.print("path: ");
-       Serial.println((const char*)json["path"]);     
+       Serial.println(path);     
        Serial.print("data: ");
-       Serial.println((const char*)json["data"]);
-       if (String((const char*)json["path"]) != "/_updated") {   
+       Serial.println(data);
+       if (path != "/_updated") {   
          display.clearDisplay();
          display.setTextSize(2);
          display.setTextColor(WHITE);
          display.setCursor(0,0);
-         display.println((const char*)json["path"]+1);
-         display.println((const char*)json["data"]);
+         display.println(path.c_str()+1);
+         display.println(data);
          display.display();
        }
      }
