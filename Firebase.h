@@ -30,6 +30,27 @@
 class FirebaseCall;
 class FirebaseEventStream;
 
+class FirebaseConnection {
+ public:
+  FirebaseConnection(const String& host);
+  FirebaseConnection& auth(const String& auth);
+
+  // Returns true if call with call_id owns the connection.
+  bool isOwner(int call_id);
+  void setOwner(int call_id);
+
+  int sendRequest(const char* method, const String& path, const String& value);
+  String getString();
+ private:
+  void drainResponseBuffer();
+
+  int owning_call_id_ = 0;
+  int remaining_call_buffer_ = 0;
+  HTTPClient http_;
+  String host_;
+  String auth_;
+};
+
 // Primary client to the Firebase backend.
 class Firebase {
  public:
@@ -49,21 +70,21 @@ class Firebase {
   // Starts a stream of events that effect object at "path".
   FirebaseEventStream stream(const String& path);
 
+  Firebase(const Firebase&) = delete;
+  Firebase& operator=(const Firebase&) = delete;
  private:
-  HTTPClient http_;
-  String host_;
-  String auth_;
+  int current_call_id_ = 0;
+  std::unique_ptr<FirebaseConnection> connection_;
 };
 
 class FirebaseCall {
  public:
-  FirebaseCall(const String& host, const String& auth,
-               const char* method, const String& path, const String& value,
-               HTTPClient* http);
-  FirebaseCall(const String& host, const String& auth,
-               const char* method, const String& path,
-               HTTPClient* http);
+  static const int kStatusNotConnectionOwner = -1000;
 
+  FirebaseCall(const char* method, const String& path, const String& value, int call_id,
+               FirebaseConnection* connection);
+  FirebaseCall(const char* method, const String& path, int call_id,
+               FirebaseConnection* connection);
 
   // True if there was an error completing call.
   bool isError() const;
@@ -81,10 +102,11 @@ class FirebaseCall {
   }
 
  private:
-  FirebaseCall(HTTPClient* http);
+  void setErrorNotOwner();
 
-  HTTPClient* http_;
+  FirebaseConnection* connection_;
 
+  int call_id_;
   int status_;
   String error_message_;
 };

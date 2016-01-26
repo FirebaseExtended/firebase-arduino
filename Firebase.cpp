@@ -33,48 +33,101 @@ String makeUrl(const String& path, const String& auth) {
 
 }  // namespace
 
-Firebase::Firebase(const String& host) : host_(host) {
-  http_.setReuse(true);
+Firebase::Firebase(const String& host) {
+  connection_.reset(new FirebaseConnection(host));
 }
 
 Firebase& Firebase::auth(const String& auth) {
-  auth_ = auth;
+  connection_->auth(auth);
   return *this;
 }
 
 FirebaseCall Firebase::get(const String& path) {
-  return FirebaseCall(host_, auth_, "GET", path, &http_);
+  return FirebaseCall("GET", path, ++current_call_id_, connection_.get());
 }
 
 FirebaseCall Firebase::push(const String& path, const String& value) {
-  return FirebaseCall(host_, auth_, "POST", path, value, &http_);
+  return FirebaseCall("POST", path, value, ++current_call_id_, connection_.get());
 }
 
 FirebaseCall Firebase::remove(const String& path) {
-  return FirebaseCall(host_, auth_, "DELETE", path, &http_);
+  return FirebaseCall("DELETE", path, ++current_call_id_, connection_.get());
 }
-
+/*
 FirebaseEventStream Firebase::stream(const String& path) {
   return FirebaseEventStream(host_, auth_, path);
+}*/
+
+/* FirebaseConnection */
+FirebaseConnection::FirebaseConnection(const String& host) : host_(host) {
+  http_.setReuse(true);
+}
+
+FirebaseConnection& FirebaseConnection::auth(const String& auth) {
+  auth_ = auth;
+  return *this;
+}
+
+int FirebaseConnection::sendRequest(const char* method, const String& path, const String& value) {
+  const String url = makeUrl(path, auth_);
+  http_.begin(host_.c_str(), kFirebasePort, url.c_str(), true, kFirebaseFingerprint);
+  int status = http_.sendRequest(method, (uint8_t*)value.c_str(), value.length());
+  if (status == HTTP_CODE_OK) {
+    remaining_call_buffer_ = http_.getSize();
+  }
+  return status;
+}
+
+String FirebaseConnection::getString() {
+  remaining_call_buffer_ = 0;
+  return http_.getString();
+}
+
+bool FirebaseConnection::isOwner(int call_id) {
+  return owning_call_id_ == call_id;
+}
+
+void FirebaseConnection::setOwner(int call_id) {
+  owning_call_id_ = call_id;
+  drainResponseBuffer();
+}
+
+void FirebaseConnection::drainResponseBuffer() {
+  auto* stream = http_.getStreamPtr();
+  Serial.println("Available ");
+  Serial.println(stream->available());
+
+
+  const int buffer_size = 128;
+  uint8_t buffer[buffer_size];
+  int read = 0;
+  int to_read = (buffer_size < remaining_call_buffer_) ? buffer_size : remaining_call_buffer_;
+  //TODO(edcoyne) This only reads what is available. Is this sufficient or should we wait?
+  while (remaining_call_buffer_ > 0 && (read = stream->read(buffer, to_read) > 0)) {
+    Serial.println("Draining ");
+    Serial.println(remaining_call_buffer_);
+    remaining_call_buffer_ -= read;
+    to_read = (buffer_size < remaining_call_buffer_) ? buffer_size : remaining_call_buffer_;
+  }
+  Serial.println("Done draining ");
+  Serial.println(remaining_call_buffer_);
 }
 
 /* FirebaseCall */
 
-FirebaseCall::FirebaseCall(const String& host, const String& auth,
-                           const char* method, const String& path, const String& value,
-                           HTTPClient* http) : http_(http) {
-  const String url = makeUrl(path, auth);
-  http_->begin(host.c_str(), kFirebasePort, url.c_str(), true, kFirebaseFingerprint);
-  status_ =  http_->sendRequest(method, (uint8_t*)value.c_str(), value.length());
+FirebaseCall::FirebaseCall(const char* method, const String& path, const String& value,
+                           int call_id, FirebaseConnection* connection) 
+  : connection_(connection), call_id_(call_id) {
+  connection_->setOwner(call_id);
+  status_ = connection_->sendRequest(method, path, value);
   if (isError()) {
-    error_message_ = String(method) + " " + url + ": " + HTTPClient::errorToString(status_);
+    error_message_ = String(method) + " " + path + ": " + HTTPClient::errorToString(status_);
   }
 }
 
-FirebaseCall::FirebaseCall(const String& host, const String& auth,
-                           const char* method, const String& path,
-                           HTTPClient* http) : FirebaseCall(host, auth, method, path, "", http) {
-}
+FirebaseCall::FirebaseCall(const char* method, const String& path, int call_id,
+                           FirebaseConnection* connection)
+    : FirebaseCall(method, path, "", call_id, connection) {}
 
 bool FirebaseCall::isOk() const {
   return status_ == HTTP_CODE_OK;
@@ -89,7 +142,16 @@ String FirebaseCall::errorMessage() const {
 }
 
 String FirebaseCall::rawResponse() {
-  return http_->getString();
+  if (!connection_->isOwner(call_id_)) {
+    setErrorNotOwner();
+    return "";
+  }
+  return connection_->getString();
+}
+
+void FirebaseCall::setErrorNotOwner() {
+  status_ = kStatusNotConnectionOwner;
+  error_message_ = "Connection no longer owns connection";
 }
 
 /* FirebaseEventStream */
