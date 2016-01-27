@@ -39,18 +39,18 @@ void setup() {
 
   // add a new entry.
   FirebaseObject obj = fbase.create();
-  obj.json[".sv"] = "timestamp";
+  obj[".sv"] = "timestamp";
   FirebaseObject result = fbase.push("/logs", obj);
 
   // handle error.
-  if (result.error) {
+  if (result.error()) {
       Serial.print("firebase request failed: ");
-      Serial.println(result.error);
+      Serial.println(result.error());
       return;
   }
   
   // print result.
-  Serial.println(result.json["name"]);
+  Serial.println(result["name"]);
 }
 
 void loop() {

@@ -37,7 +37,7 @@ FirebaseObject Firebase::get(const String& path) {
 
 FirebaseObject Firebase::push(const String& path, const FirebaseObject& value) {
   char buffer[256];
-  value.json.printTo(buffer, sizeof(buffer));
+  value.printTo(buffer, sizeof(buffer));
   return sendRequest("POST", path, buffer);
 }
 
@@ -106,6 +106,6 @@ FirebaseObject Firebase::read() {
   String data = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
   FirebaseObject result(data);
-  result.json["event"] = event;
+  result["event"] = event;
   return result;
 }

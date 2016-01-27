@@ -41,21 +41,29 @@ struct FirebaseError {
 // FirebaseObject is a payload or a result for a given firebase API call.
 class FirebaseObject {
  public:
-  FirebaseObject() : json(_buf.createObject()) {
+  FirebaseObject() : _json(_buf.createObject()) {
   }
-  FirebaseObject(const String& data) : _data(data), json(_buf.parseObject((char*)_data.c_str())) {
-    if (!json.success()) {
-      error = FirebaseError{-1, "error parsing json"};
+  FirebaseObject(const FirebaseObject& obj) : FirebaseObject(obj._data) {
+  }
+  FirebaseObject(const String& data) : _data(data), _json(_buf.parseObject((char*)_data.c_str())) {
+    if (!_json.success()) {
+      _error = FirebaseError{-1, "error parsing json"};
     }
   }
-  FirebaseObject(const FirebaseError& err) : error{err}, json(_buf.createObject()) {
+  FirebaseObject(const FirebaseError& err) : _error{err}, _json(_buf.createObject()) {
+  }
+  const FirebaseError& error() { return _error; }
+  JsonObjectSubscript<const char*> operator[](const char* key) {
+    return _json[key];
+  }
+  size_t printTo(char *buffer, size_t bufferSize) const {
+    return _json.printTo(buffer, bufferSize);
   }
  private:
-  StaticJsonBuffer<200> _buf;
+  FirebaseError _error;
   String _data;
- public:
-  FirebaseError error;
-  JsonObject& json;
+  StaticJsonBuffer<200> _buf;
+  JsonObject& _json;
 };
 
 // Firebase is a client for a given firebase host.
