@@ -36,8 +36,7 @@ class Firebase {
   Firebase(const String& host);
   Firebase& auth(const String& auth);
 
-  // Fetch result at "path" to a local variable. If the value is too large you will exceed
-  // local memory.
+  // Fetch result at "path".
   FirebaseGetResult get(const String& path);
 
   // Add new value to list at "path", will return child name of new item.
@@ -58,8 +57,7 @@ class Firebase {
   String auth_;
 };
 
-
-// Result from a Firebase call.
+// Base class for Results from a Firebase call.
 class FirebaseResult {
  public:
   // Constructor for error result.
@@ -144,8 +142,6 @@ class FirebaseEventStream {
     PUT,
     PATCH
   };
-
-  FirebaseEventStream(const String& host, const String& auth, const String& path);
 
   // Read next event in stream.
   Event read(String& event);
