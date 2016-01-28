@@ -46,10 +46,10 @@ void setup() {
 
 
 void loop() {  
-  static FirebaseEventStream stream = fbase.stream("/bitcoin");
-  if (!stream) {
+  static FirebaseStream stream = fbase.stream("/bitcoin");
+  if (!stream.error()) {
     Serial.println("streaming error");
-    Serial.println(stream.errorMessage());
+    Serial.println(stream.error().message());
   }
   
   if (stream.available()) {
@@ -57,7 +57,7 @@ void loop() {
      auto type = stream.read(event);
      Serial.print("event: ");
      Serial.println(type);
-     if (type != FirebaseEventStream::Event::UNKNOWN) {
+     if (type != FirebaseEvent::Event::UNKNOWN) {
        Serial.print("data: ");
        Serial.println(event);
      
