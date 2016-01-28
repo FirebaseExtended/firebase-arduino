@@ -25,9 +25,9 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
 
-//TODO(edcoyne) split these into multiple files.
-
-class FirebaseCall;
+class FirebaseGetResult;
+class FirebasePushResult;
+class FirebaseRemoveResult;
 class FirebaseEventStream;
 
 // Primary client to the Firebase backend.
@@ -38,55 +38,103 @@ class Firebase {
 
   // Fetch result at "path" to a local variable. If the value is too large you will exceed
   // local memory.
-  FirebaseCall get(const String& path);
+  FirebaseGetResult get(const String& path);
 
   // Add new value to list at "path", will return child name of new item.
-  FirebaseCall push(const String& path, const String& value);
+  FirebasePushResult push(const String& path, const String& value);
 
   // Deletes value at "path" from server.
-  FirebaseCall remove(const String& path);
+  FirebaseRemoveResult remove(const String& path);
 
   // Starts a stream of events that effect object at "path".
   FirebaseEventStream stream(const String& path);
 
  private:
+
+  int sendRequest(const char* method, const String& path, const String& value);
+
   HTTPClient http_;
   String host_;
   String auth_;
 };
 
-class FirebaseCall {
+
+// Result from a Firebase call.
+class FirebaseResult {
  public:
-  FirebaseCall(const String& host, const String& auth,
-               const char* method, const String& path, const String& value,
-               HTTPClient* http);
-  FirebaseCall(const String& host, const String& auth,
-               const char* method, const String& path,
-               HTTPClient* http);
+  // Constructor for error result.
+  FirebaseResult(const String& error_message);
+  // Constructor if no error.
+  FirebaseResult();
 
+  // True if no error.
+  operator bool() const;
 
-  // True if there was an error completing call.
   bool isError() const;
-  String errorMessage() const;
 
-  // True if http status code is 200(OK).
-  bool isOk() const;
+  const String& errorMessage() const;
 
-  // Message sent back from Firebase backend. This pulls value to local memory,
-  // be careful if value can be large.
-  String rawResponse();
+ private:
+  bool is_error_ = false;
+  String error_message_;
+};
 
-  int httpStatus() const {
-    return status_;
+class FirebaseRemoveResult : public FirebaseResult {
+ public:
+  static FirebaseRemoveResult FromError(const String& error_message) {
+    return FirebaseRemoveResult(error_message);
+  }
+
+  static FirebaseRemoveResult Ok() {
+    return FirebaseRemoveResult();
   }
 
  private:
-  FirebaseCall(HTTPClient* http);
+  FirebaseRemoveResult(const String& error_message);
+  FirebaseRemoveResult();
+};
 
-  HTTPClient* http_;
+class FirebasePushResult : public FirebaseResult {
+ public:
+  static FirebasePushResult FromError(const String& error_message) {
+    return FirebasePushResult(error_message);
+  }
 
-  int status_;
-  String error_message_;
+  static FirebasePushResult FromResponse(const String& response) {
+    FirebasePushResult result;
+    // TODO(edcoyne): add json parsing to get name object.
+    result.name_ = response;
+    return result;
+  }
+
+  const String& name() const;
+
+ private:
+  FirebasePushResult(const String& error_message);
+  FirebasePushResult();
+
+  String name_;
+};
+
+class FirebaseGetResult : public FirebaseResult {
+ public:
+  static FirebaseGetResult FromError(const String& error_message) {
+    return FirebaseGetResult(error_message);
+  }
+
+  static FirebaseGetResult FromResponse(const String& response) {
+    FirebaseGetResult result;
+    result.response_ = response;
+    return result;
+  }
+
+  const String& rawResponse();
+
+ private:
+  FirebaseGetResult(const String& error_message);
+  FirebaseGetResult();
+
+  String response_;
 };
 
 class FirebaseEventStream {
@@ -107,6 +155,9 @@ class FirebaseEventStream {
 
   // True if there is an event available.
   bool available();
+
+  // True if no error and stream is connected.
+  operator bool();
 
   // True if there was an error.
   bool isError() const;

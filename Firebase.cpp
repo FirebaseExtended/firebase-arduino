@@ -31,6 +31,40 @@ String makeUrl(const String& path, const String& auth) {
   return url;
 }
 
+class FirebaseCall {
+ public:
+  FirebaseCall(const String& host, const String& auth,
+               const char* method, const String& path, const String& value,
+               HTTPClient* http);
+  FirebaseCall(const String& host, const String& auth,
+               const char* method, const String& path,
+               HTTPClient* http);
+
+
+  // True if there was an error completing call.
+  bool isError() const;
+  String errorMessage() const;
+
+  // True if http status code is 200(OK).
+  bool isOk() const;
+
+  // Message sent back from Firebase backend. This pulls value to local memory,
+  // be careful if value can be large.
+  String rawResponse();
+
+  int httpStatus() const {
+    return status_;
+  }
+
+ private:
+  FirebaseCall(HTTPClient* http);
+
+  HTTPClient* http_;
+
+  int status_;
+  String error_message_;
+};
+
 }  // namespace
 
 Firebase::Firebase(const String& host) : host_(host) {
@@ -42,16 +76,29 @@ Firebase& Firebase::auth(const String& auth) {
   return *this;
 }
 
-FirebaseCall Firebase::get(const String& path) {
-  return FirebaseCall(host_, auth_, "GET", path, &http_);
+FirebaseGetResult Firebase::get(const String& path) {
+  FirebaseCall call(host_, auth_, "GET", path, &http_);
+  return call.isError() ? FirebaseGetResult::FromError(call.errorMessage())
+      : FirebaseGetResult::FromResponse(call.rawResponse());
 }
 
-FirebaseCall Firebase::push(const String& path, const String& value) {
-  return FirebaseCall(host_, auth_, "POST", path, value, &http_);
+FirebasePushResult Firebase::push(const String& path, const String& value) {
+  FirebaseCall call(host_, auth_, "POST", path, value, &http_);
+  return call.isError() ? FirebasePushResult::FromError(call.errorMessage())
+      : FirebasePushResult::FromResponse(call.rawResponse());
 }
 
-FirebaseCall Firebase::remove(const String& path) {
-  return FirebaseCall(host_, auth_, "DELETE", path, &http_);
+FirebaseRemoveResult Firebase::remove(const String& path) {
+  FirebaseCall call(host_, auth_, "DELETE", path, &http_);
+  if (call.isError()) {
+    return FirebaseRemoveResult::FromError(call.errorMessage());
+  }
+  // Remove is only complete if returned status is OK(200).
+  if (!call.isOk()) {
+    return FirebaseRemoveResult::FromError(
+        "Remove " + path + " returned with status " + call.httpStatus());
+  }
+  return FirebaseRemoveResult::Ok();
 }
 
 FirebaseEventStream Firebase::stream(const String& path) {
@@ -59,7 +106,6 @@ FirebaseEventStream Firebase::stream(const String& path) {
 }
 
 /* FirebaseCall */
-
 FirebaseCall::FirebaseCall(const String& host, const String& auth,
                            const char* method, const String& path, const String& value,
                            HTTPClient* http) : http_(http) {
@@ -154,4 +200,56 @@ String FirebaseEventStream::errorMessage() const {
   return error_message_;
 }
 
+FirebaseEventStream::operator bool() {
+  return !isError() && connected();
+}
+
+/* FirebaseResult */
+
+FirebaseResult::FirebaseResult(const String& error_message)
+  : is_error_(true), error_message_(error_message) {}
+
+FirebaseResult::FirebaseResult() {}
+
+FirebaseResult::operator bool() const {
+  return !isError();
+}
+
+bool FirebaseResult::isError() const {
+  return is_error_;
+}
+
+const String& FirebaseResult::errorMessage() const {
+  return error_message_;
+}
+
+/* FirebaseRemoveResult */
+
+FirebaseRemoveResult::FirebaseRemoveResult(const String& error_message)
+  : FirebaseResult(error_message) {}
+
+FirebaseRemoveResult::FirebaseRemoveResult() {}
+
+
+/* FirebasePushResult */
+
+FirebasePushResult::FirebasePushResult(const String& error_message)
+  : FirebaseResult(error_message) {}
+
+FirebasePushResult::FirebasePushResult() {}
+
+const String& FirebasePushResult::name() const {
+  return name_;
+}
+
+/* FirebaseGetResult */
+
+FirebaseGetResult::FirebaseGetResult(const String& error_message)
+  : FirebaseResult(error_message) {}
+
+FirebaseGetResult::FirebaseGetResult() {}
+
+const String& FirebaseGetResult::rawResponse() {
+  return response_;
+}
 
