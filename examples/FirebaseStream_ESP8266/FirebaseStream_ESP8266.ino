@@ -24,7 +24,8 @@
 #define OLED_RESET 10
 Adafruit_SSD1306 display(OLED_RESET);
 
-Firebase fbase = Firebase("publicdata-cryptocurrency.firebaseio.com");
+Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
+FirebaseStream stream;
 
 void setup() {
   Serial.begin(9600);
@@ -42,11 +43,11 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
+  stream = fbase.stream("/bitcoin");  
 }
 
 
 void loop() {  
-  static FirebaseStream stream = fbase.stream("/bitcoin");
   if (!stream.error()) {
     Serial.println("streaming error");
     Serial.println(stream.error().message());
@@ -57,7 +58,7 @@ void loop() {
      auto type = stream.read(event);
      Serial.print("event: ");
      Serial.println(type);
-     if (type != FirebaseEvent::Event::UNKNOWN) {
+     if (type != FirebaseStream::Event::UNKNOWN) {
        Serial.print("data: ");
        Serial.println(event);
      

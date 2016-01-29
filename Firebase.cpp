@@ -55,44 +55,41 @@ FirebaseRemove Firebase::remove(const String& path) {
 }
 
 FirebaseStream Firebase::stream(const String& path) {
-  return FirebaseStream(host_, auth_, path);  // stream doesn't reuse http client.
+  // TODO: create new client dedicated to stream.
+  return FirebaseStream(host_, auth_, path, &http_);
 }
 
 // FirebaseCall
 FirebaseCall::FirebaseCall(const String& host, const String& auth,
 			   const char* method, const String& path,
-			   const String& data, HTTPClient* http) {
-  if (!http) {
-    http = &http_;
-  }
-
+			   const String& data, HTTPClient* http) : http_(http) {
   String url = makeFirebaseURL(path, auth);
-  http->setReuse(true);
-  http->begin(host, kFirebasePort, url, true, kFirebaseFingerprint);
+  http_->setReuse(true);
+  http_->begin(host, kFirebasePort, url, true, kFirebaseFingerprint);
 
   bool followRedirect = false;
   if (method == "STREAM") {
     method = "GET";
-    http->addHeader("Accept", "text/event-stream");    
+    http_->addHeader("Accept", "text/event-stream");    
     followRedirect = true;
   }
 
   if (followRedirect) {
     const char* headers[] = {"Location"};
-    http->collectHeaders(headers, 1);
+    http_->collectHeaders(headers, 1);
   }
   
-  int status = http->sendRequest(method, (uint8_t*)data.c_str(), data.length());
+  int status = http_->sendRequest(method, (uint8_t*)data.c_str(), data.length());
 
   // TODO: Add a max redirect check
   if (followRedirect) {
     while (status == HTTP_CODE_TEMPORARY_REDIRECT) {
-      String location = http->header("Location");
-      http->setReuse(false);
-      http->end();
-      http->setReuse(true);
-      http->begin(location, kFirebaseFingerprint);
-      status = http->sendRequest(method, (uint8_t*)NULL, 0);
+      String location = http_->header("Location");
+      http_->setReuse(false);
+      http_->end();
+      http_->setReuse(true);
+      http_->begin(location, kFirebaseFingerprint);
+      status = http_->sendRequest("GET", (uint8_t*)NULL, 0);
     }
   }
 
@@ -102,7 +99,7 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
 
   // if not streaming.
   if (!followRedirect) {
-    response_ = http->getString();
+    response_ = http_->getString();
   }
 }
 
@@ -138,16 +135,17 @@ FirebaseRemove::FirebaseRemove(const String& host, const String& auth,
 
 // FirebaseStream
 FirebaseStream::FirebaseStream(const String& host, const String& auth,
-			       const String& path)
-  : FirebaseCall(host, auth, "STREAM", path) {
+			       const String& path,
+			       HTTPClient* http)
+  : FirebaseCall(host, auth, "STREAM", path, "", http) {
 }
 
 bool FirebaseStream::available() {
-  return http_.getStreamPtr()->available();
+  return http_->getStreamPtr()->available();
 }
 
 FirebaseStream::Event FirebaseStream::read(String& event) {
-  auto client = http_.getStreamPtr();
+  auto client = http_->getStreamPtr();
   Event type;
   String typeStr = client->readStringUntil('\n').substring(7);
   if (typeStr == "put") {
