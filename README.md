@@ -1,5 +1,7 @@
 # firebase-arduino
 
+[![Join the chat at https://gitter.im/googlesamples/firebase-arduino](https://badges.gitter.im/googlesamples/firebase-arduino.svg)](https://gitter.im/googlesamples/firebase-arduino?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This sample shows how to call [Firebase](https://www.firebase.com/) from the [ESP8266 Arduino core](https://github.com/esp8266/Arduino).
 
 ## Requirements

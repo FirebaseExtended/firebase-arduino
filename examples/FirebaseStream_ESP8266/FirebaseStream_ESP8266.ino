@@ -48,7 +48,7 @@ void setup() {
 
 
 void loop() {  
-  if (!stream.error()) {
+  if (stream.error()) {
     Serial.println("streaming error");
     Serial.println(stream.error().message());
   }
