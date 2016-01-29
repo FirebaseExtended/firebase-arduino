@@ -25,56 +25,129 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
 
-// FirebaseError represents a Firebase API error with a code and a
-// message.
-class FirebaseError {
- public:
-  operator bool() const { return _code < 0; }
-  int code() const { return _code; }
-  const String& message() const { return _message; }
-  void reset() { set(0, ""); }
-  void set(int code, const String& message) {
-    _code = code;
-    _message = message;
-  }
- private:
-  int _code = 0;
-  String _message = "";
-};
+class FirebaseGet;
+class FirebasePush;
+class FirebaseRemove;
+class FirebaseStream;
 
-// Firebase is the connection to firebase.
+// Primary client to the Firebase backend.
 class Firebase {
  public:
   Firebase(const String& host);
   Firebase& auth(const String& auth);
+
+  // Fetch result at "path".
+  FirebaseGet get(const String& path);
+
+  // Add new value to list at "path", will return key for the new item.
+  FirebasePush push(const String& path, const String& value);
+
+  // Deletes value at "path" from firebase.
+  FirebaseRemove remove(const String& path);
+
+  // Starts a stream of events that affect object at "path".
+  // TODO: fix FirebaseStream lifecycle
+  //       https://github.com/esp8266/Arduino/issues/500
+  FirebaseStream stream(const String& path);
+
+ private:
+  HTTPClient http_;
+  String host_;
+  String auth_;
+};
+
+class FirebaseError {
+ public:
+  FirebaseError() {}
+  FirebaseError(int code, const String& message) : code_(code), message_(message) {
+  }  
+  operator bool() const { return code_ != 0; }
+  int code() const { return code_; }
+  const String& message() const { return message_; }
+ private:  
+  int code_ = 0;
+  String message_ = "";
+};
+
+class FirebaseCall {
+ public:
+  FirebaseCall() {}
+  FirebaseCall(const String& host, const String& auth,
+	       const char* method, const String& path,
+	       const String& data = "",	       
+	       HTTPClient* http = NULL);
   const FirebaseError& error() const {
-    return _error;
+    return error_;
   }
-  String get(const String& path);
-  // write a new JSON `value` to the given `path`.
-  // Note: A String `value` must include double quotes to be valid json.
-  String set(const String& path, const String& value);
-  // append a new JSON `value` to the given `path`.
-  // Note: A String `value` must include double quotes to be valid json.
-  String push(const String& path, const String& value);
-  void remove(const String& path);
-  bool connected();
-  Firebase& stream(const String& path);
+  const String& response() {
+    return response_;
+  }
+ protected:
+  HTTPClient* http_;
+  FirebaseError error_;
+  String response_;
+};
+
+class FirebaseGet : public FirebaseCall {
+ public:
+  FirebaseGet() {}
+  FirebaseGet(const String& host, const String& auth,
+	      const String& path, HTTPClient* http = NULL);
+  
+  const String& json() const {
+    return json_;
+  }
+
+ private:
+  String json_;
+};
+
+class FirebasePush : public FirebaseCall {
+ public:
+  FirebasePush() {}
+  FirebasePush(const String& host, const String& auth,
+	       const String& path, const String& value, HTTPClient* http = NULL);
+
+  const String& name() const {
+    return name_;
+  }
+
+ private:
+  String name_;
+};
+
+class FirebaseRemove : public FirebaseCall {
+ public:
+  FirebaseRemove() {}
+  FirebaseRemove(const String& host, const String& auth,
+		 const String& path, HTTPClient* http = NULL);
+};
+
+
+class FirebaseStream : public FirebaseCall {
+ public:
+  FirebaseStream() {}
+  FirebaseStream(const String& host, const String& auth,
+		 const String& path, HTTPClient* http = NULL);
+  
+  // True if there is an event available.
   bool available();
+
+  // event type.
   enum Event {
     UNKNOWN,
     PUT,
     PATCH
   };
-  Event read(String& event);
- private:
-  String makeURL(const String& path);
-  void sendRequest(const char* method, const String& path, const String& value = "");
-  String readBody();
 
-  HTTPClient _http;
-  String _host;
-  String _auth;
+  // Read next event in stream.
+  Event read(String& event);  
+
+  const FirebaseError& error() const {
+    return _error;
+  }
+  
+ private:
   FirebaseError _error;
 };
 
