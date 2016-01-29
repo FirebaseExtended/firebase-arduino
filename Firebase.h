@@ -46,6 +46,8 @@ class Firebase {
   FirebaseRemove remove(const String& path);
 
   // Starts a stream of events that affect object at "path".
+  // TODO: fix FirebaseStream lifecycle
+  //       https://github.com/esp8266/Arduino/issues/500
   FirebaseStream stream(const String& path);
 
  private:
@@ -69,6 +71,7 @@ class FirebaseError {
 
 class FirebaseCall {
  public:
+  FirebaseCall() {}
   FirebaseCall(const String& host, const String& auth,
 	       const char* method, const String& path,
 	       const String& data = "",	       
@@ -80,13 +83,14 @@ class FirebaseCall {
     return response_;
   }
  protected:
-  HTTPClient http_;
+  HTTPClient* http_;
   FirebaseError error_;
   String response_;
 };
 
 class FirebaseGet : public FirebaseCall {
  public:
+  FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
 	      const String& path, HTTPClient* http = NULL);
   
@@ -100,6 +104,7 @@ class FirebaseGet : public FirebaseCall {
 
 class FirebasePush : public FirebaseCall {
  public:
+  FirebasePush() {}
   FirebasePush(const String& host, const String& auth,
 	       const String& path, const String& value, HTTPClient* http = NULL);
 
@@ -113,6 +118,7 @@ class FirebasePush : public FirebaseCall {
 
 class FirebaseRemove : public FirebaseCall {
  public:
+  FirebaseRemove() {}
   FirebaseRemove(const String& host, const String& auth,
 		 const String& path, HTTPClient* http = NULL);
 };
@@ -120,8 +126,9 @@ class FirebaseRemove : public FirebaseCall {
 
 class FirebaseStream : public FirebaseCall {
  public:
+  FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
-		 const String &path);
+		 const String& path, HTTPClient* http = NULL);
   
   // True if there is an event available.
   bool available();
@@ -141,7 +148,6 @@ class FirebaseStream : public FirebaseCall {
   }
   
  private:
-  HTTPClient http_;
   FirebaseError _error;
 };
 
