@@ -46,6 +46,10 @@ FirebaseGet Firebase::get(const String& path) {
   return FirebaseGet(host_, auth_, path, &http_);
 }
 
+FirebaseSet Firebase::set(const String& path, const String& value) {
+  return FirebaseSet(host_, auth_, path, value, &http_);
+}
+
 FirebasePush Firebase::push(const String& path, const String& value) {
   return FirebasePush(host_, auth_, path, value, &http_);
 }
@@ -115,6 +119,17 @@ FirebaseGet::FirebaseGet(const String& host, const String& auth,
   }
 }
 
+// FirebaseSet
+FirebaseSet::FirebaseSet(const String& host, const String& auth,
+			 const String& path, const String& value,
+			 HTTPClient* http)
+  : FirebaseCall(host, auth, "PUT", path, value, http) {
+
+  if (!error()) {
+    // TODO: parse json
+    json_ = response();
+  }
+}
 // FirebasePush
 FirebasePush::FirebasePush(const String& host, const String& auth,
 			   const String& path, const String& value,

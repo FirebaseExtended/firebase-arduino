@@ -26,28 +26,30 @@
 #include <ESP8266HTTPClient.h>
 
 class FirebaseGet;
+class FirebaseSet;
 class FirebasePush;
 class FirebaseRemove;
 class FirebaseStream;
 
-// Primary client to the Firebase backend.
+// Firebase REST API client.
 class Firebase {
  public:
   Firebase(const String& host);
   Firebase& auth(const String& auth);
 
-  // Fetch result at "path".
+  // Fetch value at "path".
   FirebaseGet get(const String& path);
 
-  // Add new value to list at "path", will return key for the new item.
+  // Set value at "path".
+  FirebaseSet set(const String& path, const String& value);
+
+  // Add new value to list at "path".
   FirebasePush push(const String& path, const String& value);
 
-  // Deletes value at "path" from firebase.
+  // Delete value at "path".
   FirebaseRemove remove(const String& path);
 
-  // Starts a stream of events that affect object at "path".
-  // TODO: fix FirebaseStream lifecycle
-  //       https://github.com/esp8266/Arduino/issues/500
+  // Start a stream of events that affect value at "path".
   FirebaseStream stream(const String& path);
 
  private:
@@ -102,6 +104,20 @@ class FirebaseGet : public FirebaseCall {
   String json_;
 };
 
+class FirebaseSet: public FirebaseCall {
+ public:
+  FirebaseSet() {}
+  FirebaseSet(const String& host, const String& auth,
+	      const String& path, const String& value, HTTPClient* http = NULL);
+
+  const String& json() const {
+    return json_;
+  }
+
+ private:
+  String json_;
+};
+
 class FirebasePush : public FirebaseCall {
  public:
   FirebasePush() {}
@@ -130,17 +146,17 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream(const String& host, const String& auth,
 		 const String& path, HTTPClient* http = NULL);
   
-  // True if there is an event available.
+  // Return if there is events available to read.
   bool available();
 
-  // event type.
+  // Event type.
   enum Event {
     UNKNOWN,
     PUT,
     PATCH
   };
 
-  // Read next event in stream.
+  // Read next event from the stream.
   Event read(String& event);  
 
   const FirebaseError& error() const {
