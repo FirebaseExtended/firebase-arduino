@@ -37,19 +37,19 @@ class Firebase {
   Firebase(const String& host);
   Firebase& auth(const String& auth);
 
-  // Fetch value at "path".
+  // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);
 
-  // Set value at "path".
-  FirebaseSet set(const String& path, const String& value);
+  // Set json encoded `value` at `path`.
+  FirebaseSet set(const String& path, const String& json);
 
-  // Add new value to list at "path".
-  FirebasePush push(const String& path, const String& value);
+  // Add new json encoded `value` to list at `path`.
+  FirebasePush push(const String& path, const String& json);
 
-  // Delete value at "path".
+  // Delete value at `path`.
   FirebaseRemove remove(const String& path);
 
-  // Start a stream of events that affect value at "path".
+  // Start a stream of events that affect value at `path`.
   FirebaseStream stream(const String& path);
 
  private:
@@ -146,7 +146,7 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream(const String& host, const String& auth,
 		 const String& path, HTTPClient* http = NULL);
   
-  // Return if there is events available to read.
+  // Return if there is any event available to read.
   bool available();
 
   // Event type.
@@ -156,7 +156,7 @@ class FirebaseStream : public FirebaseCall {
     PATCH
   };
 
-  // Read next event from the stream.
+  // Read next json encoded `event` from stream.
   Event read(String& event);  
 
   const FirebaseError& error() const {
