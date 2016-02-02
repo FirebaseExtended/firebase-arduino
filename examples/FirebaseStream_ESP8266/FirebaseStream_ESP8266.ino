@@ -20,6 +20,7 @@
 #include <Firebase.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <ArduinoJson.h>
 
 #define OLED_RESET 10
 Adafruit_SSD1306 display(OLED_RESET);
@@ -47,7 +48,7 @@ void setup() {
 }
 
 
-void loop() {  
+void loop() {
   if (stream.error()) {
     Serial.println("streaming error");
     Serial.println(stream.error().message());
@@ -58,16 +59,21 @@ void loop() {
      auto type = stream.read(event);
      Serial.print("event: ");
      Serial.println(type);
-     if (type != FirebaseStream::Event::UNKNOWN) {
+     if (type == FirebaseStream::Event::PUT) {
+       StaticJsonBuffer<200> buf;
        Serial.print("data: ");
        Serial.println(event);
+       JsonObject& json = buf.parseObject((char*)event.c_str());
+       String path = json["path"];
+       float data = json["data"];       
      
        // TODO(proppy): parse JSON object.
        display.clearDisplay();
-       display.setTextSize(1);
+       display.setTextSize(2);
        display.setTextColor(WHITE);
        display.setCursor(0,0);
-       display.println(event);
+       display.println(path.c_str()+1);
+       display.println(data);
        display.display();
      }
   }   

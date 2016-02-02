@@ -65,8 +65,8 @@ FirebaseStream Firebase::stream(const String& path) {
 
 // FirebaseCall
 FirebaseCall::FirebaseCall(const String& host, const String& auth,
-			   const char* method, const String& path,
-			   const String& data, HTTPClient* http) : http_(http) {
+                           const char* method, const String& path,
+                           const String& data, HTTPClient* http) : http_(http) {
   String url = makeFirebaseURL(path, auth);
   http_->setReuse(true);
   http_->begin(host, kFirebasePort, url, true, kFirebaseFingerprint);
@@ -109,8 +109,8 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
 
 // FirebaseGet
 FirebaseGet::FirebaseGet(const String& host, const String& auth,
-			 const String& path,
-			 HTTPClient* http)
+                         const String& path,
+                         HTTPClient* http)
   : FirebaseCall(host, auth, "GET", path, "", http) {
 
   if (!error()) {
@@ -132,8 +132,8 @@ FirebaseSet::FirebaseSet(const String& host, const String& auth,
 }
 // FirebasePush
 FirebasePush::FirebasePush(const String& host, const String& auth,
-			   const String& path, const String& value,
-			   HTTPClient* http)
+                           const String& path, const String& value,
+                           HTTPClient* http)
   : FirebaseCall(host, auth, "POST", path, value, http) {
   if (!error()) {
     // TODO: parse name
@@ -143,15 +143,15 @@ FirebasePush::FirebasePush(const String& host, const String& auth,
 
 // FirebasePush
 FirebaseRemove::FirebaseRemove(const String& host, const String& auth,
-			       const String& path,
-			       HTTPClient* http)
+                               const String& path,
+                               HTTPClient* http)
   : FirebaseCall(host, auth, "DELETE", path, "", http) {
 }
 
 // FirebaseStream
 FirebaseStream::FirebaseStream(const String& host, const String& auth,
-			       const String& path,
-			       HTTPClient* http)
+                               const String& path,
+                               HTTPClient* http)
   : FirebaseCall(host, auth, "STREAM", path, "", http) {
 }
 
