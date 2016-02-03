@@ -35,7 +35,7 @@ Fetches the value, in json, at $Path and returns it on the serial line.
 ###Usage
 	GET $PATH
 ###Response
-	$SIZE_OF_DATA $DATA
+	$DATA_BYTE_COUNT $DATA
 ###Examples
 	>>GET /user/aturing
 	<<39 { "first" : "Alan", "last" : "Turing" }
@@ -45,7 +45,7 @@ Fetches the value stored $Path and returns it on the serial line. $PATH must poi
 ###Usage
 	GET_VALUE $PATH
 ###Response
-	$SIZE_OF_DATA_IN_BYTES $DATA
+	$DATA_BYTE_COUNT $DATA
 	ERROR_NOT_LEAF_NODE
 ###Examples
 	>>GET_VALUE /user/aturing/first
