@@ -31,29 +31,18 @@ Must be called after creating a Serial connection, it can take either just a hos
 	>> INIT https://samplechat.firebaseio-demo.com nnz...sdf
 	<< OK
 ##GET
-Fetches the value, in json, at $Path and returns it on the serial line.
+Fetches the value at $Path and returns it on the serial line. If $PATH points to a leaf node you will get the raw value back, if it points to an internal node you will get a JSON string with all children.
 ###Usage
 	GET $PATH
 ###Response
 	$DATA_BYTE_COUNT $DATA
-###Examples
-	>>GET /user/aturing
-	<<39 { "first" : "Alan", "last" : "Turing" }
-	
-##GET_VALUE
-Fetches the value stored $Path and returns it on the serial line. $PATH must point to a leaf node in the tree as this call returns one value but does so without json wrapper.
-###Usage
-	GET_VALUE $PATH
-###Response
-	$DATA_BYTE_COUNT $DATA
-	ERROR_NOT_LEAF_NODE
 ###Examples
 	>>GET_VALUE /user/aturing/first
 	<<4 Alan
 	>>GET_VALUE /user/aturing/last
 	<<7 Turing
 	>>GET_VALUE /user/aturing
-	<<ERROR_NOT_LEAF_NODE
+	<<39 { "first" : "Alan", "last" : "Turing" }
 	
 ##Set
 ##Push
