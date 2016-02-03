@@ -15,6 +15,13 @@
 //
 #include "Firebase.h"
 
+// Detect whether stable version of HTTP library is installed instead of
+// master branch and patch in missing status and methods.
+#ifndef HTTP_CODE_TEMPORARY_REDIRECT
+#define HTTP_CODE_TEMPORARY_REDIRECT 307
+#define USE_STABLE_HTTPCLIENT_CORE
+#endif
+
 namespace {
 const char* kFirebaseFingerprint = "7A 54 06 9B DC 7A 25 B3 86 8D 66 53 48 2C 0B 96 42 C7 B3 0A";
 const uint16_t kFirebasePort = 443;
@@ -74,7 +81,7 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   bool followRedirect = false;
   if (method == "STREAM") {
     method = "GET";
-    http_->addHeader("Accept", "text/event-stream");    
+    http_->addHeader("Accept", "text/event-stream");
     followRedirect = true;
   }
 
@@ -82,7 +89,7 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
     const char* headers[] = {"Location"};
     http_->collectHeaders(headers, 1);
   }
-  
+
   int status = http_->sendRequest(method, (uint8_t*)data.c_str(), data.length());
 
   // TODO: Add a max redirect check
@@ -98,7 +105,11 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   }
 
   if (status != 200) {
+#ifdef USE_STABLE_HTTPCLIENT_CORE
+    error_ = FirebaseError(status, String(method) + " " + url + ": " + status);
+#else
     error_ = FirebaseError(status, String(method) + " " + url + ": " + HTTPClient::errorToString(status));
+#endif
   }
 
   // if not streaming.
@@ -112,7 +123,6 @@ FirebaseGet::FirebaseGet(const String& host, const String& auth,
                          const String& path,
                          HTTPClient* http)
   : FirebaseCall(host, auth, "GET", path, "", http) {
-
   if (!error()) {
     // TODO: parse json
     json_ = response();
@@ -121,10 +131,9 @@ FirebaseGet::FirebaseGet(const String& host, const String& auth,
 
 // FirebaseSet
 FirebaseSet::FirebaseSet(const String& host, const String& auth,
-			 const String& path, const String& value,
-			 HTTPClient* http)
+       const String& path, const String& value,
+       HTTPClient* http)
   : FirebaseCall(host, auth, "PUT", path, value, http) {
-
   if (!error()) {
     // TODO: parse json
     json_ = response();
