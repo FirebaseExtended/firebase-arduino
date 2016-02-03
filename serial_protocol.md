@@ -37,11 +37,11 @@ Fetches the value at $Path and returns it on the serial line. If $PATH points to
 ###Response
 	$DATA_BYTE_COUNT $DATA
 ###Examples
-	>>GET_VALUE /user/aturing/first
+	>>GET /user/aturing/first
 	<<4 Alan
-	>>GET_VALUE /user/aturing/last
+	>>GET /user/aturing/last
 	<<7 Turing
-	>>GET_VALUE /user/aturing
+	>>GET /user/aturing
 	<<39 { "first" : "Alan", "last" : "Turing" }
 	
 ##Set
