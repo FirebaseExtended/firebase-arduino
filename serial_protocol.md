@@ -51,8 +51,6 @@ Fetches the value at $Path and returns it on the serial line. If $PATH points to
 ###Examples
 	>>GET /user/aturing/first
 	<<+Alan
-	>>GET /user/aturing/last
-	<<+Turing
 	>>GET /user/aturing
 	<<&{ "first" : "Alan", "last" : "Turing" }
 	
@@ -67,7 +65,7 @@ Also only returns values at leaf nodes, if called on internal node returns error
 	>>GET_BULK /user/aturing/first
 	<<*4 Alan
 	>>GET /user/aturing
-	<<$38 { "first" : "Alan", "last" : "Turing" }
+	<<$39 { "first" : "Alan", "last" : "Turing" }
 ##Set
 ##Push
 ##Remove
