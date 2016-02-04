@@ -19,7 +19,7 @@
 // master branch and patch in missing status and methods.
 #ifndef HTTP_CODE_TEMPORARY_REDIRECT
 #define HTTP_CODE_TEMPORARY_REDIRECT 307
-#define USE_STABLE_HTTPCLIENT_CORE
+#define USE_ARDUINO_CORE_2_0_0
 #endif
 
 namespace {
@@ -105,7 +105,7 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   }
 
   if (status != 200) {
-#ifdef USE_STABLE_HTTPCLIENT_CORE
+#ifdef USE_ARDUINO_CORE_2_0_0
     error_ = FirebaseError(status, String(method) + " " + url + ": " + status);
 #else
     error_ = FirebaseError(status, String(method) + " " + url + ": " + HTTPClient::errorToString(status));
