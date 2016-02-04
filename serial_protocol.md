@@ -4,19 +4,30 @@ During the first use, or when the chiplet changes environments a “NETWORK” c
 Every time a serial connection is established we will expect a “INIT” call after which any subsequent calls can be made, until the connection is closed. 
 
 In the following examples we use $ to represent variables. For example $Host represents your firebase host.
+
+##Response Format Byte
+All responses will be prefixed with one of the following bytes signifying the response type.
+```
+  + If response is ok and a raw value
+  $ If response is ok and a raw value prefixed by count of bytes in response. 
+  & If response is ok and json formatted
+  ! If response is an error
+```
 ##NETWORK
 Only needs to be called when the chiplet is in a new environment and needs to connect to a new network. This setting will be stored by the chiplet and persisted through power cycles.
 ###Usage
 	NETWORK $SSID
 	NETWORK $SSID $PASSWORD
 ###Response
-	OK - When connected to new network
-	FAIL - When unable to connect
+	CONNECTED - When connected to new network
+	UNABLE_TO_CONNECT - When unable to connect
 ###Examples
 	>> NETWORK home-guest
-	<< OK
+	<< +CONNECTED
 	>> NETWORK home-private MySecretPassword
-	<< OK
+	<< +CONNECTED
+	>> NETWORK home-guest
+	<< !UNABLE_TO_CONNECT
 
 ##INIT
 Must be called after creating a Serial connection, it can take either just a host for accessing public variables or you may also provide a secret for accessing protected variables in the database.
@@ -27,23 +38,35 @@ Must be called after creating a Serial connection, it can take either just a hos
 	OK - Accepted initialization parameters
 ###Examples
 	>> INIT https://samplechat.firebaseio-demo.com
-	<< OK
+	<< +OK
 	>> INIT https://samplechat.firebaseio-demo.com nnz...sdf
-	<< OK
+	<< +OK
 ##GET
 Fetches the value at $Path and returns it on the serial line. If $PATH points to a leaf node you will get the raw value back, if it points to an internal node you will get a JSON string with all children.
 ###Usage
 	GET $PATH
 ###Response
-	$DATA_BYTE_COUNT $DATA
+	$DATA_AT_PATH
 ###Examples
 	>>GET /user/aturing/first
-	<<4 Alan
+	<<+Alan
 	>>GET /user/aturing/last
-	<<7 Turing
+	<<+Turing
 	>>GET /user/aturing
-	<<39 { "first" : "Alan", "last" : "Turing" }
+	<<&{ "first" : "Alan", "last" : "Turing" }
 	
+##GET_BULK
+Same as GET but returns value with size prefix. useful when value is expected to be large so you can know the size before accepting value.
+Also only returns values at leaf nodes, if called on internal node returns error.
+###Usage
+	GET_BULK $PATH
+###Response
+	$DATA_BYTE_COUNT $DATA_AT_PATH
+###Examples
+	>>GET_BULK /user/aturing/first
+	<<$4 Alan
+	>>GET /user/aturing
+	<<!ERROR_NOT_LEAF_NODE
 ##Set
 ##Push
 ##Remove
