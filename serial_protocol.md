@@ -9,8 +9,9 @@ In the following examples we use $ to represent variables. For example $Host rep
 All responses will be prefixed with one of the following bytes signifying the response type.
 ```
   + If response is ok and a raw value
-  $ If response is ok and a raw value prefixed by count of bytes in response. 
+  * If response is ok and a raw value prefixed by count of bytes in response. 
   & If response is ok and json formatted
+  $ If response is ok and json formatted and prefixed by count of bytes in response.
   ! If response is an error
 ```
 ##NETWORK
@@ -64,9 +65,9 @@ Also only returns values at leaf nodes, if called on internal node returns error
 	$DATA_BYTE_COUNT $DATA_AT_PATH
 ###Examples
 	>>GET_BULK /user/aturing/first
-	<<$4 Alan
+	<<*4 Alan
 	>>GET /user/aturing
-	<<!ERROR_NOT_LEAF_NODE
+	<<$38 { "first" : "Alan", "last" : "Turing" }
 ##Set
 ##Push
 ##Remove
