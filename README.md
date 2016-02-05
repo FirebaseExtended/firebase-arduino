@@ -8,7 +8,7 @@ This sample shows how to call [Firebase](https://www.firebase.com/) from the [ES
 
 - 1 [ESP8266 Arduino board](https://www.adafruit.com/products/2821).
 - [Arduino 1.6.x](https://www.arduino.cc/en/Main/Software)
-- ESP8266 Arduino board definition [(master branch)](https://github.com/esp8266/Arduino#using-git-version-)
+- ESP8266 Arduino board definition [(master branch)](https://github.com/esp8266/Arduino#using-git-version-) or [install stable with Boards Manager](https://github.com/esp8266/Arduino#installing-with-boards-manager)
 
 ## Setup
 
