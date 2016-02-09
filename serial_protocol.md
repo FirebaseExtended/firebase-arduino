@@ -119,16 +119,38 @@ Adds a value to the list located at the path provided and returns the key at whi
 ###Examples
 	>>PUSH /user/aturning/login_timestamps 1455052043
 	<<+-K94eLnB0rAAvfkh_WC2
-##Push_BULK
+
+##PUSH_BULK
 Similar to PUSH but used to write multiline strings or raw binary data.
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
-	Push_BULK $PATH $DATA_BYTE_COUNT $DATA
+	PUSH_BULK $PATH $DATA_BYTE_COUNT $DATA
 ###Response
 	$KEY
 ###Examples
 	>>PUSH /user/aturning/quotes 91 We can only see a short distance ahead,
 	>>but we can see plenty there that needs to be done.
 	<<+-K94eLnB0rAAvfkh_WC3
-##Stream
+
+##STREAM
+Used to register to receive a stream of events that occur to the object at the provided path.
+
+After registering you will start receiving events on the response line. They will be formatted as one line with the event type {PUT,PATCH,etc..} and the other line with the data associated with that event type. This data will be formatted similar to GET results and can have multi-line batch strings (*) or json strings (&).
+
+The event stream will continue until you send CANCEL_STREAM.
+###Usage
+	STREAM $PATH
+	CANCEL_STREAM
+###Response
+	$EVENT_NAME
+	$DATA
+	+OK
+###Examples
+	>>STREAM /user/aturning/last_login
+	<<+PUT 
+	<<#1455052043
+	<<+PUT
+	<<#1455054063
+	>>CANCEL_STREAM
+	<<+OK
