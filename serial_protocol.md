@@ -75,6 +75,29 @@ Same as GET but will either return the value in the format specified (by the for
 	>>GET? /user/aturing/first
 	<<-ERROR_INCORRECT_FORMAT
 ##Set
+Store the data provided at the path provided. This method should be used for simple strings and will assume the first newline is the end of the data.
+###Usage
+	SET $PATH $DATA
+###RESPONSE
+	+OK
+	-FAIL
+###Examples
+	>>SET /user/aturning/first Alan
+	<<+OK
+##SET_BULK
+Similar to SET above but used to write multiline strings or raw data.
+
+Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
+###Usage
+	SET_BULK $PATH $DATA_BYTE_COUNT $DATA
+###RESPONSE
+	+OK
+	-FAIL
+	-FAIL_TIMEOUT
+###Examples
+	>>SET /user/aturning/address 23 78 High Street,
+	>>Hampton 
+	<<+OK
 ##Push
 ##Remove
 ##Stream
