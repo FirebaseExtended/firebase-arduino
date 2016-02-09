@@ -152,6 +152,6 @@ The event stream will continue until you send CANCEL_STREAM.
 	<<#1455052043
 	<<+PUT /address
 	<<*24 78 High Street,
-	>>Hampton
+	<<Hampton
 	>>CANCEL_STREAM
 	<<+OK
