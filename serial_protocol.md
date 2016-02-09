@@ -151,7 +151,8 @@ The event stream will continue until you send CANCEL_STREAM.
 	<<+PUT /last_login
 	<<#1455052043
 	<<+PUT /address
-	<<*24 78 High Street,
+	<<*24
+	<<78 High Street,
 	<<Hampton
 	>>CANCEL_STREAM
 	<<+OK
