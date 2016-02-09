@@ -12,8 +12,8 @@ All responses will be prefixed with one of the following bytes signifying the re
   * If response is ok and a raw string value prefixed by count of bytes in response then new line.
   # If response is ok and a integer value.
   . If response is ok and a float value.
-  $ If response is ok and a boolean value.
-  & If response is ok and json formatted and prefixed by count of bytes in response then new line.
+  ? If response is ok and a boolean value.
+  $ If response is ok and json formatted and prefixed by count of bytes in response then new line.
   - If response is an error
 ```
 ##NETWORK
