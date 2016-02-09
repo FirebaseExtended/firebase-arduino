@@ -136,21 +136,21 @@ Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of 
 ##STREAM
 Used to register to receive a stream of events that occur to the object at the provided path.
 
-After registering you will start receiving events on the response line. They will be formatted as one line with the event type {PUT,PATCH,etc..} and the other line with the data associated with that event type. This data will be formatted similar to GET results and can have multi-line batch strings (*) or json strings (&).
+After registering you will start receiving events on the response line. They will be formatted as one line with the event type {PUT,PATCH,etc..} followed by the sub_path that changed and the other line with the data associated with that event type. This data will be formatted similar to GET results and can have multi-line batch strings (*) or json strings (&).
 
 The event stream will continue until you send CANCEL_STREAM.
 ###Usage
 	STREAM $PATH
 	CANCEL_STREAM
 ###Response
-	$EVENT_NAME
+	$EVENT_NAME $SUB_PATH
 	$DATA
 	+OK
 ###Examples
-	>>STREAM /user/aturning/last_login
-	<<+PUT 
+	>>STREAM /user/aturning
+	<<+PUT /last_login
 	<<#1455052043
-	<<+PUT
+	<<+PUT /last_login
 	<<#1455054063
 	>>CANCEL_STREAM
 	<<+OK
