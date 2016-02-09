@@ -78,7 +78,7 @@ Same as GET but will either return the value in the format specified (by the for
 Store the data provided at the path provided. This method should be used for simple strings and will assume the first newline is the end of the data.
 ###Usage
 	SET $PATH $DATA
-###RESPONSE
+###Response
 	+OK
 	-FAIL
 ###Examples
@@ -90,7 +90,7 @@ Similar to SET above but used to write multiline strings or raw data.
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
 	SET_BULK $PATH $DATA_BYTE_COUNT $DATA
-###RESPONSE
+###Response
 	+OK
 	-FAIL
 	-FAIL_TIMEOUT
@@ -98,6 +98,17 @@ Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of 
 	>>SET /user/aturning/address 23 78 High Street,
 	>>Hampton 
 	<<+OK
-##Push
+
 ##Remove
+Deletes the value located at the path provided.
+###Usage
+	REMOVE $PATH
+###Response
+	+OK
+	-FAIL
+###Examples
+	>>REMOVE /user/aturning
+	<<+OK
+
+##Push
 ##Stream
