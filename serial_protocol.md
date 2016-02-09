@@ -12,8 +12,8 @@ All responses will be prefixed with one of the following bytes signifying the re
   * If response is ok and a raw string value prefixed by count of bytes in response then new line.
   # If response is ok and a integer value.
   . If response is ok and a float value.
-  ? If response is ok and a boolean value.
-  $ If response is ok and json formatted and prefixed by count of bytes in response then new line.
+  $ If response is ok and a boolean value.
+  & If response is ok and json formatted and prefixed by count of bytes in response then new line.
   - If response is an error
 ```
 ##NETWORK
@@ -58,20 +58,22 @@ Fetches the value at $Path and returns it on the serial line. If $PATH points to
 	<<&39
 	<<{ "first" : "Alan", "last" : "Turing" }
 	
-##GET_BULK
-Same as GET but returns value with size prefix. useful when value is expected to be large so you can know the size before accepting value.
-Also only returns values at leaf nodes, if called on internal node returns error.
+##GET{+,*,#,.,?,$}
+Same as GET but will either return the value in the format specified (by the format byte) or return an error.
 ###Usage
-	GET_BULK $PATH
+	GET+ $PATH
+	GET* $PATH
+	GET# $PATH
+	GET. $PATH
+	GET? $PATH
+	GET$ $PATH
 ###Response
-	$DATA_BYTE_COUNT $DATA_AT_PATH
+	$FORMATED_RESPONSE
 ###Examples
-	>>GET_BULK /user/aturing/first
-	<<*4
-	<<Alan
-	>>GET /user/aturing
-	<<$39
-	<<{ "first" : "Alan", "last" : "Turing" }
+	>>GET? /user/aturing/was_human
+	<<?true
+	>>GET? /user/aturing/first
+	<<-ERROR_INCORRECT_FORMAT
 ##Set
 ##Push
 ##Remove
