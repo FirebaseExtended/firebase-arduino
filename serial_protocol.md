@@ -84,18 +84,20 @@ Store the data provided at the path provided. This method should be used for sim
 ###Examples
 	>>SET /user/aturning/first Alan
 	<<+OK
-##SET_BULK
-Similar to SET above but used to write multiline strings or raw binary data.
+##SET$
+Similar to SET above but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data.
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
-	SET_BULK $PATH $DATA_BYTE_COUNT $DATA
+	SET$ $PATH $DATA_BYTE_COUNT
+	$DATA
 ###Response
 	+OK
 	-FAIL
 	-FAIL_TIMEOUT
 ###Examples
-	>>SET /user/aturning/address 24 78 High Street,
+	>>SET /user/aturning/address 24
+	>>78 High Street,
 	>>Hampton 
 	<<+OK
 
@@ -120,16 +122,18 @@ Adds a value to the list located at the path provided and returns the key at whi
 	>>PUSH /user/aturning/login_timestamps 1455052043
 	<<+-K94eLnB0rAAvfkh_WC2
 
-##PUSH_BULK
-Similar to PUSH but used to write multiline strings or raw binary data.
+##PUSH$
+Similar to PUSH but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data.
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
-	PUSH_BULK $PATH $DATA_BYTE_COUNT $DATA
+	PUSH_BULK $PATH $DATA_BYTE_COUNT
+	$DATA
 ###Response
 	$KEY
 ###Examples
-	>>PUSH /user/aturning/quotes 91 We can only see a short distance ahead,
+	>>PUSH /user/aturning/quotes 91
+	>>We can only see a short distance ahead,
 	>>but we can see plenty there that needs to be done.
 	<<+-K94eLnB0rAAvfkh_WC3
 
