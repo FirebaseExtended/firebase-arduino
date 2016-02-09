@@ -74,7 +74,7 @@ Same as GET but will either return the value in the format specified (by the for
 	<<?true
 	>>GET? /user/aturing/first
 	<<-ERROR_INCORRECT_FORMAT
-##Set
+##SET
 Store the data provided at the path provided. This method should be used for simple strings and will assume the first newline is the end of the data.
 ###Usage
 	SET $PATH $DATA
