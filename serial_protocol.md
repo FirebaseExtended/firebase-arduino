@@ -95,7 +95,7 @@ Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of 
 	-FAIL
 	-FAIL_TIMEOUT
 ###Examples
-	>>SET /user/aturning/address 23 78 High Street,
+	>>SET /user/aturning/address 24 78 High Street,
 	>>Hampton 
 	<<+OK
 
@@ -150,7 +150,8 @@ The event stream will continue until you send CANCEL_STREAM.
 	>>STREAM /user/aturning
 	<<+PUT /last_login
 	<<#1455052043
-	<<+PUT /last_login
-	<<#1455054063
+	<<+PUT /address
+	<<*24 78 High Street,
+	>>Hampton
 	>>CANCEL_STREAM
 	<<+OK
