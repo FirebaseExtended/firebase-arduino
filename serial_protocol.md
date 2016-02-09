@@ -85,7 +85,7 @@ Store the data provided at the path provided. This method should be used for sim
 	>>SET /user/aturning/first Alan
 	<<+OK
 ##SET_BULK
-Similar to SET above but used to write multiline strings or raw data.
+Similar to SET above but used to write multiline strings or raw binary data.
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
@@ -99,7 +99,7 @@ Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of 
 	>>Hampton 
 	<<+OK
 
-##Remove
+##REMOVE
 Deletes the value located at the path provided.
 ###Usage
 	REMOVE $PATH
@@ -110,5 +110,25 @@ Deletes the value located at the path provided.
 	>>REMOVE /user/aturning
 	<<+OK
 
-##Push
+##PUSH
+Adds a value to the list located at the path provided and returns the key at which the new object is located.
+###Usage
+	PUSH $PATH $DATA
+###Response
+	$KEY
+###Examples
+	>>PUSH /user/aturning/login_timestamps 1455052043
+	<<+-K94eLnB0rAAvfkh_WC2
+##Push_BULK
+Similar to PUSH but used to write multiline strings or raw binary data.
+
+Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
+###Usage
+	Push_BULK $PATH $DATA_BYTE_COUNT $DATA
+###Response
+	$KEY
+###Examples
+	>>PUSH /user/aturning/quotes 91 We can only see a short distance ahead,
+	>>but we can see plenty there that needs to be done.
+	<<+-K94eLnB0rAAvfkh_WC3
 ##Stream
