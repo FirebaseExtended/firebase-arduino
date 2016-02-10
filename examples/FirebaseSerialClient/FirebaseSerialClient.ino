@@ -56,7 +56,7 @@ void setup() {
   }
   debugPrintLn("Connected to " + network_ssid);
   
-  dataPrintLn(String("INIT ") + host + " " + auth);    
+  dataPrintLn(String("BEGIN ") + host + " " + auth);    
   response = dataReadLn();
   if (response != "+OK") {
     debugPrintLn("Failed to initalize: " + response);
@@ -100,7 +100,7 @@ void loop() {
     
   } else if (digitalRead(flashButtonPin)) {
     debugPrintLn("Flashing LED.");
-    dataPrintLn(String("GET# /led_flashes"));
+    dataPrintLn(String("GET: /led_flashes"));
     if (dataReadType() == '-') {
       debugPrintLn("Error during GET: " + dataReadLn());          
     }
