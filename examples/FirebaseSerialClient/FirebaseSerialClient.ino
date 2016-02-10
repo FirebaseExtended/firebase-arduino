@@ -39,7 +39,7 @@ void setup() {
   pinMode(flashButtonPin, INPUT);
   pinMode(ledPin, OUTPUT);
   
-  // Connect to pc over usb.
+  // Connect to pc over usb for debug output.
   Serial.begin(9600);
   
   // Connect to chiplet over the Serial1 port (pins 19 and 18).
