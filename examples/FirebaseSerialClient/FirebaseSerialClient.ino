@@ -23,8 +23,11 @@
 // the stored value.
 // This example touches most of the basic calls over the serial interface.
 
-// Set these parameters.
+const int sendButtonPin = 4;
+const int flashButtonPin = 5;
+const int ledPin = 6;
 
+// Set these parameters.
 const String network_ssid = "";
 const String host = "";
 const String auth = "";
@@ -32,6 +35,10 @@ const String auth = "";
 bool initialized = false;
 
 void setup() {
+  pinMode(sendButtonPin, INPUT);
+  pinMode(flashButtonPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  
   // Connect to pc over usb.
   Serial.begin(9600);
   
@@ -63,14 +70,14 @@ void loop() {
     return;
   }
 
-  if (SendButtonDown() && FlashButtonDown()) {
+  if (digitalRead(sendButtonPin) && digitalRead(flashButtonPin)) {
     dataPrintLn("REMOVE /led_flashes");
     String response = dataReadLn();
     if (response != "+OK") {
       debugPrintLn("Error during REMOVE: " + response);          
     }    
     
-  } else if (SendButtonDown()) {
+  } else if (digitalRead(sendButtonPin)) {
     debugPrintLn("Sending random number.");
     int flashes = random(10);
 
@@ -91,7 +98,7 @@ void loop() {
     
     debugPrintLn("Done sending random number.");
     
-  } else if (FlashButtonDown()) {
+  } else if (digitalRead(flashButtonPin)) {
     debugPrintLn("Flashing LED.");
     dataPrintLn(String("GET# /led_flashes"));
     if (dataReadType() == '-') {
@@ -99,25 +106,19 @@ void loop() {
     }
 
     int flashes = atoi(dataReadLn().c_str());
-    FlashLed(flashes);    
+    flashLed(flashes);    
     
     debugPrintLn("Done flashing LED.");
   }
 }
 
-bool SendButtonDown() {
-  //TODO Add detection for button on pin.
-  return false;
-}
-
-bool FlashButtonDown() {
-  //TODO Add detection for button on pin.
-  return false;
-}
-
-void FlashLed(int times) {
-  //TODO Add logic to flash led at high frequency <500ms between 
-  // flashes so we don't take too long.
+void flashLed(int times) {
+  for (int i=0; i < times; i++) {
+    digitalWrite(ledPin, HIGH);
+    delay(200);
+    digitalWrite(ledPin, LOW);
+    delay(300);
+  }
 }
 
 void debugPrintLn(const String& message) {
