@@ -119,7 +119,7 @@ Adds a value to the list located at the path provided and returns the key at whi
 	<<+-K94eLnB0rAAvfkh_WC2
 
 ##PUSH$
-Similar to PUSH but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data.
+Similar to PUSH but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data. However you are not required to json escape all of your data, that will be handled for you.
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
