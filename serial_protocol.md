@@ -9,10 +9,9 @@ In the following examples we use $ to represent variables. For example $Host rep
 All responses will be prefixed with one of the following bytes signifying the response type.
 ```
   + If response is ok and a raw string value.
-  * If response is ok and a raw string value prefixed by count of bytes in response then new line.
+  $ If response is ok, raw string value will be json formatted and prefixed by the byte count and a new line.
   : If response is ok and a number, this could be float or int.
   ? If response is ok and a boolean value.
-  $ If response is ok and json formatted and prefixed by count of bytes in response then new line.
   - If response is an error
 ```
 ##NETWORK
@@ -54,14 +53,13 @@ Fetches the value at $Path and returns it on the serial line. If $PATH points to
 	>>GET /user/aturing/first
 	<<+Alan
 	>>GET /user/aturing
-	<<&39
+	<<$39
 	<<{ "first" : "Alan", "last" : "Turing" }
 	
 ##GET{+,*,#,.,?,$}
 Same as GET but will either return the value in the format specified (by the format byte) or return an error.
 ###Usage
 	GET+ $PATH
-	GET* $PATH
 	GET: $PATH
 	GET? $PATH
 	GET$ $PATH
@@ -121,7 +119,7 @@ Adds a value to the list located at the path provided and returns the key at whi
 	<<+-K94eLnB0rAAvfkh_WC2
 
 ##PUSH$
-Similar to PUSH but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data.
+Similar to PUSH but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data. However you are not required to json escape all of your data, that will be handled for you.
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
@@ -153,8 +151,7 @@ The event stream will continue until you send CANCEL_STREAM.
 	<<+PUT /last_login
 	<<:1455052043
 	<<+PUT /address
-	<<*24
-	<<78 High Street,
-	<<Hampton
+	<<$24
+	<<"78 High Street,\r\nHampton"
 	>>CANCEL_STREAM
 	<<+OK
