@@ -43,7 +43,7 @@ Must be called after creating a Serial connection, it can take either just a hos
 	>> BEGIN https://samplechat.firebaseio-demo.com nnz...sdf
 	<< +OK
 ##GET
-Fetches the value at $Path and returns it on the serial line. If $PATH points to a leaf node you will get the raw value back, if it points to an internal node you will get a JSON string with all children.
+Fetches the value at $PATH and returns it on the serial line. If $PATH points to a leaf node you will get the raw value back, if it points to an internal node you will get a JSON string with all children.
 ###Usage
 	GET $PATH
 ###Response
@@ -78,10 +78,10 @@ Store the data provided at the path provided. This method should be used for sim
 	+OK
 	-FAIL
 ###Examples
-	>>SET /user/aturning/first Alan
+	>>SET /user/aturing/first Alan
 	<<+OK
 ##SET$
-Similar to SET above but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data.
+Similar to SET above but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data. However which the batch string ($) return type returns data json escaped and quoted you may provide raw data and we will handle the escaping.
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
@@ -92,10 +92,25 @@ Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of 
 	-FAIL
 	-FAIL_TIMEOUT
 ###Examples
-	>>SET /user/aturning/address 24
+	>>SET /user/aturing/address 24
 	>>78 High Street,
 	>>Hampton 
 	<<+OK
+	
+##SET{+,*,#,.,?}
+Same as SET but will force the value to be stored in the given type or return an error if we cannot parse it as that type.
+###Usage
+	SET+ $PATH $VALUE
+	SET: $PATH $VALUE
+	SET? $PATH $VALUE
+###Response
+	+OK
+	-INCORRECT_TYPE
+###Examples
+	>>SET? /user/aturing/was_human true
+	<<+OK
+	>>SET? /user/aturing/was_human He was not a computer.
+	<<-INCORRECT_TYPE
 
 ##REMOVE
 Deletes the value located at the path provided.
@@ -105,7 +120,7 @@ Deletes the value located at the path provided.
 	+OK
 	-FAIL
 ###Examples
-	>>REMOVE /user/aturning
+	>>REMOVE /user/aturing
 	<<+OK
 
 ##PUSH
@@ -115,7 +130,7 @@ Adds a value to the list located at the path provided and returns the key at whi
 ###Response
 	$KEY
 ###Examples
-	>>PUSH /user/aturning/login_timestamps 1455052043
+	>>PUSH /user/aturing/login_timestamps 1455052043
 	<<+-K94eLnB0rAAvfkh_WC2
 
 ##PUSH$
@@ -123,35 +138,47 @@ Similar to PUSH but used to write multiline strings or raw binary data. Data for
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
-	PUSH_BULK $PATH $DATA_BYTE_COUNT
+	PUSH$ $PATH $DATA_BYTE_COUNT
 	$DATA
 ###Response
 	$KEY
 ###Examples
-	>>PUSH /user/aturning/quotes 91
+	>>PUSH /user/aturing/quotes 91
 	>>We can only see a short distance ahead,
 	>>but we can see plenty there that needs to be done.
 	<<+-K94eLnB0rAAvfkh_WC3
 
-##STREAM
+##BEGIN_STREAM
 Used to register to receive a stream of events that occur to the object at the provided path.
 
 After registering you will start receiving events on the response line. They will be formatted as one line with the event type {PUT,PATCH,etc..} followed by the sub_path that changed and the other line with the data associated with that event type. This data will be formatted similar to GET results and can have multi-line batch strings (*) or json strings (&).
 
 The event stream will continue until you send CANCEL_STREAM.
 ###Usage
-	STREAM $PATH
-	CANCEL_STREAM
+	BEGIN_STREAM $PATH
 ###Response
 	$EVENT_NAME $SUB_PATH
 	$DATA
 	+OK
 ###Examples
-	>>STREAM /user/aturning
+	>>BEGIN_STREAM /user/aturing
 	<<+PUT /last_login
 	<<:1455052043
 	<<+PUT /address
 	<<$24
 	<<"78 High Street,\r\nHampton"
-	>>CANCEL_STREAM
+	
+##END_STREAM
+Used to stop listening to events at a given path. This must be the same path provided to a previous BEGIN_STREAM call.
+
+###Usage
+	END_STREAM $PATH
+###Response
+	+OK
+	-NOT_STREAMING_PATH
+###Examples
+	>>END_STREAM /user/aturing
+	<<-NOT_STREAMING_PATH
+	>>BEGIN_STREAM /user/aturing
+	>>END_STREAM /user/aturing
 	<<+OK
