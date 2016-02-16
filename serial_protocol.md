@@ -154,6 +154,8 @@ Used to register to receive a stream of events that occur to the object at the p
 After registering you will start receiving events on the response line. They will be formatted as one line with the event type {PUT,PATCH,etc..} followed by the sub_path that changed and the other line with the data associated with that event type. This data will be formatted similar to GET results and can have multi-line batch strings (*) or json strings (&).
 
 The event stream will continue until you send CANCEL_STREAM.
+
+When there is an ongoing event stream no other commands can be processed until you call END_STREAM as the event stream owns the return line. 
 ###Usage
 	BEGIN_STREAM $PATH
 ###Response
