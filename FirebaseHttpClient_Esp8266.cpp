@@ -66,7 +66,7 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
 
  private:
   HTTPClient http_;
-}
+};
 
 Firebase* FirebaseHttpClient::create() {
   return new FirebaseHttpClientEsp8266();

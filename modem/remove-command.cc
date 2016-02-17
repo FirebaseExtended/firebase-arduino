@@ -3,18 +3,18 @@
 namespace firebase {
 namespace modem {
 
-bool GetCommand::execute(const String& command,
-                         InputStream* in, OutputStream* out) {
+bool RemoveCommand::execute(const String& command,
+                            InputStream* in, OutputStream* out) {
   if (in == nullptr || out == nullptr) {
     return false;
   }
 
-  if (command != "GET") {
+  if (command != "REMOVE") {
     return false;
   }
 
   String path = in->readLine();
-  std::unique_ptr<FirebaseGet> get(fbase().getPtr(path));
+  std::unique_ptr<FirebaseRemove> get(fbase().removePtr(path));
 
   if (get->error()) {
     out->print("-FAIL ");
@@ -22,10 +22,7 @@ bool GetCommand::execute(const String& command,
     return false;
   }
 
-  String value(get->json());
-  // TODO implement json parsing to pull and process value.
-  out->print("+");
-  out->println(value);
+  out->print("+OK");
   return true;
 }
 

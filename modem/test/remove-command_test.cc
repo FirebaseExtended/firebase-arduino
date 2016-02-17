@@ -13,10 +13,10 @@ using ::testing::ByMove;
 using ::testing::ReturnRef;
 using ::testing::_;
 
-class GetCommandTest : public ::testing::Test {
+class RemoveCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    get_.reset(new MockFirebaseGet());
+    remove_.reset(new MockFirebaseRemove());
   }
 
   void FeedCommand(const String& path) {
@@ -26,40 +26,33 @@ class GetCommandTest : public ::testing::Test {
   }
 
   bool RunCommand(const FirebaseError& error) {
-    EXPECT_CALL(*get_, error())
+    EXPECT_CALL(*remove_, error())
       .WillRepeatedly(ReturnRef(error));
 
-    EXPECT_CALL(fbase_, getPtr(_))
-        .WillOnce(Return(ByMove(std::move(get_))));
+    EXPECT_CALL(fbase_, removePtr(_))
+        .WillOnce(Return(ByMove(std::move(remove_))));
 
-    GetCommand getCmd(&fbase_);
-    return getCmd.execute("GET", &in_, &out_);
+    RemoveCommand command(&fbase_);
+    return command.execute("REMOVE", &in_, &out_);
   }
 
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseGet> get_;
+  std::unique_ptr<MockFirebaseRemove> remove_;
 };
 
-TEST_F(GetCommandTest, gets) {
+TEST_F(RemoveCommandTest, success) {
   const String path("/test/path");
   FeedCommand(path);
 
-  const String value("Test value");
-  EXPECT_CALL(*get_, json())
-      .WillOnce(ReturnRef(value));
-
-  EXPECT_CALL(out_, print(String("+")))
-      .WillOnce(Return(1));
-
-  EXPECT_CALL(out_, println(value))
-      .WillOnce(Return(1));
+  EXPECT_CALL(out_, print(String("+OK")))
+      .WillOnce(Return(3));
 
   ASSERT_TRUE(RunCommand(FirebaseError()));
 }
 
-TEST_F(GetCommandTest, handlesError) {
+TEST_F(RemoveCommandTest, handlesError) {
   FirebaseError error(-200, "Test Error.");
   const String path("/test/path");
   FeedCommand(path);
@@ -70,7 +63,6 @@ TEST_F(GetCommandTest, handlesError) {
   EXPECT_CALL(out_, println(error.message()))
       .WillOnce(Return(1));
   ASSERT_FALSE(RunCommand(error));
-
 }
 
 }  // modem

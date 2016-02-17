@@ -2,6 +2,11 @@
 #define FIREBASE_HTTP_CLIENT_H
 
 #include "Arduino.h"
+#include "Stream.h"
+
+struct HttpStatus {
+  static const int TEMPORARY_REDIRECT = 302;
+};
 
 class FirebaseHttpClient {
  public:
@@ -14,7 +19,7 @@ class FirebaseHttpClient {
   virtual void end() = 0;
 
   virtual void addHeader(const String& name, const String& value) = 0;
-  virtual void collectHeaders(const String[]& header_keys,
+  virtual void collectHeaders(const String header_keys[],
                               const int header_key_count) = 0;
   virtual String header(const String& name) = 0;
 
@@ -27,9 +32,10 @@ class FirebaseHttpClient {
   virtual String errorToString(int error_code) = 0;
 
  protected:
-  static final String kFirebaseFingerprint = "7A 54 06 9B DC 7A 25 B3 86 8D 66 53 48 2C 0B 96 42 C7 B3 0A";
-  static final const uint16_t kFirebasePort = 443;
-}
+  static const uint16_t kFirebasePort = 443;
+};
 
+static const String kFirebaseFingerprint =
+      "7A 54 06 9B DC 7A 25 B3 86 8D 66 53 48 2C 0B 96 42 C7 B3 0A";
 
 #endif  // FIREBASE_HTTP_CLIENT_H
