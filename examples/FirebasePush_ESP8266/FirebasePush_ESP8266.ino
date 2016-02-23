@@ -21,7 +21,7 @@
 
 // create firebase client.
 Firebase fbase = Firebase("example.firebaseio.com")
-                     .auth("secret_or_token");
+                   .auth("secret_or_token");
 
 void setup() {
   Serial.begin(9600);
@@ -37,18 +37,26 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
-  // add a new entry.
-  String l = fbase.push("/logs", "{\".sv\": \"timestamp\"}");
-  // handle error.
-  if (fbase.error()) {
-      Serial.println("Firebase request failed");
-      Serial.println(fbase.error().message());
+   // add a new entry.
+  FirebasePush push = fbase.push("/logs", "{\".sv\": \"timestamp\"}");
+  if (push.error()) {
+      Serial.println("Firebase push failed");
+      Serial.println(push.error().message());  
       return;
   }
-  // print response.
-  Serial.println(l);
-  // print all entries.
-  Serial.println(fbase.get("/logs"));
+
+  // print key.
+  Serial.println(push.name());
+
+  // get all entries.
+  FirebaseGet get = fbase.get("/logs");
+  if (get.error()) {
+      Serial.println("Firebase get failed");
+      Serial.println(push.error().message());  
+      return;
+  }
+  // print json.
+  Serial.println(get.json());
 }
 
 void loop() {

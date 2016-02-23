@@ -20,11 +20,13 @@
 #include <Firebase.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <ArduinoJson.h>
 
 #define OLED_RESET 10
 Adafruit_SSD1306 display(OLED_RESET);
 
-Firebase fbase = Firebase("publicdata-cryptocurrency.firebaseio.com");
+Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
+FirebaseStream stream;
 
 void setup() {
   Serial.begin(9600);
@@ -42,32 +44,37 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  
-  fbase.stream("/bitcoin");
+  stream = fbase.stream("/bitcoin");  
 }
 
 
 void loop() {
-  if (fbase.error()) {
+  if (stream.error()) {
     Serial.println("streaming error");
-    Serial.println(fbase.error().message());
+    Serial.println(stream.error().message());
   }
-  if (fbase.available()) {
+  
+  if (stream.available()) {
      String event;
-     auto type = fbase.read(event);
+     auto type = stream.read(event);
      Serial.print("event: ");
      Serial.println(type);
-     if (type != Firebase::Event::UNKNOWN) {
+     if (type == FirebaseStream::Event::PUT) {
+       StaticJsonBuffer<200> buf;
        Serial.print("data: ");
        Serial.println(event);
+       JsonObject& json = buf.parseObject((char*)event.c_str());
+       String path = json["path"];
+       float data = json["data"];       
      
        // TODO(proppy): parse JSON object.
        display.clearDisplay();
-       display.setTextSize(1);
+       display.setTextSize(2);
        display.setTextColor(WHITE);
        display.setCursor(0,0);
-       display.println(event);
+       display.println(path.c_str()+1);
+       display.println(data);
        display.display();
      }
-  } 
+  }   
 }
