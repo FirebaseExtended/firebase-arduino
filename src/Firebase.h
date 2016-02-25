@@ -191,6 +191,6 @@ class FirebaseStream : public FirebaseCall {
 
  private:
   FirebaseError _error;
- };
+};
 
 #endif // firebase_h

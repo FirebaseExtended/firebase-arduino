@@ -14,6 +14,10 @@
 // limitations under the License.
 //
 #include "Firebase.h"
+#include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+
+using std::unique_ptr;
 
 using std::unique_ptr;
 
@@ -54,6 +58,10 @@ unique_ptr<FirebaseGet> Firebase::getPtr(const String& path) {
   return unique_ptr<FirebaseGet>(new FirebaseGet(host_, auth_, path, http_.get()));
 }
 
+unique_ptr<FirebaseGet> Firebase::getPtr(const String& path) {
+  return unique_ptr<FirebaseGet>(new FirebaseGet(host_, auth_, path, &http_));
+}
+
 FirebaseSet Firebase::set(const String& path, const String& value) {
   return FirebaseSet(host_, auth_, path, value, http_.get());
 }
@@ -64,12 +72,22 @@ unique_ptr<FirebaseSet> Firebase::setPtr(const String& path,
       new FirebaseSet(host_, auth_, path, value, http_.get()));
 }
 
+unique_ptr<FirebaseSet> Firebase::setPtr(const String& path,
+                                         const String& value) {
+  return unique_ptr<FirebaseSet>(
+      new FirebaseSet(host_, auth_, path, value, &http_);
+}
+
 FirebasePush Firebase::push(const String& path, const String& value) {
   return FirebasePush(host_, auth_, path, value, http_.get());
 }
 unique_ptr<FirebasePush> Firebase::pushPtr(const String& path, const String& value) {
   return unique_ptr<FirebasePush>(
       new FirebasePush(host_, auth_, path, value, http_.get()));
+}
+unique_ptr<FirebasePush> Firebase::pushPtr(const String& path, const String& value) {
+  return unique_ptr<FirebasePush>(
+      new FirebasePush(host_, auth_, path, value, &http_);
 }
 
 FirebaseRemove Firebase::remove(const String& path) {
@@ -81,6 +99,11 @@ unique_ptr<FirebaseRemove> Firebase::removePtr(const String& path) {
       new FirebaseRemove(host_, auth_, path, http_.get()));
 }
 
+unique_ptr<FirebaseRemove> Firebase::removePtr(const String& path) {
+  return unique_ptr<FirebaseRemove>(
+      new FirebaseRemove(host_, auth_, path, &http_);
+}
+
 FirebaseStream Firebase::stream(const String& path) {
   // TODO: create new client dedicated to stream.
   return FirebaseStream(host_, auth_, path, http_.get());
@@ -90,6 +113,12 @@ unique_ptr<FirebaseStream> Firebase::streamPtr(const String& path) {
   // TODO: create new client dedicated to stream.
   return unique_ptr<FirebaseStream>(
       new FirebaseStream(host_, auth_, path, http_.get()));
+}
+
+unique_ptr<FirebaseStream> Firebase::streamPtr(const String& path) {
+  // TODO: create new client dedicated to stream.
+  return unique_ptr<FirebaseStream>(
+      new FirebaseStream(host_, auth_, path, &http_);
 }
 
 // FirebaseCall
