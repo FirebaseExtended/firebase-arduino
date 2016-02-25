@@ -22,7 +22,6 @@
 
 #include <Arduino.h>
 #include <memory>
-#include <ESP8266HTTPClient.h>
 
 class FirebaseGet;
 class FirebaseSet;
@@ -61,7 +60,7 @@ class Firebase {
   Firebase() {}
 
  private:
-  HTTPClient http_;
+  std::unique_ptr<FirebaseHttpClient> http_;
   String host_;
   String auth_;
 };
@@ -85,7 +84,7 @@ class FirebaseCall {
   FirebaseCall(const String& host, const String& auth,
                const char* method, const String& path,
                const String& data = "",        
-               HTTPClient* http = NULL);
+               FirebaseHttpClient* http = NULL);
   const FirebaseError& error() const {
     return error_;
   }
@@ -93,7 +92,7 @@ class FirebaseCall {
     return response_;
   }
  protected:
-  HTTPClient* http_;
+  FirebaseHttpClient* http_;
   FirebaseError error_;
   String response_;
 };
@@ -102,7 +101,7 @@ class FirebaseGet : public FirebaseCall {
  public:
   FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
-              const String& path, HTTPClient* http = NULL);
+              const String& path, FirebaseHttpClient* http = NULL);
   
   const String& json() const {
     return json_;
@@ -116,7 +115,7 @@ class FirebaseSet: public FirebaseCall {
  public:
   FirebaseSet() {}
   FirebaseSet(const String& host, const String& auth,
-	      const String& path, const String& value, HTTPClient* http = NULL);
+	      const String& path, const String& value, FirebaseHttpClient* http = NULL);
 
   const String& json() const {
     return json_;
@@ -130,7 +129,7 @@ class FirebasePush : public FirebaseCall {
  public:
   FirebasePush() {}
   FirebasePush(const String& host, const String& auth,
-               const String& path, const String& value, HTTPClient* http = NULL);
+               const String& path, const String& value, FirebaseHttpClient* http = NULL);
 
   const String& name() const {
     return name_;
@@ -144,7 +143,7 @@ class FirebaseRemove : public FirebaseCall {
  public:
   FirebaseRemove() {}
   FirebaseRemove(const String& host, const String& auth,
-                 const String& path, HTTPClient* http = NULL);
+                 const String& path, FirebaseHttpClient* http = NULL);
 };
 
 
@@ -152,7 +151,7 @@ class FirebaseStream : public FirebaseCall {
  public:
   FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
-                 const String& path, HTTPClient* http = NULL);
+                 const String& path, FirebaseHttpClient* http = NULL);
   
   // Return if there is any event available to read.
   bool available();
