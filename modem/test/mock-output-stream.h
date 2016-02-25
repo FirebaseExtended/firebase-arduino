@@ -1,25 +1,20 @@
-#ifndef MODEM_TEST_MOCK_STREAMS_H
-#define MODEM_TEST_MOCK_STREAMS_H
+#ifndef MODEM_TEST_MOCK_OUTPUT_STREAM_H
+#define MODEM_TEST_MOCK_OUTPUT_STREAM_H
 
-#include "test/gtest/gtest.h"
+#include "gtest/gtest.h"
 #include "modem/output-stream.h"
 
-class OutputStreamMock : public OutputStream {
+namespace firebase {
+namespace modem {
+
+class MockOutputStream : public OutputStream {
  public:
-  MOCK_METHOD1(println, int32 (const String&));
-  MOCK_METHOD1(print, int32 (const String&));
+  MOCK_METHOD1(println, int (const String&));
+  MOCK_METHOD1(print, int (const String&));
 };
 
-// Only implementing what we use here for now.
-class Stream {
- public:
-  String readStringUntil(const String& terminator) = 0;
-};
+}  // modem
+}  // firebase
 
-class StreamMock : public Stream {
- public:
-  MOCK_METHOD1(readStringUntil, String (const String&));
-}
-
-#endif  //MODEM_TEST_MOCK_STREAMS_H
+#endif  //MODEM_TEST_MOCK_OUTPUT_STREAM_H
 

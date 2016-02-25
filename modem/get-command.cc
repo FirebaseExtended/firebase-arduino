@@ -1,12 +1,11 @@
-#include "modem/command.h"
-#include "modem/util.h"
+#include "modem/commands.h"
 
 namespace firebase {
 namespace modem {
 
 bool GetCommand::execute(const String& command,
-                         Stream* in, OutputStream* out) {
-  if (in == null || out == null) {
+                         InputStream* in, OutputStream* out) {
+  if (in == nullptr || out == nullptr) {
     return false;
   }
 
@@ -14,10 +13,10 @@ bool GetCommand::execute(const String& command,
     return false;
   }
 
-  String path = in->readStringUntil(kEndLine);
-  FirebaseGet get = fbase_->get(path);
+  String path = in->readLine();
+  std::unique_ptr<FirebaseGet> get = fbase().getPtr(path);
 
-  String value = get.json();
+  String value = get->json();
   // TODO implement json parsing to pull and process value.
   out->print("+");
   out->println(value);

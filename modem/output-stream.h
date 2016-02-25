@@ -1,29 +1,29 @@
 #ifndef MODEM_OUTPUT_STREAM_H
 #define MODEM_OUTPUT_STREAM_H
 
+#include <Arduino.h>
+#include <Serial.h>
+
 namespace firebase {
 namespace modem {
 
 class OutputStream {
  public:
-  virtual int32 println(const String& string) = 0;
-  virtual int32 print(const String& string) = 0;
+  virtual int println(const String& string) = 0;
+  virtual int print(const String& string) = 0;
 };
 
-class SerialOutputStream {
+class SerialOutputStream : public OutputStream {
  public:
-  SerialOutputStream(Serial* serial) : serial_(serial) {}
+  SerialOutputStream() {}
 
-  int32 println(const String& string) override {
-    return serial_->println(string);
+  int println(const String& string) override {
+    return Serial.println(string.c_str());
   }
 
-  int32 print(const String& string) override {
-    return serial_->print(string);
+  int print(const String& string) override {
+    return Serial.print(string.c_str());
   }
-
- private:
-  Serial* serial_;
 };
 
 }  // modem
