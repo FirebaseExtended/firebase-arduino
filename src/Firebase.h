@@ -21,8 +21,7 @@
 #define firebase_h
 
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <WiFiClientSecure.h>
+#include <memory>
 #include <ESP8266HTTPClient.h>
 #include "third-party/arduino-json-5.1.1/include/ArduinoJson.h"
 
@@ -40,18 +39,27 @@ class Firebase {
 
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);
+  std::unique_ptr<FirebaseGet> getPtr(const String& path);
 
   // Set json encoded `value` at `path`.
   FirebaseSet set(const String& path, const String& json);
+  std::unique_ptr<FirebaseSet> setPtr(const String& path, const String& json);
 
   // Add new json encoded `value` to list at `path`.
   FirebasePush push(const String& path, const String& json);
+  std::unique_ptr<FirebasePush> pushPtr(const String& path, const String& json);
 
   // Delete value at `path`.
   FirebaseRemove remove(const String& path);
+  std::unique_ptr<FirebaseRemove> removePtr(const String& path);
 
   // Start a stream of events that affect value at `path`.
   FirebaseStream stream(const String& path);
+  std::unique_ptr<FirebaseStream> streamPtr(const String& path);
+
+ protected:
+  // Used for testing.
+  Firebase() {}
 
  private:
   HTTPClient http_;
