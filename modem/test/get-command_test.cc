@@ -13,34 +13,65 @@ using ::testing::ByMove;
 using ::testing::ReturnRef;
 using ::testing::_;
 
-TEST(get, parsesPath) {
+class GetCommandTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    get_.reset(new MockFirebaseGet());
+  }
+
+  void FeedCommand(const String& path) {
+    const String command_fragment(String(" ") + path + "\r\n");
+    EXPECT_CALL(in_, readLine())
+        .WillOnce(Return(command_fragment));
+  }
+
+  bool RunCommand(const FirebaseError& error) {
+    EXPECT_CALL(*get_, error())
+      .WillRepeatedly(ReturnRef(error));
+
+    EXPECT_CALL(fbase_, getPtr(_))
+        .WillOnce(Return(ByMove(std::move(get_))));
+
+    GetCommand getCmd(&fbase_);
+    return getCmd.execute("GET", &in_, &out_);
+  }
+
+  MockInputStream in_;
+  MockOutputStream out_;
+  MockFirebase fbase_;
+  std::unique_ptr<MockFirebaseGet> get_;
+};
+
+TEST_F(GetCommandTest, gets) {
   const String path("/test/path");
-  const String command_fragment(String(" ") + path + "\r\n");
+  FeedCommand(path);
 
-  MockInputStream in;
-  EXPECT_CALL(in, readLine())
-      .WillOnce(Return(command_fragment));
-
-  std::unique_ptr<MockFirebaseGet> get(new MockFirebaseGet());
   const String value("Test value");
-  EXPECT_CALL(*get, json())
+  EXPECT_CALL(*get_, json())
       .WillOnce(ReturnRef(value));
 
-  MockOutputStream out;
-  EXPECT_CALL(out, print(String("+")))
+  EXPECT_CALL(out_, print(String("+")))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out, println(value))
+  EXPECT_CALL(out_, println(value))
       .WillOnce(Return(1));
 
-  MockFirebase fbase;
-  EXPECT_CALL(fbase, getPtr(_))
-      .WillOnce(Return(ByMove(std::move(get))));
-
-  GetCommand getCmd(&fbase);
-  ASSERT_TRUE(getCmd.execute("GET", &in, &out));
+  ASSERT_TRUE(RunCommand(FirebaseError()));
 }
 
+TEST_F(GetCommandTest, handlesError) {
+  FirebaseError error(-200, "Test Error.");
+  const String path("/test/path");
+  FeedCommand(path);
+
+  EXPECT_CALL(out_, print(String("-FAIL ")))
+      .WillOnce(Return(1));
+
+  EXPECT_CALL(out_, println(error.message()))
+      .WillOnce(Return(1));
+  ASSERT_FALSE(RunCommand(error));
+
+}
 
 }  // modem
 }  // firebase
