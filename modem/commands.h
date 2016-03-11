@@ -53,6 +53,19 @@ class PushCommand : public Command {
   bool execute(const String& command, InputStream* in, OutputStream* out);
 };
 
+class BeginCommand : public Command {
+ public:
+  BeginCommand() : Command(nullptr) {}
+
+  bool execute(const String& command, InputStream* in, OutputStream* out);
+
+  // This can only be called once.
+  std::unique_ptr<Firebase> firebase();
+
+ private:
+  std::unique_ptr<Firebase> new_firebase_;
+};
+
 }  // modem
 }  // firebase
 

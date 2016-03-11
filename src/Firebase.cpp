@@ -42,6 +42,10 @@ Firebase& Firebase::auth(const String& auth) {
   return *this;
 }
 
+const String& Firebase::auth() {
+  return auth_;
+}
+
 FirebaseGet Firebase::get(const String& path) {
   return FirebaseGet(host_, auth_, path, http_.get());
 }
