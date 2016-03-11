@@ -14,10 +14,6 @@
 // limitations under the License.
 //
 #include "Firebase.h"
-#include <ESP8266WiFi.h>
-#include <WiFiClientSecure.h>
-
-using std::unique_ptr;
 
 using std::unique_ptr;
 
@@ -137,7 +133,7 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   }
 
   if (followRedirect) {
-    const char* headers[] = {"Location"};
+    const String headers[] = {"Location"};
     http_->collectHeaders(headers, 1);
   }
 

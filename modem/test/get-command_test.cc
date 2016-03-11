@@ -9,40 +9,42 @@ namespace modem {
 
 using ::testing::Return;
 using ::testing::ByMove;
+using ::testing::ReturnRef;
+using ::testing::_;
 
 class MockFirebase : public Firebase {
  public:
-  MOCK_METHOD1(getPtr, std::unique_ptr<FirebaseGet> (String));
+  MOCK_METHOD1(getPtr, std::unique_ptr<FirebaseGet>(const String&));
 };
 
 class MockFirebaseGet : public FirebaseGet {
  public:
-  MOCK_METHOD0(json, String ());
+  MOCK_CONST_METHOD0(json, const String&());
 };
 
 TEST(get, parsesPath) {
-  const String path = "/test/path";
-  const String command_fragment = String(" ") + path + "\r\n";
+  const String path("/test/path");
+  const String command_fragment(String(" ") + path + "\r\n");
 
   MockInputStream in;
   EXPECT_CALL(in, readLine())
       .WillOnce(Return(command_fragment));
 
-  MockFirebase fbase;
   std::unique_ptr<MockFirebaseGet> get(new MockFirebaseGet());
-  EXPECT_CALL(fbase, getPtr(path))
-      .WillOnce(Return(ByMove(std::unique_ptr<FirebaseGet>(get.release()))));
-
-  const String value = "Test value";
+  const String value("Test value");
   EXPECT_CALL(*get, json())
-      .WillOnce(Return(value));
+      .WillOnce(ReturnRef(value));
 
   MockOutputStream out;
-  EXPECT_CALL(out, print("+"))
+  EXPECT_CALL(out, print(String("+")))
       .WillOnce(Return(1));
 
   EXPECT_CALL(out, println(value))
       .WillOnce(Return(1));
+
+  MockFirebase fbase;
+  EXPECT_CALL(fbase, getPtr(_))
+      .WillOnce(Return(ByMove(std::unique_ptr<FirebaseGet>(get.release()))));
 
   GetCommand getCmd(&fbase);
   ASSERT_TRUE(getCmd.execute("GET", &in, &out));
