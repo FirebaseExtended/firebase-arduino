@@ -20,7 +20,7 @@ class RemoveCommandTest : public ::testing::Test {
   }
 
   void FeedCommand(const String& path) {
-    const String command_fragment(String(" ") + path + "\r\n");
+    const String command_fragment(String(" ") + path);
     EXPECT_CALL(in_, readLine())
         .WillOnce(Return(command_fragment));
   }
