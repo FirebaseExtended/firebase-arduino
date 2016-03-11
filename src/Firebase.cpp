@@ -57,7 +57,7 @@ FirebaseSet Firebase::set(const String& path, const String& value) {
 unique_ptr<FirebaseSet> Firebase::setPtr(const String& path,
                                          const String& value) {
   return unique_ptr<FirebaseSet>(
-      new FirebaseSet(host_, auth_, path, value, http_.get());
+      new FirebaseSet(host_, auth_, path, value, http_.get()));
 }
 
 FirebasePush Firebase::push(const String& path, const String& value) {
@@ -65,7 +65,7 @@ FirebasePush Firebase::push(const String& path, const String& value) {
 }
 unique_ptr<FirebasePush> Firebase::pushPtr(const String& path, const String& value) {
   return unique_ptr<FirebasePush>(
-      new FirebasePush(host_, auth_, path, value, http_.get());
+      new FirebasePush(host_, auth_, path, value, http_.get()));
 }
 
 FirebaseRemove Firebase::remove(const String& path) {
@@ -74,7 +74,7 @@ FirebaseRemove Firebase::remove(const String& path) {
 
 unique_ptr<FirebaseRemove> Firebase::removePtr(const String& path) {
   return unique_ptr<FirebaseRemove>(
-      new FirebaseRemove(host_, auth_, path, http_.get());
+      new FirebaseRemove(host_, auth_, path, http_.get()));
 }
 
 FirebaseStream Firebase::stream(const String& path) {
@@ -85,45 +85,47 @@ FirebaseStream Firebase::stream(const String& path) {
 unique_ptr<FirebaseStream> Firebase::streamPtr(const String& path) {
   // TODO: create new client dedicated to stream.
   return unique_ptr<FirebaseStream>(
-      new FirebaseStream(host_, auth_, path, http_.get());
+      new FirebaseStream(host_, auth_, path, http_.get()));
 }
 
 // FirebaseCall
 FirebaseCall::FirebaseCall(const String& host, const String& auth,
                            const char* method, const String& path,
                            const String& data, FirebaseHttpClient* http) : http_(http) {
-  String url = makeFirebaseURL(path, auth);
+  String path_with_auth = makeFirebaseURL(path, auth);
   http_->setReuseConnection(true);
-  http_->begin(host, kFirebasePort, url, true, kFirebaseFingerprint);
+  http_->begin(host, path_with_auth);
 
   bool followRedirect = false;
-  if (method == "STREAM") {
+  if (String(method) == "STREAM") {
     method = "GET";
     http_->addHeader("Accept", "text/event-stream");
     followRedirect = true;
   }
 
   if (followRedirect) {
-    const char* headers[] = {"Location"};
+    const String headers[] = {"Location"};
     http_->collectHeaders(headers, 1);
   }
 
-  int status = http_->sendRequest(method, (uint8_t*)data.c_str(), data.length());
+  int status = http_->sendRequest(method, data);
 
   // TODO: Add a max redirect check
   if (followRedirect) {
-    while (status == HTTP_CODE_TEMPORARY_REDIRECT) {
+    while (status == HttpStatus::TEMPORARY_REDIRECT) {
       String location = http_->header("Location");
       http_->setReuseConnection(false);
       http_->end();
       http_->setReuseConnection(true);
-      http_->begin(location, kFirebaseFingerprint);
-      status = http_->sendRequest("GET", (uint8_t*)NULL, 0);
+      http_->begin(location);
+      status = http_->sendRequest("GET", String());
     }
   }
 
   if (status != 200) {
-    error_ = FirebaseError(status, String(method) + " " + url + ": " + http_->errorToString(status));
+    error_ = FirebaseError(status,
+                           String(method) + " " + path_with_auth +
+                              ": " + http_->errorToString(status));
   }
 
   // if not streaming.
