@@ -46,6 +46,13 @@ class RemoveCommand : public Command {
   bool execute(const String& command, InputStream* in, OutputStream* out);
 };
 
+class PushCommand : public Command {
+ public:
+  PushCommand(Firebase* fbase) : Command(fbase) {}
+
+  bool execute(const String& command, InputStream* in, OutputStream* out);
+};
+
 }  // modem
 }  // firebase
 

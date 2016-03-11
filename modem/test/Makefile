@@ -47,7 +47,8 @@ CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = get-command_test set-command_test remove-command_test
+TESTS = get-command_test set-command_test remove-command_test \
+	push-command_test
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -150,6 +151,7 @@ set-command_test : set-command.o set-command_test.o Firebase.o FirebaseHttpClien
 		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
+
 remove-command.o : $(PROJECT_ROOT)/modem/remove-command.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/remove-command.cc
 
@@ -157,6 +159,17 @@ remove-command_test.o : $(TEST_DIR)/remove-command_test.cc $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/remove-command_test.cc
 
 remove-command_test : remove-command.o remove-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
+		arduino_mock_all.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+
+push-command.o : $(PROJECT_ROOT)/modem/push-command.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/push-command.cc
+
+push-command_test.o : $(TEST_DIR)/push-command_test.cc $(GMOCK_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/push-command_test.cc
+
+push-command_test : push-command.o push-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
 		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
