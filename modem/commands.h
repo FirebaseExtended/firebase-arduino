@@ -10,8 +10,6 @@ namespace modem {
 
 class Command {
  public:
-  // TODO(EDCOYNE): instead we should pass in a FirebaseWrapper object 
-  // that will isolate the commands from having to build a full firebase.
   Command(Firebase* fbase) : fbase_(fbase) {}
 
   // Execute command, reading any additional data needed from stream.
@@ -30,6 +28,13 @@ class Command {
 class GetCommand : public Command {
  public:
   GetCommand(Firebase* fbase) : Command(fbase) {}
+
+  bool execute(const String& command, InputStream* in, OutputStream* out);
+};
+
+class SetCommand : public Command {
+ public:
+  SetCommand(Firebase* fbase) : Command(fbase) {}
 
   bool execute(const String& command, InputStream* in, OutputStream* out);
 };

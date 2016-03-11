@@ -7,6 +7,7 @@ namespace modem {
 class InputStream {
  public:
   virtual String readLine() = 0;
+  virtual String readStringUntil(const char terminator) = 0;
 };
 
 class SerialInputStream : public InputStream {
@@ -24,6 +25,9 @@ class SerialInputStream : public InputStream {
       out += readLine();
     }
     return out;
+  }
+  String readStringUntil(const char terminator) {
+    return Serial.readStringUntil(terminator);
   }
 };
 

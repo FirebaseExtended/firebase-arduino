@@ -87,10 +87,10 @@ class FirebaseCall {
                const char* method, const String& path,
                const String& data = "",
                FirebaseHttpClient* http = NULL);
-  const FirebaseError& error() const {
+  virtual const FirebaseError& error() const {
     return error_;
   }
-  const String& response() {
+  virtual const String& response() {
     return response_;
   }
  protected:
@@ -117,9 +117,9 @@ class FirebaseSet: public FirebaseCall {
  public:
   FirebaseSet() {}
   FirebaseSet(const String& host, const String& auth,
-	      const String& path, const String& value, FirebaseHttpClient* http = NULL);
+              const String& path, const String& value, FirebaseHttpClient* http = NULL);
 
-  const String& json() const {
+  virtual const String& json() const {
     return json_;
   }
 
@@ -133,7 +133,7 @@ class FirebasePush : public FirebaseCall {
   FirebasePush(const String& host, const String& auth,
                const String& path, const String& value, FirebaseHttpClient* http = NULL);
 
-  const String& name() const {
+  virtual const String& name() const {
     return name_;
   }
 
@@ -154,9 +154,9 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
                  const String& path, FirebaseHttpClient* http = NULL);
-  
+
   // Return if there is any event available to read.
-  bool available();
+  virtual bool available();
 
   // Event type.
   enum Event {
@@ -166,14 +166,7 @@ class FirebaseStream : public FirebaseCall {
   };
 
   // Read next json encoded `event` from stream.
-  Event read(String& event);  
-
-  const FirebaseError& error() const {
-    return _error;
-  }
-  
- private:
-  FirebaseError _error;
-};
+  virtual Event read(String& event);
+ };
 
 #endif // firebase_h
