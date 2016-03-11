@@ -16,8 +16,8 @@ bool PushCommand::execute(const String& command,
   String path(in->readStringUntil(' '));
   String data(in->readLine());
 
-  // First char will be a ' ', drop it. Last two chars will be \r\n, drop them.
-  data = data.substring(1, data.length() - 2);
+  // First char will be a ' ', drop it.
+  data = data.substring(1);
 
   // TODO(ed7coyne): encode data as json.
 

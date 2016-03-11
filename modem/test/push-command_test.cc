@@ -20,7 +20,7 @@ class PushCommandTest : public ::testing::Test {
   }
 
   void FeedCommand(const String& path, const String& data) {
-    const String data_fragment(String(" ") + data + "\r\n");
+    const String data_fragment(String(" ") + data);
     EXPECT_CALL(in_, readStringUntil(' '))
         .WillOnce(Return(path));
     EXPECT_CALL(in_, readLine())
