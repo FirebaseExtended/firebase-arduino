@@ -31,7 +31,7 @@ class SetCommandTest : public ::testing::Test {
     EXPECT_CALL(out_, println(output))
         .WillOnce(Return(3));
   }
-  
+
   void ExpectErrorOutput(const String& error_message) {
     EXPECT_CALL(out_, print(String("-FAIL ")))
         .WillOnce(Return(5));
@@ -39,7 +39,7 @@ class SetCommandTest : public ::testing::Test {
         .WillOnce(Return(error_message.length()));
   }
 
-  void RunExpectingData(const String& data, const FirebaseError& error) {
+  bool RunExpectingData(const String& data, const FirebaseError& error) {
     EXPECT_CALL(*set_, error())
       .WillRepeatedly(ReturnRef(error));
 
@@ -47,11 +47,7 @@ class SetCommandTest : public ::testing::Test {
         .WillOnce(Return(ByMove(std::move(set_))));
 
     SetCommand setCmd(&fbase_);
-    if (error) {
-      ASSERT_FALSE(setCmd.execute("SET", &in_, &out_));
-    } else {
-      ASSERT_TRUE(setCmd.execute("SET", &in_, &out_));
-    }
+    return setCmd.execute("SET", &in_, &out_);
   }
 
   MockInputStream in_;
@@ -67,7 +63,7 @@ TEST_F(SetCommandTest, sendsData) {
   FeedCommand(path, data);
   ExpectOutput("+OK");
 
-  RunExpectingData(data, FirebaseError());
+  ASSERT_TRUE(RunExpectingData(data, FirebaseError()));
 }
 
 TEST_F(SetCommandTest, HandlesError) {
@@ -78,7 +74,7 @@ TEST_F(SetCommandTest, HandlesError) {
   FeedCommand(path, data);
   ExpectErrorOutput(error.message());
 
-  RunExpectingData(data, error);
+  ASSERT_FALSE(RunExpectingData(data, error));
 }
 }  // modem
 }  // firebase
