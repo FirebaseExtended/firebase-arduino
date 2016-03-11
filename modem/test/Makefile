@@ -121,8 +121,11 @@ arduino_mock_all.a : ArduinoMockAll.o
 
 # Builds a sample test.
 
-#firebase.o : $(PROJECT_ROOT)/Firebase.cpp
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/Firebase.cpp
+Firebase.o : $(PROJECT_ROOT)/Firebase.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/Firebase.cpp
+
+FirebaseHttpClient_dummy.o : $(PROJECT_ROOT)/FirebaseHttpClient_dummy.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/FirebaseHttpClient_dummy.cpp
 
 get-command.o : $(PROJECT_ROOT)/modem/get-command.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/get-command.cc
@@ -130,6 +133,6 @@ get-command.o : $(PROJECT_ROOT)/modem/get-command.cc
 get-command_test.o : $(TEST_DIR)/get-command_test.cc $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/get-command_test.cc
 
-get-command_test : get-command.o get-command_test.o gmock_main.a \
+get-command_test : get-command_test.o Firebase.o FirebaseHttpClient_dummy.o get-command.o gmock_main.a \
 		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
