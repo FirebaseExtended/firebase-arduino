@@ -14,13 +14,12 @@ bool GetCommand::execute(const String& command,
   }
 
   String path = in->readLine();
-  std::unique_ptr<FirebaseGet> get = fbase().getPtr(path);
+  std::unique_ptr<FirebaseGet> get(fbase().getPtr(path));
 
-  String value = get->json();
+  String value(get->json());
   // TODO implement json parsing to pull and process value.
   out->print("+");
   out->println(value);
-
   return true;
 }
 

@@ -22,6 +22,7 @@
 
 #include <Arduino.h>
 #include <memory>
+#include "FirebaseHttpClient.h"
 
 class FirebaseGet;
 class FirebaseSet;
@@ -34,26 +35,27 @@ class Firebase {
  public:
   Firebase(const String& host);
   Firebase& auth(const String& auth);
+  virtual ~Firebase() = default;
 
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);
-  std::unique_ptr<FirebaseGet> getPtr(const String& path);
+  virtual std::unique_ptr<FirebaseGet> getPtr(const String& path);
 
   // Set json encoded `value` at `path`.
   FirebaseSet set(const String& path, const String& json);
-  std::unique_ptr<FirebaseSet> setPtr(const String& path, const String& json);
+  virtual std::unique_ptr<FirebaseSet> setPtr(const String& path, const String& json);
 
   // Add new json encoded `value` to list at `path`.
   FirebasePush push(const String& path, const String& json);
-  std::unique_ptr<FirebasePush> pushPtr(const String& path, const String& json);
+  virtual std::unique_ptr<FirebasePush> pushPtr(const String& path, const String& json);
 
   // Delete value at `path`.
   FirebaseRemove remove(const String& path);
-  std::unique_ptr<FirebaseRemove> removePtr(const String& path);
+  virtual std::unique_ptr<FirebaseRemove> removePtr(const String& path);
 
   // Start a stream of events that affect value at `path`.
   FirebaseStream stream(const String& path);
-  std::unique_ptr<FirebaseStream> streamPtr(const String& path);
+  virtual std::unique_ptr<FirebaseStream> streamPtr(const String& path);
 
  protected:
   // Used for testing.
@@ -83,7 +85,7 @@ class FirebaseCall {
   FirebaseCall() {}
   FirebaseCall(const String& host, const String& auth,
                const char* method, const String& path,
-               const String& data = "",        
+               const String& data = "",
                FirebaseHttpClient* http = NULL);
   const FirebaseError& error() const {
     return error_;
@@ -102,8 +104,8 @@ class FirebaseGet : public FirebaseCall {
   FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
               const String& path, FirebaseHttpClient* http = NULL);
-  
-  const String& json() const {
+
+  virtual const String& json() const {
     return json_;
   }
 
