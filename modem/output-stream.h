@@ -2,7 +2,7 @@
 #define MODEM_OUTPUT_STREAM_H
 
 #include <Arduino.h>
-#include <Serial.h>
+#include <Stream.h>
 
 namespace firebase {
 namespace modem {
@@ -10,20 +10,27 @@ namespace modem {
 class OutputStream {
  public:
   virtual int println(const String& string) = 0;
+  virtual int println(const int value) = 0;
   virtual int print(const String& string) = 0;
 };
 
-class SerialOutputStream : public OutputStream {
+class ArduinoOutputStream : public OutputStream {
  public:
-  SerialOutputStream() {}
+  ArduinoOutputStream(Stream* stream) : stream_(stream) {}
 
   int println(const String& string) override {
-    return Serial.println(string.c_str());
+    return stream_->println(string.c_str());
+  }
+
+  int println(const int value) override {
+    return stream_->println(value);
   }
 
   int print(const String& string) override {
-    return Serial.print(string.c_str());
+    return stream_->print(string.c_str());
   }
+ private:
+  Stream* stream_;
 };
 
 }  // modem

@@ -22,7 +22,7 @@ bool RemoveCommand::execute(const String& command,
     return false;
   }
 
-  out->print("+OK");
+  out->println("+OK");
   return true;
 }
 

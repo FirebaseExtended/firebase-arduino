@@ -1,9 +1,10 @@
 #include "modem/commands.h"
+#include "modem/json_util.h"
 
 namespace firebase {
 namespace modem {
 
-bool PushCommand::execute(const String& command,
+bool SetCommand::execute(const String& command,
                          InputStream* in, OutputStream* out) {
   if (in == nullptr || out == nullptr) {
     return false;
@@ -16,16 +17,12 @@ bool PushCommand::execute(const String& command,
   String path(in->readStringUntil(' '));
   String data(in->readLine());
 
-  // First char will be a ' ', drop it.
-  data = data.substring(1);
+  std::unique_ptr<FirebaseSet> set(fbase().setPtr(path,
+                                                  EncodeForJson(data)));
 
-  // TODO(ed7coyne): encode data as json.
-
-  std::unique_ptr<FirebasePush> push(fbase().pushPtr(path, data));
-
-  if (push->error()) {
+  if (set->error()) {
     out->print("-FAIL ");
-    out->println(push->error().message());
+    out->println(set->error().message());
     return false;
   } else {
     out->println("+OK");

@@ -3,4 +3,4 @@
 	url = https://github.com/google/googletest.git
 [submodule "test/arduino-mock"]
 	path = test/arduino-mock
-	url = https://github.com/ikeyasu/arduino-mock.git
+	url = https://github.com/ed7coyne/arduino-mock.git

@@ -1,9 +1,10 @@
-#include "gtest/gtest.h"
-#include "test/mock-firebase.h"
-#include "modem/test/mock-output-stream.h"
-#include "modem/test/mock-input-stream.h"
 #include "Firebase.h"
+#include "gtest/gtest.h"
 #include "modem/commands.h"
+#include "modem/json_util.h"
+#include "modem/test/mock-input-stream.h"
+#include "modem/test/mock-output-stream.h"
+#include "test/mock-firebase.h"
 
 namespace firebase {
 namespace modem {
@@ -20,7 +21,7 @@ class SetCommandTest : public ::testing::Test {
   }
 
   void FeedCommand(const String& path, const String& data) {
-    const String data_fragment(String(" ") + data);
+    const String data_fragment(data);
     EXPECT_CALL(in_, readStringUntil(' '))
         .WillOnce(Return(path));
     EXPECT_CALL(in_, readLine())
@@ -43,7 +44,7 @@ class SetCommandTest : public ::testing::Test {
     EXPECT_CALL(*set_, error())
       .WillRepeatedly(ReturnRef(error));
 
-    EXPECT_CALL(fbase_, setPtr(_, data))
+    EXPECT_CALL(fbase_, setPtr(_, EncodeForJson(data)))
         .WillOnce(Return(ByMove(std::move(set_))));
 
     SetCommand setCmd(&fbase_);

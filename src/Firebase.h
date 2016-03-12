@@ -34,9 +34,11 @@ class FirebaseStream;
 // Firebase REST API client.
 class Firebase {
  public:
-  Firebase(const String& host);
+  explicit Firebase(const String& host);
   Firebase& auth(const String& auth);
   virtual ~Firebase() = default;
+
+  Firebase(const Firebase&) = delete;
 
   // Fetch auth string back.
   const String& auth();
@@ -166,6 +168,19 @@ class FirebaseStream : public FirebaseCall {
     PUT,
     PATCH
   };
+
+  static inline String EventToName(Event event) {
+    switch(event)  {
+      case UNKNOWN:
+        return "UNKNOWN";
+      case PUT:
+        return "PUT";
+      case PATCH:
+        return "PATCH";
+      default:
+        return "INVALID_EVENT_" + event;
+    }
+  }
 
   // Read next json encoded `event` from stream.
   virtual Event read(String& event);

@@ -5,7 +5,7 @@
 #include "Stream.h"
 
 struct HttpStatus {
-  static const int TEMPORARY_REDIRECT = 302;
+  static const int TEMPORARY_REDIRECT = 307;
 };
 
 class FirebaseHttpClient {
@@ -19,7 +19,7 @@ class FirebaseHttpClient {
   virtual void end() = 0;
 
   virtual void addHeader(const String& name, const String& value) = 0;
-  virtual void collectHeaders(const String header_keys[],
+  virtual void collectHeaders(const char* header_keys[],
                               const int header_key_count) = 0;
   virtual String header(const String& name) = 0;
 

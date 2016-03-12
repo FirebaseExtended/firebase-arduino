@@ -1,8 +1,10 @@
 
 #include "FirebaseHttpClient.h"
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>
+
+// The ordering of these includes matters greatly.
 #include <WiFiClientSecure.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
 // Detect whether stable version of HTTP library is installed instead of
 // master branch and patch in missing status and methods.
@@ -11,13 +13,12 @@
 #define USE_ESP_ARDUINO_CORE_2_0_0
 #endif
 
-
 class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
  public:
   FirebaseHttpClientEsp8266() {}
 
-  void SetReuseConnection(bool reuse) override {
-    http_.reuse(reuse);
+  void setReuseConnection(bool reuse) override {
+    http_.setReuse(reuse);
   }
 
   void begin(const String& url) override {
@@ -36,16 +37,16 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
     http_.addHeader(name, value);
   }
 
-  void collectHeaders(const String[]& header_keys, const int count) override {
+  void collectHeaders(const char* header_keys[], const int count) override {
     http_.collectHeaders(header_keys, count);
   }
 
   String header(const String& name) override {
-    return http_.header(name);
+    return http_.header(name.c_str());
   }
 
   int sendRequest(const String& method, const String& data) override {
-    return http_.sendRequest(method, data);
+    return http_.sendRequest(method.c_str(), (uint8_t*)data.c_str(), data.length());
   }
 
   String getString() override {
@@ -56,11 +57,11 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
     return http_.getStreamPtr();
   }
 
-  String errorToStream(int error_code) override {
+  String errorToString(int error_code) override {
 #ifdef USE_ESP_ARDUINO_CORE_2_0_0
-    return  String(status);
+    return  String(error_code);
 #else
-    return HTTPClient::errorToString(status);
+    return HTTPClient::errorToString(error_code);
 #endif
   }
 
@@ -68,7 +69,7 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
   HTTPClient http_;
 };
 
-Firebase* FirebaseHttpClient::create() {
+FirebaseHttpClient* FirebaseHttpClient::create() {
   return new FirebaseHttpClientEsp8266();
 }
 

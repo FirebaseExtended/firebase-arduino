@@ -1,9 +1,9 @@
-#include "gtest/gtest.h"
-#include "test/mock-firebase.h"
-#include "modem/test/mock-output-stream.h"
-#include "modem/test/mock-input-stream.h"
 #include "Firebase.h"
+#include "gtest/gtest.h"
 #include "modem/commands.h"
+#include "modem/test/mock-input-stream.h"
+#include "modem/test/mock-output-stream.h"
+#include "test/mock-firebase.h"
 
 namespace firebase {
 namespace modem {
@@ -12,12 +12,13 @@ using ::testing::Return;
 using ::testing::ByMove;
 using ::testing::ReturnRef;
 using ::testing::StartsWith;
+using ::testing::Matcher;
 using ::testing::_;
 
 class BeginCommandTest : public ::testing::Test {
  protected:
   void FeedCommand(const String& host, const String& auth = "") {
-    String command_fragment(String(" ") + host);
+    String command_fragment(host);
     if (!auth.empty()) {
       command_fragment += String(" ") + auth;
     }
@@ -32,7 +33,9 @@ class BeginCommandTest : public ::testing::Test {
   }
 
   void ExpectOutputStartsWith(const String& output) {
-    EXPECT_CALL(out_, println(StartsWith(output)))
+    // We have to be explicit here due to the polymorphic nature of println().
+    const Matcher<const String&> matcher = StartsWith(output);
+    EXPECT_CALL(out_, println(matcher))
         .WillOnce(Return(3));
   }
 

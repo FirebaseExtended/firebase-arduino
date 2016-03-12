@@ -18,6 +18,7 @@
 // public Firebase and optionally display them on a OLED i2c screen.
 
 #include <Firebase.h>
+#include <ESP8266WiFi.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <ArduinoJson.h>
@@ -65,7 +66,7 @@ void loop() {
        Serial.println(event);
        JsonObject& json = buf.parseObject((char*)event.c_str());
        String path = json["path"];
-       float data = json["data"];       
+       float data = json["data"]["last"];       
      
        // TODO(proppy): parse JSON object.
        display.clearDisplay();
