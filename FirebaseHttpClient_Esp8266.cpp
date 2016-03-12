@@ -11,7 +11,6 @@
 #define USE_ESP_ARDUINO_CORE_2_0_0
 #endif
 
-
 class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
  public:
   FirebaseHttpClientEsp8266() {}
