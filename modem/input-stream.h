@@ -1,6 +1,8 @@
 #ifndef MODEM_INPUT_STREAM_H
 #define MODEM_INPUT_STREAM_H
 
+#include <Stream.h>
+
 namespace firebase {
 namespace modem {
 
@@ -13,7 +15,7 @@ class InputStream {
 
 class ArduinoInputStream : public InputStream {
  public:
-  ArduinoInputStream(Stream* stream) stream_(stream) {}
+  ArduinoInputStream(Stream* stream) : stream_(stream) {}
   String readLine() {
     String out = stream_->readStringUntil('\r');
     if (stream_->peek() == '\n') {
@@ -41,27 +43,6 @@ class ArduinoInputStream : public InputStream {
 
  private:
   Stream* stream_;
-}
-
-class SerialInputStream : public InputStream {
- public:
-  String readLine() override {
-    String out = Serial.readStringUntil('\r');
-    if (Serial.peek() == '\n') {
-      // This should be a '\n' so drop it.
-      Serial.read();
-    } else {
-      // Add \r back, this is not our endline.
-      out += '\r';
-
-      // Recurse until \r\n
-      out += readLine();
-    }
-    return out;
-  }
-  String readStringUntil(const char terminator) {
-    return Serial.readStringUntil(terminator);
-  }
 };
 
 }  // modem

@@ -2,7 +2,6 @@
 #define MODEM_OUTPUT_STREAM_H
 
 #include <Arduino.h>
-#include <Serial.h>
 #include <Stream.h>
 
 namespace firebase {
@@ -27,19 +26,6 @@ class ArduinoOutputStream : public OutputStream {
   }
  private:
   Stream* stream_;
-};
-
-class SerialOutputStream : public OutputStream {
- public:
-  SerialOutputStream() {}
-
-  int println(const String& string) override {
-    return Serial.println(string.c_str());
-  }
-
-  int print(const String& string) override {
-    return Serial.print(string.c_str());
-  }
 };
 
 }  // modem

@@ -9,13 +9,17 @@
 namespace firebase {
 namespace modem {
 
-class SerialTransciever {
+class SerialTransceiver {
  public:
-  void Begin(Stream* serial);
+  void begin(Stream* serial);
+  void loop();
 
  private:
   std::unique_ptr<Command> GetCommand(const String& name, Firebase* fbase);
-}
+
+  std::unique_ptr<ArduinoInputStream> in_;
+  std::unique_ptr<ArduinoOutputStream> out_;
+};
 
 }  // modem
 }  // firebase
