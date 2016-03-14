@@ -25,10 +25,11 @@
 #define PIN 13
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
 
+#define JSON_BUFFER_SIZE 10*4
 
 // TODO: Replace with your own credentials and keep these safe.
-Firebase fbase = Firebase("brilliant-fire-9638.firebaseio.com")
-                   .auth("llXzJtqwdiHCHw6F6sehQR2EPwbO0YYdhEjPRZxG");
+Firebase fbase = Firebase("YOUR-PROJECT-ID.firebaseio.com")
+                   .auth("YOUR_AUTH_SECRET");
 
 void setup() {
   Serial.begin(9600);
@@ -37,6 +38,7 @@ void setup() {
   strip.setBrightness(25); // 0 ... 255
   strip.show(); // Initialize all pixels to 'off'
 
+  // Not connected, set the LEDs red
   colorWipe(&strip, 0xFF0000, 50);
 
   // connect to wifi.
@@ -74,7 +76,7 @@ void loop() {
 
   // Use dynamic for large JSON objects
   //  DynamicJsonBuffer jsonBuffer;
-  StaticJsonBuffer<JSON_OBJECT_SIZE(10*4)> jsonBuffer;
+  StaticJsonBuffer<JSON_OBJECT_SIZE(JSON_BUFFER_SIZE)> jsonBuffer;
 
   // create an empty object
   String ref = get.json();
@@ -87,17 +89,6 @@ void loop() {
       String pixelVal = pixelJSON[pixelAddress];
       Serial.println(pixelVal);
       strip.setPixelColor(i, pixelVal.toInt());
-
-      // Don't do this: it will waste tons of memory due to the way that the
-      // Arduino JSON library handles elements.
-      /*
-      int r = (uint32_t) pixelJSON[pixelAddress]["r"];
-      int g = (uint32_t) pixelJSON[pixelAddress]["g"];
-      int b = (uint32_t) pixelJSON[pixelAddress]["b"];
-
-      Serial.println("Setting [" + String(i) + "] to {" + String(r) + "," + String(g) + "," + String(b) + "}");
-      strip.setPixelColor(i, strip.Color(r, g, b));
-      */
     }
     strip.show();
   } else {
