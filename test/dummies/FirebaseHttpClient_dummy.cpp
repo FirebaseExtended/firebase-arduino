@@ -23,7 +23,7 @@ class FirebaseHttpClientDummy : public FirebaseHttpClient {
   void addHeader(const String& UNUSED_ARG(name), const String& UNUSED_ARG(value)) override {
   }
 
-  void collectHeaders(const String UNUSED_ARG(header_keys[]), const int UNUSED_ARG(count)) override {
+  void collectHeaders(const char* UNUSED_ARG(header_keys[]), const int UNUSED_ARG(count)) override {
   }
 
   String header(const String& UNUSED_ARG(name)) override {

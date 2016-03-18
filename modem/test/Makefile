@@ -125,8 +125,8 @@ arduino_mock_all.a : ArduinoMockAll.o
 Firebase.o : $(PROJECT_ROOT)/Firebase.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/Firebase.cpp
 
-FirebaseHttpClient_dummy.o : $(PROJECT_ROOT)/FirebaseHttpClient_dummy.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/FirebaseHttpClient_dummy.cpp
+FirebaseHttpClient_dummy.o : $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
 
 # Builds tests.
 
