@@ -22,7 +22,7 @@
 #include <Adafruit_SSD1306.h>
 #include <ArduinoJson.h>
 
-#define OLED_RESET 10
+#define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
 
 Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
@@ -65,7 +65,7 @@ void loop() {
        Serial.println(event);
        JsonObject& json = buf.parseObject((char*)event.c_str());
        String path = json["path"];
-       float data = json["data"];       
+       float data = json["data"]["last"];       
      
        // TODO(proppy): parse JSON object.
        display.clearDisplay();
