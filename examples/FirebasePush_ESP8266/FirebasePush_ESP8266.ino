@@ -20,8 +20,9 @@
 #include <Firebase.h>
 
 // create firebase client.
-Firebase fbase = Firebase("example.firebaseio.com")
-                   .auth("secret_or_token");
+Firebase fbase("example.firebaseio.com")
+	.auth("secret_or_token");
+
 void setup() {
   Serial.begin(9600);
 
