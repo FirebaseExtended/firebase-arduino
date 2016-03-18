@@ -22,7 +22,7 @@
 #include <Adafruit_SSD1306.h>
 #include <ArduinoJson.h>
 
-#define OLED_RESET 10
+#define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
 
 Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
