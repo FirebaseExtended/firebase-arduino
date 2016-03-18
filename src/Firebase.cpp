@@ -133,7 +133,7 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   }
 
   if (followRedirect) {
-    const String headers[] = {"Location"};
+    const char* headers[] = {"Location"};
     http_->collectHeaders(headers, 1);
   }
 
