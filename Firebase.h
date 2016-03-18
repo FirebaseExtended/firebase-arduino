@@ -36,6 +36,7 @@ class Firebase {
   explicit Firebase(const String& host);
   Firebase& auth(const String& auth);
   virtual ~Firebase() = default;
+
   Firebase(const Firebase&) = delete;
 
   // Fetch auth string back.
