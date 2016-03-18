@@ -33,9 +33,10 @@ class FirebaseStream;
 // Firebase REST API client.
 class Firebase {
  public:
-  Firebase(const String& host);
+  explicit Firebase(const String& host);
   Firebase& auth(const String& auth);
   virtual ~Firebase() = default;
+  Firebase(const Firebase&) = delete;
 
   // Fetch auth string back.
   const String& auth();
