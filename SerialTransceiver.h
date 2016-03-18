@@ -15,8 +15,9 @@ class SerialTransceiver {
   void loop();
 
  private:
-  std::unique_ptr<Command> GetCommand(const String& name, Firebase* fbase);
+  std::unique_ptr<Command> CreateCommand(const String& name, Firebase* fbase);
 
+  std::unique_ptr<Firebase> fbase_;
   std::unique_ptr<ArduinoInputStream> in_;
   std::unique_ptr<ArduinoOutputStream> out_;
 };

@@ -1,4 +1,4 @@
-#include "modem/serial_transciever.h"
+#include "SerialTransceiver.h"
 
 namespace firebase {
 namespace modem {
@@ -14,35 +14,35 @@ void SerialTransceiver::begin(Stream* serial) {
 }
 
 void SerialTransceiver::loop() {
-  String command_name = in->readStringUtil(' ');
-  if (command_name.empty()) {
+  String command_name = in_->readStringUntil(' ');
+  if (command_name.length() == 0) {
     // Generally means a timeout has occured.
-    continue;
+    return;
   }
 
   if (command_name == "BEGIN") {
     BeginCommand command;
-    if (command.execute(command, in, out)) {
-      fbase.reset(command.firebase());
+    if (command.execute(command_name, in_.get(), out_.get())) {
+      fbase_ = std::move(command.firebase());
     }
-  } else if (!fbase) {
-    in.drain();
-    out.println("-FAIL Must call BEGIN before anything else.");
-    continue;
+  } else if (!fbase_) {
+    in_->drain();
+    out_->println("-FAIL Must call BEGIN before anything else.");
+    return;
   }
 
-  std::unique_ptr<Command> command = GetCommand(command_name, fbase.get());
+  std::unique_ptr<Command> command = CreateCommand(command_name, fbase_.get());
   if (!command) {
-    in.drain();
-    out.println(String("-FAIL Invalid command '") + command_name + "'." );
-    continue;
+    in_->drain();
+    out_->println(String("-FAIL Invalid command '") + command_name + "'." );
+    return;
   }
 
-  command->execute(command_name, &in, &out);
+  command->execute(command_name, in_.get(), out_.get());
 }
 
-std::unique_ptr<Command> SerialTransceiver::GetCommand(const String& text,
-                                                       Firebase* fbase) {
+std::unique_ptr<Command> SerialTransceiver::CreateCommand(const String& text,
+                                                          Firebase* fbase) {
   std::unique_ptr<Command> command;
   if (text == "GET") {
     command.reset(new GetCommand(fbase));
