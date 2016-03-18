@@ -17,6 +17,8 @@
 // FirebasePush_ESP8266 is a sample that push a new timestamp to firebase
 // on each reset.
 
+#include <ESP8266WiFi.h>
+
 #include <Firebase.h>
 
 // create firebase client.
