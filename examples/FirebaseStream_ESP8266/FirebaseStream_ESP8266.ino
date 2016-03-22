@@ -44,7 +44,7 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  stream = fbase.stream("/bitcoin");  
+  stream = fbase.stream("/bitcoin/last");  
 }
 
 
@@ -65,7 +65,7 @@ void loop() {
        Serial.println(event);
        JsonObject& json = buf.parseObject((char*)event.c_str());
        String path = json["path"];
-       float data = json["data"]["last"];       
+       float data = json["data"];       
      
        // TODO(proppy): parse JSON object.
        display.clearDisplay();
