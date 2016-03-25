@@ -12,6 +12,7 @@ class InputStream {
   // This call consumes the terminator.
   virtual String readStringUntil(const char terminator) = 0;
   virtual void drain() = 0;
+  virtual bool available() = 0;
 };
 
 class ArduinoInputStream : public InputStream {
@@ -33,6 +34,10 @@ class ArduinoInputStream : public InputStream {
     while(stream_->available()) {
       stream_->read();
     }
+  }
+
+  bool available() {
+    return stream_->available();
   }
 
  private:

@@ -14,6 +14,9 @@ class Stream {
   int println(const char*) {
     return 0;
   }
+  int println(int) {
+    return 0;
+  }
   int print(const char*) {
     return 0;
   }
