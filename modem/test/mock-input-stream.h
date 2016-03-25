@@ -12,6 +12,7 @@ class MockInputStream : public InputStream {
   MOCK_METHOD0(readLine, String ());
   MOCK_METHOD1(readStringUntil, String (const char));
   MOCK_METHOD0(drain, void ());
+  MOCK_METHOD0(available, bool ());
 };
 
 }  // modem

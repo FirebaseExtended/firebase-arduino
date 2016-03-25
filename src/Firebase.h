@@ -169,6 +169,19 @@ class FirebaseStream : public FirebaseCall {
     PATCH
   };
 
+  static inline String EventToName(Event event) {
+    switch(event)  {
+      case UNKNOWN:
+        return "UNKNOWN";
+      case PUT:
+        return "PUT";
+      case PATCH:
+        return "PATCH";
+      default:
+        return "INVALID_EVENT_" + event;
+    }
+  }
+
   // Read next json encoded `event` from stream.
   virtual Event read(String& event);
 

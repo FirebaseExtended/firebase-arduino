@@ -10,6 +10,7 @@ namespace modem {
 class OutputStream {
  public:
   virtual int println(const String& string) = 0;
+  virtual int println(const int value) = 0;
   virtual int print(const String& string) = 0;
 };
 
@@ -19,6 +20,10 @@ class ArduinoOutputStream : public OutputStream {
 
   int println(const String& string) override {
     return stream_->println(string.c_str());
+  }
+
+  int println(const int value) override {
+    return stream_->println(value);
   }
 
   int print(const String& string) override {
