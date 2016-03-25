@@ -2,6 +2,14 @@
 
 namespace firebase {
 namespace modem {
+namespace {
+// TODO(edcoyne): We should use a json library to escape.
+String EncodeForJson(String input) {
+  input.replace("\\", "\\\\");
+  input.replace("\"", "\\\"");
+  return "\"" + input + "\"";
+}
+}  // namespace
 
 bool SetCommand::execute(const String& command,
                          InputStream* in, OutputStream* out) {
@@ -16,12 +24,8 @@ bool SetCommand::execute(const String& command,
   String path(in->readStringUntil(' '));
   String data(in->readLine());
 
-  // First char will be a ' ', drop it.
-  data = data.substring(1);
-
-  // TODO(ed7coyne): encode data as json.
-
-  std::unique_ptr<FirebaseSet> set(fbase().setPtr(path, data));
+  std::unique_ptr<FirebaseSet> set(fbase().setPtr(path,
+                                                  EncodeForJson(data)));
 
   if (set->error()) {
     out->print("-FAIL ");
