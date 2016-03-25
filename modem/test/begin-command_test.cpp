@@ -12,6 +12,7 @@ using ::testing::Return;
 using ::testing::ByMove;
 using ::testing::ReturnRef;
 using ::testing::StartsWith;
+using ::testing::Matcher;
 using ::testing::_;
 
 class BeginCommandTest : public ::testing::Test {
@@ -32,7 +33,9 @@ class BeginCommandTest : public ::testing::Test {
   }
 
   void ExpectOutputStartsWith(const String& output) {
-    EXPECT_CALL(out_, println(StartsWith(output)))
+    // We have to be explicit here due to the polymorphic nature of println().
+    const Matcher<const String&> matcher = StartsWith(output);
+    EXPECT_CALL(out_, println(matcher))
         .WillOnce(Return(3));
   }
 
