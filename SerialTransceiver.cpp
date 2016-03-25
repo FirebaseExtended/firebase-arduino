@@ -14,7 +14,7 @@ void SerialTransceiver::loop() {
   String command_name = in_->readStringUntil(' ');
 
   if (command_name.length() == 0 // Generally means a timeout has occured.
-      && command_name != '\n') {
+      || command_name == "\n") {
     return;
   }
 
