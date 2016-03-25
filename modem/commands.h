@@ -66,6 +66,13 @@ class BeginCommand : public Command {
   std::unique_ptr<Firebase> new_firebase_;
 };
 
+class StreamCommand : public Command {
+ public:
+  StreamCommand(Firebase* fbase) : Command(fbase) {}
+
+  bool execute(const String& command, InputStream* in, OutputStream* out);
+};
+
 }  // modem
 }  // firebase
 

@@ -10,6 +10,7 @@ namespace modem {
 class MockOutputStream : public OutputStream {
  public:
   MOCK_METHOD1(println, int (const String&));
+  MOCK_METHOD1(println, int (const int));
   MOCK_METHOD1(print, int (const String&));
 };
 
