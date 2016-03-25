@@ -1,9 +1,9 @@
-#include "gtest/gtest.h"
-#include "modem/test/mock-output-stream.h"
-#include "modem/test/mock-input-stream.h"
-#include "test/mock-firebase.h"
 #include "Firebase.h"
+#include "gtest/gtest.h"
 #include "modem/commands.h"
+#include "modem/test/mock-input-stream.h"
+#include "modem/test/mock-output-stream.h"
+#include "test/mock-firebase.h"
 
 namespace firebase {
 namespace modem {
@@ -13,10 +13,10 @@ using ::testing::ByMove;
 using ::testing::ReturnRef;
 using ::testing::_;
 
-class RemoveCommandTest : public ::testing::Test {
+class GetCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    remove_.reset(new MockFirebaseRemove());
+    get_.reset(new MockFirebaseGet());
   }
 
   void FeedCommand(const String& path) {
@@ -26,33 +26,40 @@ class RemoveCommandTest : public ::testing::Test {
   }
 
   bool RunCommand(const FirebaseError& error) {
-    EXPECT_CALL(*remove_, error())
+    EXPECT_CALL(*get_, error())
       .WillRepeatedly(ReturnRef(error));
 
-    EXPECT_CALL(fbase_, removePtr(_))
-        .WillOnce(Return(ByMove(std::move(remove_))));
+    EXPECT_CALL(fbase_, getPtr(_))
+        .WillOnce(Return(ByMove(std::move(get_))));
 
-    RemoveCommand command(&fbase_);
-    return command.execute("REMOVE", &in_, &out_);
+    GetCommand getCmd(&fbase_);
+    return getCmd.execute("GET", &in_, &out_);
   }
 
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseRemove> remove_;
+  std::unique_ptr<MockFirebaseGet> get_;
 };
 
-TEST_F(RemoveCommandTest, success) {
+TEST_F(GetCommandTest, gets) {
   const String path("/test/path");
   FeedCommand(path);
 
-  EXPECT_CALL(out_, print(String("+OK")))
-      .WillOnce(Return(3));
+  const String value("Test value");
+  EXPECT_CALL(*get_, json())
+      .WillOnce(ReturnRef(value));
+
+  EXPECT_CALL(out_, print(String("+")))
+      .WillOnce(Return(1));
+
+  EXPECT_CALL(out_, println(value))
+      .WillOnce(Return(1));
 
   ASSERT_TRUE(RunCommand(FirebaseError()));
 }
 
-TEST_F(RemoveCommandTest, handlesError) {
+TEST_F(GetCommandTest, handlesError) {
   FirebaseError error(-200, "Test Error.");
   const String path("/test/path");
   FeedCommand(path);
@@ -63,6 +70,7 @@ TEST_F(RemoveCommandTest, handlesError) {
   EXPECT_CALL(out_, println(error.message()))
       .WillOnce(Return(1));
   ASSERT_FALSE(RunCommand(error));
+
 }
 
 }  // modem
