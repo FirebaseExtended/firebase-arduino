@@ -1,8 +1,3 @@
-#include <Firebase.h>
-#include <FirebaseHttpClient.h>
-#include <SerialTransceiver.h>
-#include <SoftwareSerial.h>
-
 //
 // Copyright 2015 Google Inc.
 //
@@ -21,6 +16,13 @@
 
 // FirebasePush_ESP8266 is a sample that will start our serial transciever
 // listening on a software port and allow debug info over main serial port.
+
+#include <SoftwareSerial.h>
+#include <ESP8266WiFi.h>
+
+#include <Firebase.h>
+#include <SerialTransceiver.h>
+
 
 SoftwareSerial data_serial(13 /*RX*/, 14/*TX*/);
 firebase::modem::SerialTransceiver transceiver;
