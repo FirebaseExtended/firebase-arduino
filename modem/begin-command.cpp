@@ -17,8 +17,6 @@ bool BeginCommand::execute(const String& command,
   String auth;
 
   String data(in->readLine());
-  // Remove leading ' '.
-  data = data.substring(1);
 
   int space_index = data.indexOf(' ');
   if (space_index == -1) {
@@ -30,7 +28,7 @@ bool BeginCommand::execute(const String& command,
     auth = data.substring(space_index + 1);
   }
 
-  if (host.length() != 0) {
+  if (host.length() == 0) {
     out->println("-FAIL Missing host");
     return false;
   }
