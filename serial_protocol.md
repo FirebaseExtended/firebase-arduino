@@ -20,8 +20,8 @@ Only needs to be called when the chiplet is in a new environment and needs to co
 	NETWORK $SSID
 	NETWORK $SSID $PASSWORD
 ###Response
-	CONNECTED - When connected to new network
-	UNABLE_TO_CONNECT - When unable to connect
+	+CONNECTED - When connected to new network
+	-UNABLE_TO_CONNECT - When unable to connect
 ###Examples
 	>> NETWORK home-guest
 	<< +CONNECTED
@@ -36,7 +36,7 @@ Must be called after creating a Serial connection, it can take either just a hos
 	BEGIN $Host
 	BEGIN $Host $Secret
 ###Response
-	OK - Accepted initialization parameters
+	+OK - Accepted initialization parameters
 ###Examples
 	>> BEGIN https://samplechat.firebaseio-demo.com
 	<< +OK
@@ -85,14 +85,16 @@ Similar to SET above but used to write multiline strings or raw binary data. Dat
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
-	SET$ $PATH $DATA_BYTE_COUNT
+	SET$ $PATH 
+	$DATA_BYTE_COUNT
 	$DATA
 ###Response
 	+OK
 	-FAIL
 	-FAIL_TIMEOUT
 ###Examples
-	>>SET /user/aturing/address 24
+	>>SET /user/aturing/address 
+	>>24
 	>>78 High Street,
 	>>Hampton 
 	<<+OK
@@ -143,7 +145,7 @@ Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of 
 ###Response
 	$KEY
 ###Examples
-	>>PUSH /user/aturing/quotes 91
+	>>PUSH$ /user/aturing/quotes 91
 	>>We can only see a short distance ahead,
 	>>but we can see plenty there that needs to be done.
 	<<+-K94eLnB0rAAvfkh_WC3
@@ -153,7 +155,7 @@ Used to register to receive a stream of events that occur to the object at the p
 
 After registering you will start receiving events on the response line. They will be formatted as one line with the event type {PUT,PATCH,etc..} followed by the sub_path that changed and the other line with the data associated with that event type. This data will be formatted similar to GET results and can have multi-line batch strings (*) or json strings (&).
 
-The event stream will continue until you send CANCEL_STREAM.
+The event stream will continue until you send END_STREAM.
 
 When there is an ongoing event stream no other commands can be processed until you call END_STREAM as the event stream owns the return line. 
 ###Usage
