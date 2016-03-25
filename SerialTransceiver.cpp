@@ -6,17 +6,15 @@ namespace modem {
 void SerialTransceiver::begin(Stream* serial) {
   std::unique_ptr<Firebase> fbase;
 
-  // Timeout in 5min of waiting for serial.
-  serial->setTimeout(300000);
-
   in_.reset(new ArduinoInputStream(serial));
   out_.reset(new ArduinoOutputStream(serial));
 }
 
 void SerialTransceiver::loop() {
   String command_name = in_->readStringUntil(' ');
-  if (command_name.length() == 0) {
-    // Generally means a timeout has occured.
+
+  if (command_name.length() == 0 // Generally means a timeout has occured.
+      && command_name != '\n') {
     return;
   }
 
@@ -25,6 +23,7 @@ void SerialTransceiver::loop() {
     if (command.execute(command_name, in_.get(), out_.get())) {
       fbase_ = std::move(command.firebase());
     }
+    return;
   } else if (!fbase_) {
     in_->drain();
     out_->println("-FAIL Must call BEGIN before anything else.");
@@ -55,7 +54,6 @@ std::unique_ptr<Command> SerialTransceiver::CreateCommand(const String& text,
   }
   return command;
 }
-
 
 }  // modem
 }  // firebase
