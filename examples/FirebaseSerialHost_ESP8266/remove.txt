@@ -1,0 +1,1 @@
+REMOVE /serial/test
