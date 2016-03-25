@@ -1,15 +1,8 @@
 #include "modem/commands.h"
+#include "modem/json_util.h"
 
 namespace firebase {
 namespace modem {
-namespace {
-// TODO(edcoyne): We should use a json library to escape.
-String EncodeForJson(String input) {
-  input.replace("\\", "\\\\");
-  input.replace("\"", "\\\"");
-  return "\"" + input + "\"";
-}
-}  // namespace
 
 bool SetCommand::execute(const String& command,
                          InputStream* in, OutputStream* out) {

@@ -1,9 +1,9 @@
-#include "gtest/gtest.h"
-#include "test/mock-firebase.h"
-#include "modem/test/mock-output-stream.h"
-#include "modem/test/mock-input-stream.h"
 #include "Firebase.h"
+#include "gtest/gtest.h"
 #include "modem/commands.h"
+#include "modem/test/mock-input-stream.h"
+#include "modem/test/mock-output-stream.h"
+#include "test/mock-firebase.h"
 
 namespace firebase {
 namespace modem {
@@ -17,7 +17,7 @@ using ::testing::_;
 class BeginCommandTest : public ::testing::Test {
  protected:
   void FeedCommand(const String& host, const String& auth = "") {
-    String command_fragment(String(" ") + host);
+    String command_fragment(host);
     if (!auth.empty()) {
       command_fragment += String(" ") + auth;
     }
