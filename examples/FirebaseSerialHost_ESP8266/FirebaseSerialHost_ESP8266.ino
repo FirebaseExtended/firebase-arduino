@@ -14,12 +14,13 @@
 // limitations under the License.
 //
 
+
 // FirebasePush_ESP8266 is a sample that will start our serial transciever
-// listening on a software port and allow debug info over main serial port.
+// listening on a software port and allow debug over the main serial port.
 //
 // A suggested setup for testing this example would be a USB to TTL cable
 // with the green wire connected to pin 5 and the white wire connected to
-// pin 4.
+// pin 4 (on the huzzah feather esp8266).
 // First edit begin.txt and put in your host and secret.
 // Then run the following commands to setup the serial port in linux:
 // stty -F /dev/ttyUSB0 9600 raw -echo -echoe -echok
@@ -27,7 +28,7 @@
 // cat /dev/ttyUSB0 &
 // This console will now read all responses from the modem. Then do:
 // cat begin.txt > /dev/ttyUSB0
-// You should see +OK and you can now feed in theother example commmands.
+// You should see +OK and you can now feed in the other example commmands.
 
 #include <SoftwareSerial.h>
 #include <ESP8266WiFi.h>
