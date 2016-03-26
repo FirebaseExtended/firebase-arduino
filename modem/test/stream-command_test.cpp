@@ -46,7 +46,6 @@ TEST_F(StreamCommandTest, streams) {
       .WillOnce(Return(path))
       .WillOnce(Return("END_STREAM"));
 
-
   const String value("Test value");
   EXPECT_CALL(*stream_, available())
       .WillOnce(Return(true))
@@ -68,6 +67,9 @@ TEST_F(StreamCommandTest, streams) {
   EXPECT_CALL(out_, println(value.length()))
       .WillOnce(Return(1));
   EXPECT_CALL(out_, println(value))
+      .WillOnce(Return(1));
+
+  EXPECT_CALL(out_, println(String("+OK")))
       .WillOnce(Return(1));
 
   ASSERT_TRUE(RunCommand(FirebaseError()));

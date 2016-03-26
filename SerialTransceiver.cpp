@@ -51,6 +51,8 @@ std::unique_ptr<Command> SerialTransceiver::CreateCommand(const String& text,
     command.reset(new PushCommand(fbase));
   } else if (text == "REMOVE") {
     command.reset(new RemoveCommand(fbase));
+  } else if (text == "BEGIN_STREAM") {
+    command.reset(new StreamCommand(fbase));
   }
   return command;
 }

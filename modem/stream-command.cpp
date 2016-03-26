@@ -36,6 +36,7 @@ bool StreamCommand::execute(const String& command,
     } else if (in->available()) {
       String command = in->readLine();
       if (command == "END_STREAM") {
+        out->println("+OK");
         running = false;
       } else {
         out->println("-FAIL Cannot call any command but END_STREAM.");
