@@ -22,13 +22,13 @@
 #include <Adafruit_NeoPixel.h>
 #include "colors_ext.h"
 
-#define PIN 13
+const int PIN=13;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
 
 #define JSON_BUFFER_SIZE 10*4
 
 // TODO: Replace with your own credentials and keep these safe.
-Firebase fbase = Firebase("YOUR-PROJECT-ID.firebaseio.com")
+Firebase fbase = Firebase("YOUR-PROJECT.firebaseio.com")
                    .auth("YOUR_AUTH_SECRET");
 
 void setup() {
