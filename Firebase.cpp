@@ -160,11 +160,18 @@ FirebaseSet::FirebaseSet(const String& host, const String& auth,
     json_ = response();
   }
 }
+
 // FirebasePush
 FirebasePush::FirebasePush(const String& host, const String& auth,
                            const String& path, const String& value,
-                           HTTPClient* http)
-  : FirebaseCall(host, auth, "POST", path, value, http) {
+                           HTTPClient* http) {
+  begin(host, auth, path, value, http);
+}
+
+void FirebasePush::begin(const String& host, const String& auth,
+                         const String& path, const String& value,
+                         HTTPClient* http) {
+  FirebaseCall::begin(host, auth, "POST", path, value, http);
   if (!error()) {
     // TODO: parse name
     name_ = response();
@@ -212,6 +219,9 @@ FirebaseStream::Event FirebaseStream::read(String& event) {
 }
 
 void FirebaseSerial::begin(const String& host, const String& auth, const String& path) {
+  host_ = host;
+  auth_ = auth;
+  path_ = path;
   stream_.begin(host, auth, path, &httpStream_);
 }
 
@@ -223,4 +233,8 @@ String FirebaseSerial::read() {
   String event;
   auto type = stream_.read(event);
   return event;
+}
+
+void FirebaseSerial::print(String data) {
+  push_.begin(host_, auth_, path_, data, &httpPush_);
 }
