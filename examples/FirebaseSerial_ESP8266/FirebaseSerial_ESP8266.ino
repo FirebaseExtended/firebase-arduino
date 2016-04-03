@@ -17,17 +17,14 @@
 // FirebaseStream_ESP8266 is a sample that stream bitcoin price from a
 // public Firebase and optionally display them on a OLED i2c screen.
 
-#include <Firebase.h>
-
-FirebaseSerial firebaseSerial;
+#include <FirebaseSerial.h>
 
 void setup() {
   Serial.begin(9600);
-  firebaseSerial.begin("example.firebaseio.com", "secret");
 
   // connect to wifi.
-  WiFi.begin("GoogleGuest", "PASSWORD");
-  Serial.print("connecting");
+  WiFi.begin("SSID", "PASSWORD");
+  Serial.print("connecting to wifi");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
@@ -35,11 +32,22 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
+
+  FirebaseSerial.begin("example.firebaseio.com", "secret");
+  Serial.print("connecting to firebase");
+  while (!FirebaseSerial.connected()) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println();
+  Serial.println("connected");
 }
 
 
 void loop() {
-  if (firebaseSerial.available()) {
-    Serial.print(firebaseSerial.read());
-  }   
+  if (FirebaseSerial.available()) {
+    Serial.println(FirebaseSerial.read());
+  }
+  delay(1000);
+  FirebaseSerial.println("{\".sv\": \"timestamp\"}");
 }

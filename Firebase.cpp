@@ -217,24 +217,3 @@ FirebaseStream::Event FirebaseStream::read(String& event) {
   client->readStringUntil('\n'); // consume separator
   return type;
 }
-
-void FirebaseSerial::begin(const String& host, const String& auth, const String& path) {
-  host_ = host;
-  auth_ = auth;
-  path_ = path;
-  stream_.begin(host, auth, path, &httpStream_);
-}
-
-bool FirebaseSerial::available() {
-  return httpStream_.getStreamPtr()->available();
-}
-
-String FirebaseSerial::read() {
-  String event;
-  auto type = stream_.read(event);
-  return event;
-}
-
-void FirebaseSerial::print(String data) {
-  push_.begin(host_, auth_, path_, data, &httpPush_);
-}

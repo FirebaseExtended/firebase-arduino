@@ -179,22 +179,4 @@ class FirebaseStream : public FirebaseCall {
   FirebaseError _error;
 };
 
-class FirebaseSerial {
- public:
-  FirebaseSerial() {}
-  void begin(const String& host, const String& auth = "", const String& path = "/");
-  bool available();
-  String read();
-  void print(String data);
-
- private:
-  String host_;
-  String auth_;
-  String path_;
-  HTTPClient httpStream_;
-  FirebaseStream stream_;
-  HTTPClient httpPush_;
-  FirebasePush push_;
-};
-
 #endif // firebase_h
