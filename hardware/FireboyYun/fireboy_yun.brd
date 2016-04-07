@@ -163,8 +163,8 @@
 <text x="41.148" y="39.37" size="0.8128" layer="21" font="vector" rot="R180">DAT</text>
 <text x="41.148" y="54.61" size="0.8128" layer="21" font="vector" rot="R180">DAT</text>
 <text x="40.894" y="69.85" size="0.8128" layer="21" font="vector" rot="R180">DAT</text>
-<text x="41.148" y="76.962" size="1.778" layer="21" font="vector">Lara</text>
-<text x="46.736" y="77.216" size="1.778" layer="22" font="vector" rot="MR0">Lara</text>
+<text x="40.132" y="77.216" size="1.778" layer="21">Gower</text>
+<text x="47.244" y="77.216" size="1.778" layer="22" rot="MR0">Gower</text>
 </plain>
 <libraries>
 <library name="adafruit">
