@@ -22,6 +22,7 @@
 
 #include <Arduino.h>
 #include <memory>
+#include "third-party/arduino-json-5.1.1/include/ArduinoJson.h"
 
 class FirebaseGet;
 class FirebaseSet;
@@ -88,13 +89,18 @@ class FirebaseCall {
   const FirebaseError& error() const {
     return error_;
   }
+
   const String& response() {
     return response_;
   }
+
+  const JsonObject& json();
+
  protected:
   FirebaseHttpClient* http_;
   FirebaseError error_;
   String response_;
+  DynamicJsonBuffer buffer_;
 };
 
 class FirebaseGet : public FirebaseCall {
@@ -102,10 +108,6 @@ class FirebaseGet : public FirebaseCall {
   FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
               const String& path, FirebaseHttpClient* http = NULL);
-  
-  const String& json() const {
-    return json_;
-  }
 
  private:
   String json_;
@@ -116,10 +118,6 @@ class FirebaseSet: public FirebaseCall {
   FirebaseSet() {}
   FirebaseSet(const String& host, const String& auth,
 	      const String& path, const String& value, FirebaseHttpClient* http = NULL);
-
-  const String& json() const {
-    return json_;
-  }
 
  private:
   String json_;
@@ -169,7 +167,7 @@ class FirebaseStream : public FirebaseCall {
   const FirebaseError& error() const {
     return _error;
   }
-  
+
  private:
   FirebaseError _error;
 };
