@@ -3,7 +3,7 @@ During the first use, or when the chiplet changes environments a “NETWORK” c
 
 Every time a serial connection is established we will expect a “BEGIN” call after which any subsequent calls can be made, until the connection is closed. 
 
-In the following examples we use $ to represent variables. For example $Host represents your firebase host.
+In the following examples we use %% to represent variables. For example %Host% represents your firebase host.
 
 ##Response Format Byte
 All responses will be prefixed with one of the following bytes signifying the response type.
@@ -17,8 +17,8 @@ All responses will be prefixed with one of the following bytes signifying the re
 ##NETWORK
 Only needs to be called when the chiplet is in a new environment and needs to connect to a new network. This setting will be stored by the chiplet and persisted through power cycles.
 ###Usage
-	NETWORK $SSID
-	NETWORK $SSID $PASSWORD
+	NETWORK %SSID%
+	NETWORK %SSID% %PASSWORD%
 ###Response
 	+CONNECTED - When connected to new network
 	-UNABLE_TO_CONNECT - When unable to connect
@@ -33,8 +33,8 @@ Only needs to be called when the chiplet is in a new environment and needs to co
 ##BEGIN
 Must be called after creating a Serial connection, it can take either just a host for accessing public variables or you may also provide a secret for accessing protected variables in the database.
 ###Usage
-	BEGIN $Host
-	BEGIN $Host $Secret
+	BEGIN %Host%
+	BEGIN %Host% %Secret%
 ###Response
 	+OK - Accepted initialization parameters
 ###Examples
@@ -43,12 +43,12 @@ Must be called after creating a Serial connection, it can take either just a hos
 	>> BEGIN https://samplechat.firebaseio-demo.com nnz...sdf
 	<< +OK
 ##GET
-Fetches the value at $PATH and returns it on the serial line. If $PATH points to a leaf node you will get the raw value back, if it points to an internal node you will get a JSON string with all children.
+Fetches the value at %PATH% and returns it on the serial line. If %PATH% points to a leaf node you will get the raw value back, if it points to an internal node you will get a JSON string with all children.
 ###Usage
-	GET $PATH
+	GET %PATH%
 ###Response
-	$DATA_AT_PATH
-	$JSON_DATA_BYTE_COUNT \n\r $JSON_DATA
+	%DATA_AT_PATH%
+	$%JSON_DATA_BYTE_COUNT% \r\n %JSON_DATA
 ###Examples
 	>>GET /user/aturing/first
 	<<+Alan
@@ -59,12 +59,12 @@ Fetches the value at $PATH and returns it on the serial line. If $PATH points to
 ##GET{+,*,#,.,?,$}
 Same as GET but will either return the value in the format specified (by the format byte) or return an error.
 ###Usage
-	GET+ $PATH
-	GET: $PATH
-	GET? $PATH
-	GET$ $PATH
+	GET+ %PATH%
+	GET: %PATH%
+	GET? %PATH%
+	GET$ %PATH%
 ###Response
-	$FORMATED_RESPONSE
+	%FORMATED_RESPONSE%
 ###Examples
 	>>GET? /user/aturing/was_human
 	<<?true
@@ -73,7 +73,7 @@ Same as GET but will either return the value in the format specified (by the for
 ##SET
 Store the data provided at the path provided. This method should be used for simple strings and will assume the first newline is the end of the data.
 ###Usage
-	SET $PATH $DATA
+	SET %PATH% %DATA%
 ###Response
 	+OK
 	-FAIL
@@ -83,11 +83,11 @@ Store the data provided at the path provided. This method should be used for sim
 ##SET$
 Similar to SET above but used to write multiline strings or raw binary data. Data format is similar to the batch string ($) return type, we specify the $DATA_BYTE_COUNT on the same line as SET$ then a newline and all data. However which the batch string ($) return type returns data json escaped and quoted you may provide raw data and we will handle the escaping.
 
-Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
+Receiver will wait until a timeout for client to send %DATA_BYTE_COUNT% worth of data before becoming responsive again.
 ###Usage
-	SET$ $PATH 
-	$DATA_BYTE_COUNT
-	$DATA
+	SET$ %PATH%
+	%DATA_BYTE_COUNT%
+	%DATA%
 ###Response
 	+OK
 	-FAIL
@@ -102,9 +102,9 @@ Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of 
 ##SET{+,*,#,.,?}
 Same as SET but will force the value to be stored in the given type or return an error if we cannot parse it as that type.
 ###Usage
-	SET+ $PATH $VALUE
-	SET: $PATH $VALUE
-	SET? $PATH $VALUE
+	SET+ %PATH% %VALUE%
+	SET: %PATH% %VALUE%
+	SET? %PATH% %VALUE%
 ###Response
 	+OK
 	-INCORRECT_TYPE
@@ -117,7 +117,7 @@ Same as SET but will force the value to be stored in the given type or return an
 ##REMOVE
 Deletes the value located at the path provided.
 ###Usage
-	REMOVE $PATH
+	REMOVE %PATH%
 ###Response
 	+OK
 	-FAIL
@@ -128,9 +128,9 @@ Deletes the value located at the path provided.
 ##PUSH
 Adds a value to the list located at the path provided and returns the key at which the new object is located.
 ###Usage
-	PUSH $PATH $DATA
+	PUSH %PATH% %DATA%
 ###Response
-	$KEY
+	%KEY%
 ###Examples
 	>>PUSH /user/aturing/login_timestamps 1455052043
 	<<+-K94eLnB0rAAvfkh_WC2
@@ -140,10 +140,10 @@ Similar to PUSH but used to write multiline strings or raw binary data. Data for
 
 Receiver will wait until a timeout for client to send $DATA_BYTE_COUNT worth of data before becoming responsive again.
 ###Usage
-	PUSH$ $PATH $DATA_BYTE_COUNT
-	$DATA
+	PUSH$ %PATH% %DATA_BYTE_COUNT%
+	%DATA%
 ###Response
-	$KEY
+	%KEY%
 ###Examples
 	>>PUSH$ /user/aturing/quotes 91
 	>>We can only see a short distance ahead,
@@ -159,10 +159,10 @@ The event stream will continue until you send END_STREAM.
 
 When there is an ongoing event stream no other commands can be processed until you call END_STREAM as the event stream owns the return line. 
 ###Usage
-	BEGIN_STREAM $PATH
+	BEGIN_STREAM %PATH%
 ###Response
-	$EVENT_NAME $SUB_PATH
-	$DATA
+	%EVENT_NAME% %SUB_PATH%
+	%DATA%
 	+OK
 ###Examples
 	>>BEGIN_STREAM /user/aturing
@@ -176,7 +176,7 @@ When there is an ongoing event stream no other commands can be processed until y
 Used to stop listening to events at a given path. This must be the same path provided to a previous BEGIN_STREAM call.
 
 ###Usage
-	END_STREAM $PATH
+	END_STREAM %PATH%
 ###Response
 	+OK
 	-NOT_STREAMING_PATH
