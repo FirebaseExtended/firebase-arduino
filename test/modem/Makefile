@@ -17,20 +17,21 @@
 # Points to the root of Google Test, relative to where this file is.
 # Remember to tweak this if you move this file, or if you want to use
 # a copy of Google Test at a different location.
-GTEST_DIR = ../../test/googletest/googletest/
+GTEST_DIR = ../googletest/googletest/
 
 # Points to the root of Google Mock, relative to where this file is.
 # Remember to tweak this if you move this file.
-GMOCK_DIR = ../../test/googletest/googlemock/
+GMOCK_DIR = ../googletest/googlemock/
 
 # Points to the root of Arduino mock, relative to where this file is.
 # Remember to tweak this if you move this file.
-ARDUINO_MOCK_DIR = ../../test/arduino-mock/
+ARDUINO_MOCK_DIR = ../arduino-mock/
 
 # Where to find user code.
 TEST_DIR = .
 
 PROJECT_ROOT = ../../
+SRC_ROOT = $(PROJECT_ROOT)/src
 
 # Flags passed to the preprocessor.
 # Set Google Test and Google Mock's header directories as system
@@ -40,6 +41,7 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include \
 		-I$(ARDUINO_MOCK_DIR)/include/arduino-mock/ \
 		-I$(ARDUINO_MOCK_DIR)/include/ \
 		-I$(PROJECT_ROOT)/test/dummies \
+		-I$(PROJECT_ROOT)/src \
 		-I$(PROJECT_ROOT)
 
 # Flags passed to the C++ compiler.
@@ -122,16 +124,16 @@ arduino_mock_all.a : ArduinoMockAll.o
 
 # Builds shared objects.
 
-Firebase.o : $(PROJECT_ROOT)/Firebase.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/Firebase.cpp
+Firebase.o : $(SRC_ROOT)/Firebase.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/Firebase.cpp
 
 FirebaseHttpClient_dummy.o : $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
 
 # Builds tests.
 
-get-command.o : $(PROJECT_ROOT)/modem/get-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/get-command.cpp
+get-command.o : $(SRC_ROOT)/modem/get-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/get-command.cpp
 
 get-command_test.o : $(TEST_DIR)/get-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/get-command_test.cpp
@@ -141,8 +143,8 @@ get-command_test : get-command_test.o Firebase.o FirebaseHttpClient_dummy.o get-
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 
-set-command.o : $(PROJECT_ROOT)/modem/set-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/set-command.cpp
+set-command.o : $(SRC_ROOT)/modem/set-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/set-command.cpp
 
 set-command_test.o : $(TEST_DIR)/set-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/set-command_test.cpp
@@ -152,8 +154,8 @@ set-command_test : set-command.o set-command_test.o Firebase.o FirebaseHttpClien
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 
-remove-command.o : $(PROJECT_ROOT)/modem/remove-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/remove-command.cpp
+remove-command.o : $(SRC_ROOT)/modem/remove-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/remove-command.cpp
 
 remove-command_test.o : $(TEST_DIR)/remove-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/remove-command_test.cpp
@@ -163,8 +165,8 @@ remove-command_test : remove-command.o remove-command_test.o Firebase.o Firebase
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 
-push-command.o : $(PROJECT_ROOT)/modem/push-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/push-command.cpp
+push-command.o : $(SRC_ROOT)/modem/push-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/push-command.cpp
 
 push-command_test.o : $(TEST_DIR)/push-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/push-command_test.cpp
@@ -173,8 +175,8 @@ push-command_test : push-command.o push-command_test.o Firebase.o FirebaseHttpCl
 		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-begin-command.o : $(PROJECT_ROOT)/modem/begin-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/begin-command.cpp
+begin-command.o : $(SRC_ROOT)/modem/begin-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/begin-command.cpp
 
 begin-command_test.o : $(TEST_DIR)/begin-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/begin-command_test.cpp
@@ -183,8 +185,8 @@ begin-command_test : begin-command.o begin-command_test.o Firebase.o FirebaseHtt
 		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-stream-command.o : $(PROJECT_ROOT)/modem/stream-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/modem/stream-command.cpp
+stream-command.o : $(SRC_ROOT)/modem/stream-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/stream-command.cpp
 
 stream-command_test.o : $(TEST_DIR)/stream-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/stream-command_test.cpp
