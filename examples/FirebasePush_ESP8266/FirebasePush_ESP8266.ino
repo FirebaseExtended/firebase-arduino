@@ -22,7 +22,6 @@
 // create firebase client.
 Firebase fbase = Firebase("example.firebaseio.com")
                    .auth("secret_or_token");
-
 void setup() {
   Serial.begin(9600);
 
@@ -46,7 +45,7 @@ void setup() {
   }
 
   // print key.
-  Serial.println(push.name());
+  Serial.println("Name: " + push.name());
 
   // get all entries.
   FirebaseGet get = fbase.get("/logs");
@@ -55,8 +54,9 @@ void setup() {
       Serial.println(push.error().message());  
       return;
   }
-  // print json.
-  Serial.println(get.json());
+  // Print written timestamp.
+  String data = get.parseResponse()[push.name()];
+  Serial.println("Timestamp:" + data);
 }
 
 void loop() {

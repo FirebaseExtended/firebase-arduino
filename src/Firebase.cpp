@@ -118,15 +118,15 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   }
 }
 
+const JsonObject& FirebaseCall::parseResponse() {
+  return buffer_.parseObject(response());
+}
+
 // FirebaseGet
 FirebaseGet::FirebaseGet(const String& host, const String& auth,
                          const String& path,
                          HTTPClient* http)
   : FirebaseCall(host, auth, "GET", path, "", http) {
-  if (!error()) {
-    // TODO: parse json
-    json_ = response();
-  }
 }
 
 // FirebaseSet
@@ -145,8 +145,7 @@ FirebasePush::FirebasePush(const String& host, const String& auth,
                            HTTPClient* http)
   : FirebaseCall(host, auth, "POST", path, value, http) {
   if (!error()) {
-    // TODO: parse name
-    name_ = response();
+    name_ = parseResponse()["name"].as<const char*>();
   }
 }
 

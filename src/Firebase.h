@@ -24,6 +24,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
+#include "third-party/arduino-json-5.1.1/include/ArduinoJson.h"
 
 class FirebaseGet;
 class FirebaseSet;
@@ -81,13 +82,18 @@ class FirebaseCall {
   const FirebaseError& error() const {
     return error_;
   }
+
   const String& response() {
     return response_;
   }
+
+  const JsonObject parseResponse();
+
  protected:
   HTTPClient* http_;
   FirebaseError error_;
   String response_;
+  DynamicJsonBuffer buffer_;
 };
 
 class FirebaseGet : public FirebaseCall {
@@ -95,10 +101,6 @@ class FirebaseGet : public FirebaseCall {
   FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
               const String& path, HTTPClient* http = NULL);
-  
-  const String& json() const {
-    return json_;
-  }
 
  private:
   String json_;
@@ -109,10 +111,6 @@ class FirebaseSet: public FirebaseCall {
   FirebaseSet() {}
   FirebaseSet(const String& host, const String& auth,
 	      const String& path, const String& value, HTTPClient* http = NULL);
-
-  const String& json() const {
-    return json_;
-  }
 
  private:
   String json_;
@@ -145,7 +143,7 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
                  const String& path, HTTPClient* http = NULL);
-  
+
   // Return if there is any event available to read.
   bool available();
 
@@ -162,7 +160,7 @@ class FirebaseStream : public FirebaseCall {
   const FirebaseError& error() const {
     return _error;
   }
-  
+
  private:
   FirebaseError _error;
 };
