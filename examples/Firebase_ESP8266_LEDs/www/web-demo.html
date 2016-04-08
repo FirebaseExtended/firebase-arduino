@@ -1,0 +1,226 @@
+<!--
+
+  Copyright 2016 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<html>
+<head>
+  <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="./bower_components/polymer-color-picker/polymer-color-picker.html">
+</head>
+<script>
+  // TODO: Needs security.
+  var firebaseUrl = 'https://YOUR_FIREBASE_URL.firebaseio.com';
+  var firebaseSecret = 'YOUR_FIREBASE_SECRET';
+</script>
+<body>
+<h2>Paint Demo</h3>
+  <polymer-color-picker onClick="updateColor('colorpicker')" id="colorpicker"
+      color="{{selectedColor}}"></polymer-color-picker>
+   Pick a color then click a cell.
+
+  <!-- TODO: Switch to CSS and Polymer elements, table is so basic. -->
+  <table border=1 style="width:800px; height:400px">
+    <tr>
+      <td id="pixel0" onClick="setColor('pixel0')"></td>
+      <td id="pixel1" onClick="setColor('pixel1')"></td>
+      <td id="pixel2" onClick="setColor('pixel2')"></td>
+      <td id="pixel3" onClick="setColor('pixel3')"></td>
+      <td id="pixel4" onClick="setColor('pixel4')"></td>
+      <td id="pixel5" onClick="setColor('pixel5')"></td>
+      <td id="pixel6" onClick="setColor('pixel6')"></td>
+      <td id="pixel7" onClick="setColor('pixel7')"></td>
+    </tr>
+    <tr>
+      <td id="pixel8" onClick="setColor('pixel8')"></td>
+      <td id="pixel9" onClick="setColor('pixel9')"></td>
+      <td id="pixel10" onClick="setColor('pixel10')"></td>
+      <td id="pixel11" onClick="setColor('pixel11')"></td>
+      <td id="pixel12" onClick="setColor('pixel12')"></td>
+      <td id="pixel13" onClick="setColor('pixel13')"></td>
+      <td id="pixel14" onClick="setColor('pixel14')"></td>
+      <td id="pixel15" onClick="setColor('pixel15')"></td>
+    </tr>
+    <tr>
+      <td id="pixel16" onClick="setColor('pixel16')"></td>
+      <td id="pixel17" onClick="setColor('pixel17')"></td>
+      <td id="pixel18" onClick="setColor('pixel18')"></td>
+      <td id="pixel19" onClick="setColor('pixel19')"></td>
+      <td id="pixel20" onClick="setColor('pixel20')"></td>
+      <td id="pixel21" onClick="setColor('pixel21')"></td>
+      <td id="pixel22" onClick="setColor('pixel22')"></td>
+      <td id="pixel23" onClick="setColor('pixel23')"></td>
+    </tr>
+    <tr>
+      <td id="pixel24" onClick="setColor('pixel24')"></td>
+      <td id="pixel25" onClick="setColor('pixel25')"></td>
+      <td id="pixel26" onClick="setColor('pixel26')"></td>
+      <td id="pixel27" onClick="setColor('pixel27')"></td>
+      <td id="pixel28" onClick="setColor('pixel28')"></td>
+      <td id="pixel29" onClick="setColor('pixel29')"></td>
+      <td id="pixel30" onClick="setColor('pixel30')"></td>
+      <td id="pixel31" onClick="setColor('pixel31')"></td>
+    </tr>
+  </table>
+<p>
+<br/><br/><br/><br/><br/><br/>
+<h3>Debugger / tester</h3>
+<textarea id="pixelData" style="width:500px; height:250px"></textarea><br>
+<button onClick="pushData()">Update</button>
+<button onClick="refreshData()">Refresh</button>
+
+<pre>
+Examples:
+
+Boring RGB pixels
+<hr>
+{
+    "pixel0":16711680, "pixel1":255, "pixel2":65280, "pixel3":16711680, "pixel4":255, "pixel5":65280, "pixel6":16711680, "pixel7":16711680,
+    "pixel8":16711680, "pixel9":255, "pixel10":65280, "pixel11":16711680, "pixel12":255, "pixel13":65280, "pixel14":16711680, "pixel15":16711680,
+    "pixel16":16711680, "pixel17":255, "pixel18":65280, "pixel19":16711680, "pixel20":255, "pixel21":65280, "pixel22":16711680, "pixel23":16711680,
+    "pixel24":16711680, "pixel25":255, "pixel26":65280, "pixel27":16711680, "pixel28":255, "pixel29":65280, "pixel30":16711680, "pixel31":16711680
+}
+<br>
+Charlie
+<hr>
+{
+    "pixel0":0, "pixel1":16776960, "pixel2":16776960, "pixel3":16776960, "pixel4":0, "pixel5":16776960, "pixel6":16776960, "pixel7":16776960,
+    "pixel8":0, "pixel9":0, "pixel10":16776960, "pixel11":0, "pixel12":0, "pixel13":0, "pixel14":16776960, "pixel15":16776960,
+    "pixel16":16776960, "pixel17":0, "pixel18":0, "pixel19":0, "pixel20":16776960, "pixel21":0, "pixel22":0, "pixel23":0,
+    "pixel24":16776960, "pixel25":16776960, "pixel26":0, "pixel27":16776960, "pixel28":16776960, "pixel29":16776960, "pixel30":0, "pixel31":16776960
+}
+<br>
+Proppy
+<hr>
+{
+  "pixel0":16748288,"pixel1":16748288,"pixel10":236517,"pixel11":236517,"pixel12":16748288,"pixel13":16748288,"pixel14":236517,"pixel15":236517,
+  "pixel16":16748288,"pixel17":16748288,"pixel18":236517,"pixel19":236517,"pixel2":236517,"pixel20":16748288,"pixel21":16748288,"pixel22":236517,
+  "pixel23":236517,"pixel24":16748288,"pixel25":16748288,"pixel26":236517,"pixel27":236517,"pixel28":16748288,"pixel29":16748288,"pixel3":236517,
+  "pixel30":236517,"pixel31":236517,"pixel4":16748288,"pixel5":16748288,"pixel6":236517,"pixel7":236517,"pixel8":16748288,"pixel9":16748288
+}
+</pre>
+
+  <script>
+    // Firebase reference and authentication stored globally.
+    // TODO: Encapsualte into objects, move to separate JS file
+    var pixelData = new Firebase(firebaseUrl);
+    pixelData.authWithCustomToken(firebaseSecret, function(error, result){
+      if (error) {
+        console.log("Authentication Failed!", error);
+      } else {
+        console.log("Authenticated successfully with payload:", result.auth);
+        console.log("Auth expires at:", new Date(result.expires * 1000));
+        refreshData();
+      } });
+
+    /**
+     * Explicitly refreshes data from Firebase.
+     * TODO: replace with streaming function that listens for events / updates.
+     */
+    function refreshData() {
+        pixelData.once("value", function(snapshot) {
+          console.log(snapshot.val());
+          document.getElementById('pixelData').value = JSON.stringify(snapshot.val()['rgbdata'], 2);
+
+          for (var i=0; i < 32; i++){
+            var qString = 'pixel' + i;
+            if (snapshot.val()['rgbdata'][qString]){
+              var hexString = parseInt(snapshot.val()['rgbdata'][qString]).toString(16);
+              var zeroPrepend = 6 - hexString.length;
+              for (var j=0; j < zeroPrepend; j++){
+                hexString = '0' + hexString;
+              }
+              var bgColorHex = '#' + hexString;
+              console.log(bgColorHex);
+              document.getElementById(qString).style.background = bgColorHex;
+            }else{
+              document.getElementById(qString).style.backgroundColor = "#000000";
+            }
+          }
+        }, function (errorObject) {
+          console.log("The read failed: " + errorObject.code);
+        });
+    }
+
+
+    /**
+     * Pushes all data stored in the pixel data input field raw into
+     * the Firebase database. Note that this is best for debugging.
+     */
+    function pushData() {
+      pixelData.set({'rgbdata': JSON.parse(document.getElementById('pixelData').value)});
+      refreshData();
+    }
+
+
+    /**
+     * Selects a color from the color picker.
+     *
+     * @param pixelId The pixel identifier (indexed 0 ... 31) that matches
+     *     the HTML element as well as the firebase data.
+     */
+    function updateColor(pixelId) {
+      var targetPixelPicker = document.getElementById(pixelId);
+      targetPixelPicker.click(); // dismiss the picker
+    }
+
+
+    /**
+     * Sets the color of a pixel in the UI.
+     *
+     * @param pixelId The pixel identifier (indexed 0 ... 31) that matches
+     *     the HTML element as well as the firebase data.
+     */
+    function setColor(pixelId) {
+      document.getElementById(pixelId).style.backgroundColor =
+        rgb2hex(document.getElementById('colorpicker').color);
+      updatePixel(pixelId);
+    }
+
+
+    /**
+     * Updates a pixel on Firebase.
+     *
+     * @param pixelId The pixel identifier (indexed 0 ... 31) that matches
+     *     the HTML element as well as the firebase data.
+     */
+    function updatePixel(pixelId){
+      var path = 'rgbdata/' + pixelId;
+      var pixelRef = pixelData.child(path);
+      var colorHex =
+          rgb2hex(document.getElementById(pixelId).style.backgroundColor)
+          .split('#')[1];
+      var colorDec = parseInt(colorHex, 16);
+      pixelRef.set(colorDec);
+    }
+
+
+    /**
+     * Uses a regex to convert an RGB( ... ... ..) string to hex value.
+     *
+     * @param rgb The RGB string in the format rgb(000,111,222) where the first
+     *   value is the red, second green, third blue.
+     * @return The value in hex.
+     */
+    function rgb2hex(rgb) {
+        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        function hex(x) {
+            return ("0" + parseInt(x).toString(16)).slice(-2);
+        }
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
+  </script>
+</body>
