@@ -1,0 +1,23 @@
+{
+  "name": "web",
+  "homepage": "https://github.com/gguuss/firebase-arduino",
+  "authors": [
+    "Gus Class <gguuss@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.2.0",
+    "polymer-color-picker": "^1.0.1"
+  }
+}
