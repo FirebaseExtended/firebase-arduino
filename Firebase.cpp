@@ -40,8 +40,22 @@ String makeFirebaseURL(const String& path, const String& auth) {
 
 }  // namespace
 
-Firebase::Firebase(const String& host) : host_(host) {
+Firebase::Firebase() {
+}
+
+Firebase::Firebase(const String& host, const String& auth) {
+  begin(host, auth);
+}
+
+void Firebase::begin(const String& host, const String& auth) {
+  host_ = host;
+  auth_ = auth;
   http_.setReuse(true);
+}
+
+Firebase& Firebase::host(const String& host) {
+  host_ = host;
+  return *this;
 }
 
 Firebase& Firebase::auth(const String& auth) {
@@ -73,7 +87,14 @@ FirebaseStream Firebase::stream(const String& path) {
 // FirebaseCall
 FirebaseCall::FirebaseCall(const String& host, const String& auth,
                            const char* method, const String& path,
-                           const String& data, HTTPClient* http) : http_(http) {
+                           const String& data, HTTPClient* http) {
+  begin(host, auth, method, path, data, http);
+}
+
+void FirebaseCall::begin(const String& host, const String& auth,
+                         const char* method, const String& path,
+                         const String& data, HTTPClient* http) {
+  http_ = http;
   String url = makeFirebaseURL(path, auth);
   http_->setReuse(true);
   http_->begin(host, kFirebasePort, url, true, kFirebaseFingerprint);
@@ -139,11 +160,18 @@ FirebaseSet::FirebaseSet(const String& host, const String& auth,
     json_ = response();
   }
 }
+
 // FirebasePush
 FirebasePush::FirebasePush(const String& host, const String& auth,
                            const String& path, const String& value,
-                           HTTPClient* http)
-  : FirebaseCall(host, auth, "POST", path, value, http) {
+                           HTTPClient* http) {
+  begin(host, auth, path, value, http);
+}
+
+void FirebasePush::begin(const String& host, const String& auth,
+                         const String& path, const String& value,
+                         HTTPClient* http) {
+  FirebaseCall::begin(host, auth, "POST", path, value, http);
   if (!error()) {
     // TODO: parse name
     name_ = response();
@@ -162,6 +190,12 @@ FirebaseStream::FirebaseStream(const String& host, const String& auth,
                                const String& path,
                                HTTPClient* http)
   : FirebaseCall(host, auth, "STREAM", path, "", http) {
+}
+
+void FirebaseStream::begin(const String& host, const String& auth,
+                           const String& path,
+                           HTTPClient* http) {
+  FirebaseCall::begin(host, auth, "STREAM", path, "", http);
 }
 
 bool FirebaseStream::available() {

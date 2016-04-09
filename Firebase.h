@@ -34,7 +34,11 @@ class FirebaseStream;
 // Firebase REST API client.
 class Firebase {
  public:
-  Firebase(const String& host);
+  Firebase();
+  Firebase(const String& host, const String& auth = "");
+  void begin(const String& host, const String& auth = "");
+
+  Firebase& host(const String& host);
   Firebase& auth(const String& auth);
 
   // Fetch json encoded `value` at `path`.
@@ -62,11 +66,11 @@ class FirebaseError {
  public:
   FirebaseError() {}
   FirebaseError(int code, const String& message) : code_(code), message_(message) {
-  }  
+  }
   operator bool() const { return code_ != 0; }
   int code() const { return code_; }
   const String& message() const { return message_; }
- private:  
+ private:
   int code_ = 0;
   String message_ = "";
 };
@@ -76,8 +80,12 @@ class FirebaseCall {
   FirebaseCall() {}
   FirebaseCall(const String& host, const String& auth,
                const char* method, const String& path,
-               const String& data = "",        
+               const String& data = "",
                HTTPClient* http = NULL);
+  void begin(const String& host, const String& auth,
+             const char* method, const String& path,
+             const String& data = "",
+             HTTPClient* http = NULL);
   const FirebaseError& error() const {
     return error_;
   }
@@ -95,7 +103,7 @@ class FirebaseGet : public FirebaseCall {
   FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
               const String& path, HTTPClient* http = NULL);
-  
+
   const String& json() const {
     return json_;
   }
@@ -123,6 +131,8 @@ class FirebasePush : public FirebaseCall {
   FirebasePush() {}
   FirebasePush(const String& host, const String& auth,
                const String& path, const String& value, HTTPClient* http = NULL);
+  void begin(const String& host, const String& auth,
+             const String& path, const String& value, HTTPClient* http = NULL);
 
   const String& name() const {
     return name_;
@@ -145,7 +155,9 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
                  const String& path, HTTPClient* http = NULL);
-  
+  void begin(const String& host, const String& auth,
+             const String& path, HTTPClient* http = NULL);
+
   // Return if there is any event available to read.
   bool available();
 
@@ -157,12 +169,12 @@ class FirebaseStream : public FirebaseCall {
   };
 
   // Read next json encoded `event` from stream.
-  Event read(String& event);  
+  Event read(String& event);
 
   const FirebaseError& error() const {
     return _error;
   }
-  
+
  private:
   FirebaseError _error;
 };
