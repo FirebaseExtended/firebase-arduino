@@ -119,6 +119,9 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
 }
 
 const JsonObject& FirebaseCall::json() {
+  //TODO(edcoyne): This is not efficient, we should do something smarter with
+  //the buffers.
+  buffer_ = DynamicJsonBuffer();
   return buffer_.parseObject(response());
 }
 
