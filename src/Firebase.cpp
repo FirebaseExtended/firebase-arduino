@@ -148,7 +148,7 @@ FirebasePush::FirebasePush(const String& host, const String& auth,
                            HTTPClient* http)
   : FirebaseCall(host, auth, "POST", path, value, http) {
   if (!error()) {
-    name_ = parseResponse()["name"].as<const char*>();
+    name_ = json()["name"].as<const char*>();
   }
 }
 
