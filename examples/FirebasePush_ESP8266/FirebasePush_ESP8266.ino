@@ -55,7 +55,7 @@ void setup() {
       return;
   }
   // Print written timestamp.
-  String data = get.parseResponse()[push.name()];
+  String data = get.json()[push.name()];
   Serial.println("Timestamp:" + data);
 }
 

@@ -87,7 +87,7 @@ class FirebaseCall {
     return response_;
   }
 
-  const JsonObject parseResponse();
+  const JsonObject& json();
 
  protected:
   HTTPClient* http_;

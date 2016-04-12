@@ -118,7 +118,7 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   }
 }
 
-const JsonObject& FirebaseCall::parseResponse() {
+const JsonObject& FirebaseCall::json() {
   return buffer_.parseObject(response());
 }
 
