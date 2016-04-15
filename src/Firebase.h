@@ -40,10 +40,6 @@ class Firebase {
 
   Firebase(const Firebase&) = delete;
 
-  Firebase(const Firebase&) = delete;
-
-  Firebase(const Firebase&) = delete;
-
   // Fetch auth string back.
   const String& auth();
 

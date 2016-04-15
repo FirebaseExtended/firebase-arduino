@@ -11,6 +11,9 @@ class Stream {
   String readStringUntil(const char term __attribute__((unused))) {
     return String();
   }
+  int println(const String&) {
+    return 0;
+  }
   int println(const char*) {
     return 0;
   }

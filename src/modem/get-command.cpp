@@ -22,7 +22,7 @@ bool GetCommand::execute(const String& command,
     return false;
   }
 
-  String value(get->json());
+  String value(get->response());
   // TODO implement json parsing to pull and process value.
   out->print("+");
   out->println(value);
