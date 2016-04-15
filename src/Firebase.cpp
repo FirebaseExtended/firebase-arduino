@@ -14,7 +14,6 @@
 // limitations under the License.
 //
 #include "Firebase.h"
-#include "third-party/arduino-json-5.1.1/include/ArduinoJson/Internals/JsonParser.hpp"
 
 // Detect whether stable version of HTTP library is installed instead of
 // master branch and patch in missing status and methods.
