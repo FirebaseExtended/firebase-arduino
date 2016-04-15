@@ -157,7 +157,7 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
                  const String& path, FirebaseHttpClient* http = NULL);
-  
+
   // Return if there is any event available to read.
   virtual bool available();
 
