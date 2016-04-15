@@ -19,7 +19,7 @@ class MockFirebase : public Firebase {
 
 class MockFirebaseGet : public FirebaseGet {
  public:
-  MOCK_CONST_METHOD0(json, const String&());
+  MOCK_CONST_METHOD0(response, const String&());
   MOCK_CONST_METHOD0(error, const FirebaseError&());
 };
 

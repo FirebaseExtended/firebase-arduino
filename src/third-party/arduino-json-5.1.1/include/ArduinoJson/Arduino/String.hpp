@@ -9,8 +9,11 @@
 
 #ifndef ARDUINO
 
+#ifndef ARDUINO_STRING_OVERRIDE
+#define ARDUINO_STRING_OVERRIDE
 #include <string>
-//typedef std::string String;
+typedef std::string String;
+#endif
 
 #else
 

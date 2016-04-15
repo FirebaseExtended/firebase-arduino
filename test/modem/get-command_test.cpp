@@ -47,7 +47,7 @@ TEST_F(GetCommandTest, gets) {
   FeedCommand(path);
 
   const String value("Test value");
-  EXPECT_CALL(*get_, json())
+  EXPECT_CALL(*get_, response())
       .WillOnce(ReturnRef(value));
 
   EXPECT_CALL(out_, print(String("+")))

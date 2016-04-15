@@ -23,6 +23,9 @@
 #include <Arduino.h>
 #include <memory>
 #include "FirebaseHttpClient.h"
+// TODO(edcoyne): move this into our mock_arduino fork where we actually do the
+// override.
+#define ARDUINO_STRING_OVERRIDE
 #include "third-party/arduino-json-5.1.1/include/ArduinoJson.h"
 
 class FirebaseGet;
