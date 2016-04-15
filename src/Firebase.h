@@ -63,11 +63,11 @@ class FirebaseError {
  public:
   FirebaseError() {}
   FirebaseError(int code, const String& message) : code_(code), message_(message) {
-  }  
+  }
   operator bool() const { return code_ != 0; }
   int code() const { return code_; }
   const String& message() const { return message_; }
- private:  
+ private:
   int code_ = 0;
   String message_ = "";
 };
@@ -77,20 +77,15 @@ class FirebaseCall {
   FirebaseCall() {}
   FirebaseCall(const String& host, const String& auth,
                const char* method, const String& path,
-               const String& data = "",        
+               const String& data = "",
                HTTPClient* http = NULL);
   const FirebaseError& error() const {
     return error_;
   }
-
-  const String& response() {
-    return response_;
-  }
-
-  const JsonObject& json();
-
  protected:
+  JsonObject& parseJson();
   HTTPClient* http_;
+ private:
   FirebaseError error_;
   String response_;
   DynamicJsonBuffer buffer_;
@@ -101,9 +96,7 @@ class FirebaseGet : public FirebaseCall {
   FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
               const String& path, HTTPClient* http = NULL);
-
- private:
-  String json_;
+  JsonObject& readJson();
 };
 
 class FirebaseSet: public FirebaseCall {
@@ -111,9 +104,6 @@ class FirebaseSet: public FirebaseCall {
   FirebaseSet() {}
   FirebaseSet(const String& host, const String& auth,
 	      const String& path, const String& value, HTTPClient* http = NULL);
-
- private:
-  String json_;
 };
 
 class FirebasePush : public FirebaseCall {
@@ -155,7 +145,7 @@ class FirebaseStream : public FirebaseCall {
   };
 
   // Read next json encoded `event` from stream.
-  Event read(String& event);  
+  Event read(String& event);
 
   const FirebaseError& error() const {
     return _error;

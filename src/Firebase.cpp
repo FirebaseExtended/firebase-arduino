@@ -118,11 +118,12 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   }
 }
 
-const JsonObject& FirebaseCall::json() {
-  //TODO(edcoyne): This is not efficient, we should do something smarter with
+JsonObject& FirebaseCall::parseJson() {
+  // TODO(edcoyne): This is not efficient, we should do something smarter with
   //the buffers.
   buffer_ = DynamicJsonBuffer();
-  return buffer_.parseObject(response());
+  // NOTE(proppy): this effectively void the response_ buffer.
+  return buffer_.parseObject(const_cast<char*>(response_.c_str()));
 }
 
 // FirebaseGet
@@ -132,15 +133,16 @@ FirebaseGet::FirebaseGet(const String& host, const String& auth,
   : FirebaseCall(host, auth, "GET", path, "", http) {
 }
 
+JsonObject& FirebaseGet::readJson() {
+  return parseJson();
+}
+
+
 // FirebaseSet
 FirebaseSet::FirebaseSet(const String& host, const String& auth,
        const String& path, const String& value,
        HTTPClient* http)
   : FirebaseCall(host, auth, "PUT", path, value, http) {
-  if (!error()) {
-    // TODO: parse json
-    json_ = response();
-  }
 }
 // FirebasePush
 FirebasePush::FirebasePush(const String& host, const String& auth,
@@ -148,7 +150,7 @@ FirebasePush::FirebasePush(const String& host, const String& auth,
                            HTTPClient* http)
   : FirebaseCall(host, auth, "POST", path, value, http) {
   if (!error()) {
-    name_ = json()["name"].as<const char*>();
+    name_ = parseJson()["name"].as<const char*>();;
   }
 }
 
