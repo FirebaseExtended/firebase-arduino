@@ -38,6 +38,14 @@ String makeFirebaseURL(const String& path, const String& auth) {
   return url;
 }
 
+template <typename T>
+String jsonEncode(const T& value) {
+  JsonVariant json(value);
+  String buf;
+  json.printTo(buf);
+  return buf;
+}
+
 }  // namespace
 
 Firebase::Firebase(const String& host) : host_(host) {
@@ -53,11 +61,45 @@ FirebaseGet Firebase::get(const String& path) {
   return FirebaseGet(host_, auth_, path, &http_);
 }
 
+FirebaseSet Firebase::set(const String& path, int value) {
+  return FirebaseSet(host_, auth_, path, jsonEncode(value), &http_);
+}
+FirebaseSet Firebase::set(const String& path, float value) {
+  return FirebaseSet(host_, auth_, path, jsonEncode(value), &http_);
+}
+FirebaseSet Firebase::set(const String& path, double value) {
+  return FirebaseSet(host_, auth_, path, jsonEncode(value), &http_);
+}
 FirebaseSet Firebase::set(const String& path, const String& value) {
+  return FirebaseSet(host_, auth_, path, jsonEncode(value), &http_);
+}
+FirebaseSet Firebase::set(const String& path, const JsonObject& value) {
+  String buf;
+  value.printTo(buf);
+  return FirebaseSet(host_, auth_, path, buf, &http_);
+}
+FirebaseSet Firebase::setRaw(const String& path, const String& value) {
   return FirebaseSet(host_, auth_, path, value, &http_);
 }
 
+FirebasePush Firebase::push(const String& path, int value) {
+  return FirebasePush(host_, auth_, path, jsonEncode(value), &http_);
+}
+FirebasePush Firebase::push(const String& path, float value) {
+  return FirebasePush(host_, auth_, path, jsonEncode(value), &http_);
+}
+FirebasePush Firebase::push(const String& path, double value) {
+  return FirebasePush(host_, auth_, path, jsonEncode(value), &http_);
+}
 FirebasePush Firebase::push(const String& path, const String& value) {
+  return FirebasePush(host_, auth_, path, jsonEncode(value), &http_);
+}
+FirebasePush Firebase::push(const String& path, const JsonObject& value) {
+  String buf;
+  value.printTo(buf);
+  return FirebasePush(host_, auth_, path, buf, &http_);
+}
+FirebasePush Firebase::pushRaw(const String& path, const String& value) {
   return FirebasePush(host_, auth_, path, value, &http_);
 }
 
