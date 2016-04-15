@@ -17,11 +17,14 @@
 // FirebasePush_ESP8266 is a sample that push a new timestamp to firebase
 // on each reset.
 
+#include <ESP8266WiFi.h>
+
 #include <Firebase.h>
 
 // create firebase client.
-Firebase fbase = Firebase("example.firebaseio.com")
-                   .auth("secret_or_token");
+Firebase fbase("example.firebaseio.com")
+	.auth("secret_or_token");
+
 void setup() {
   Serial.begin(9600);
 
