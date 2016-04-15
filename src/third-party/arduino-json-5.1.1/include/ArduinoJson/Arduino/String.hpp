@@ -10,7 +10,7 @@
 #ifndef ARDUINO
 
 #include <string>
-typedef std::string String;
+//typedef std::string String;
 
 #else
 
