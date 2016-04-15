@@ -15,8 +15,8 @@
 //
 
 
-// FirebasePush_ESP8266 is a sample that will start our serial transciever
-// listening on a software port and allow debug over the main serial port.
+// A sample that will start our serial transciever listening on a software
+// port and allow debug over the main serial port.
 //
 // A suggested setup for testing this example would be a USB to TTL cable
 // with the green wire connected to pin 5 and the white wire connected to
