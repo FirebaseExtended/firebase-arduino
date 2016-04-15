@@ -1,2 +1,0 @@
-SET /serial/test this is a test string \ "
-
