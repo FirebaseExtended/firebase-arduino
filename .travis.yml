@@ -6,5 +6,8 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.9
+compiler:
+  - clang
+  - g++-4.9
 script:
 - make -C test/modem/
