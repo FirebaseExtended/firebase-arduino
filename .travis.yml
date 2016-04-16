@@ -1,7 +1,13 @@
 language: c
 sudo: false
-before_install:
-  - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+env:
+- ARDUINO_VERSION=1.6.8
+- ARDUINO_ROOT=${HOME}/arduino-${ARDUINO_VERSION}
+install:
+- cd ${HOME} && curl -O https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz && tar xvf arduino-1.6.5-linux64.tar.xz
+after_install:
+- mkdir -p Arduino/libraries
+- ln -s firebase-arduino Arduino/libraries/firebase-arduino
+- ln -s firebase-arduino/src/third-party/arduino-json-5.1.1 Arduino/libraries/ArduinoJson
 script:
-  - find /home/travis/.arduino15
-  - build_platform esp8266
+- ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ROOT}/hardware/esp8266com/esp8266/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ~/Arduino/libraries -prefs build.flash_ld=${ARDUINO_ROOT}/hardware/esp8266com/esp8266/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M firebase-arduino/examples/FirebasePush_ESP8266/FirebasePush_ESP8266.ino
