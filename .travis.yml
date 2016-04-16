@@ -1,0 +1,2 @@
+script:
+  - make -C test/modem/
