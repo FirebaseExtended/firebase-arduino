@@ -9,7 +9,7 @@ matrix:
         - ubuntu-toolchain-r-test
         packages:
         - g++-4.8
-    env: CXX=g++-4.8
+    before_script: export CXX=g++-4.8
   - compiler: clang
     addons:
       apt:
@@ -18,6 +18,6 @@ matrix:
         - llvm-toolchain-precise-3.8
         packages:
         - clang-3.8
-    env: CXX=clang++-3.8
+    before_script: export CXX=clang++-3.8
 script:
 - make -C test/modem test
