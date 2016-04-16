@@ -20,4 +20,4 @@ matrix:
         - clang-3.8
     env: CXX=clang++-3.8
 script:
-- make -C test/modem
+- make -C test/modem test
