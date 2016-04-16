@@ -1,4 +1,10 @@
 language: cpp
 sudo: false
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.9
 script:
-  - make -C test/modem/
+- make -C test/modem/
