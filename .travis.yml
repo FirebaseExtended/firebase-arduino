@@ -1,8 +1,7 @@
 language: c
 sudo: false
 env:
-- ARDUINO_VERSION=1.6.8
-- ARDUINO_ROOT=${HOME}/arduino-${ARDUINO_VERSION}
+- ARDUINO_VERSION=1.6.8 ARDUINO_ROOT=${HOME}/arduino-${ARDUINO_VERSION}
 install:
 - cd ${HOME} && curl -O https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz && tar xvf arduino-1.6.5-linux64.tar.xz
 after_install:
