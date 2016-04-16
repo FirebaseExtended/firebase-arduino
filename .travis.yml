@@ -1,13 +1,21 @@
 language: cpp
 sudo: false
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-4.9
-compiler:
-  - clang
-  - g++-4.9
-script:
-- make -C test/modem/
+matrix:
+  include:
+  - compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-4.8
+    env: COMPILER=g++-4.8
+  - compiler: clang
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-precise-3.8
+        packages:
+        - clang-3.7
+    env: COMPILER=clang++-3.8
