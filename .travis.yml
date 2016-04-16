@@ -1,2 +1,4 @@
+language: cpp
+sudo: false
 script:
   - make -C test/modem/
