@@ -38,6 +38,22 @@ String makeFirebaseURL(const String& path, const String& auth) {
   return url;
 }
 
+template<typename T>
+T decodeJsonValue(JsonBuffer *buf, const String& json) {
+  return ArduinoJson::Internals::parse<T>(json.c_str());
+}
+
+template<>
+String decodeJsonValue<String>(JsonBuffer *buf, const String& json) {
+  // ugly workaround because ArduinoJson doesn't expose a way to
+  // decode json string literals.
+  String fakeArray("[");
+  fakeArray+=json;
+  fakeArray+="]";
+  JsonArray& arr = buf->parseArray(const_cast<char*>(fakeArray.c_str()));
+  return arr[0];
+}
+
 }  // namespace
 
 Firebase::Firebase(const String& host, const String& auth) : host_(host), auth_(auth) {
@@ -127,16 +143,33 @@ FirebaseGet::FirebaseGet(const String& host, const String& auth,
   : FirebaseCall(host, auth, "GET", path, "", http) {
 }
 
+bool FirebaseGet::readBool() {
+  return decodeJsonValue<bool>(&buffer_, response_);
+}
+
+int FirebaseGet::readInt() {
+  return decodeJsonValue<int>(&buffer_, response_);
+}
+
+float FirebaseGet::readFloat() {
+  return decodeJsonValue<float>(&buffer_, response_);
+}
+
+double FirebaseGet::readDouble() {
+  return decodeJsonValue<double>(&buffer_, response_);
+}
+
+String FirebaseGet::readString() {
+  return decodeJsonValue<String>(&buffer_, response_);
+}
+
 // FirebaseSet
 FirebaseSet::FirebaseSet(const String& host, const String& auth,
        const String& path, const String& value,
        HTTPClient* http)
   : FirebaseCall(host, auth, "PUT", path, value, http) {
-  if (!error()) {
-    // TODO: parse json
-    json_ = response();
-  }
 }
+
 // FirebasePush
 FirebasePush::FirebasePush(const String& host, const String& auth,
                            const String& path, const String& value,

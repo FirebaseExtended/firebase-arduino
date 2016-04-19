@@ -101,8 +101,11 @@ class FirebaseGet : public FirebaseCall {
   FirebaseGet(const String& host, const String& auth,
               const String& path, HTTPClient* http = NULL);
 
- private:
-  String json_;
+  bool readBool();
+  int readInt();
+  float readFloat();
+  double readDouble();
+  String readString();
 };
 
 class FirebaseSet: public FirebaseCall {
@@ -110,9 +113,6 @@ class FirebaseSet: public FirebaseCall {
   FirebaseSet() {}
   FirebaseSet(const String& host, const String& auth,
 	      const String& path, const String& value, HTTPClient* http = NULL);
-
- private:
-  String json_;
 };
 
 class FirebasePush : public FirebaseCall {
