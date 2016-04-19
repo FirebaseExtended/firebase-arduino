@@ -40,13 +40,8 @@ String makeFirebaseURL(const String& path, const String& auth) {
 
 }  // namespace
 
-Firebase::Firebase(const String& host) : host_(host) {
+Firebase::Firebase(const String& host, const String& auth) : host_(host), auth_(auth) {
   http_.setReuse(true);
-}
-
-Firebase& Firebase::auth(const String& auth) {
-  auth_ = auth;
-  return *this;
 }
 
 FirebaseGet Firebase::get(const String& path) {

@@ -35,8 +35,7 @@ class FirebaseStream;
 // Firebase REST API client.
 class Firebase {
  public:
-  Firebase(const String& host);
-  Firebase& auth(const String& auth);
+  Firebase(const String& host, const String& auth = "");
 
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);
