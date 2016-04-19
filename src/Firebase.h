@@ -40,11 +40,21 @@ class Firebase {
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);
 
+  FirebaseSet set(const String& path, int value);
+  FirebaseSet set(const String& path, float value);
+  FirebaseSet set(const String& path, double value);
+  FirebaseSet set(const String& path, const String& value);
+  FirebaseSet set(const String& path, const JsonObject& value);
   // Set json encoded `value` at `path`.
-  FirebaseSet set(const String& path, const String& json);
+  FirebaseSet setRaw(const String& path, const String& value);
 
+  FirebasePush push(const String& path, int value);
+  FirebasePush push(const String& path, float value);
+  FirebasePush push(const String& path, double value);
+  FirebasePush push(const String& path, const String& value);
+  FirebasePush push(const String& path, const JsonObject& value);
   // Add new json encoded `value` to list at `path`.
-  FirebasePush push(const String& path, const String& json);
+  FirebasePush pushRaw(const String& path, const String& value);
 
   // Delete value at `path`.
   FirebaseRemove remove(const String& path);
@@ -62,11 +72,11 @@ class FirebaseError {
  public:
   FirebaseError() {}
   FirebaseError(int code, const String& message) : code_(code), message_(message) {
-  }  
+  }
   operator bool() const { return code_ != 0; }
   int code() const { return code_; }
   const String& message() const { return message_; }
- private:  
+ private:
   int code_ = 0;
   String message_ = "";
 };
@@ -76,7 +86,7 @@ class FirebaseCall {
   FirebaseCall() {}
   FirebaseCall(const String& host, const String& auth,
                const char* method, const String& path,
-               const String& data = "",        
+               const String& data = "",
                HTTPClient* http = NULL);
   const FirebaseError& error() const {
     return error_;
