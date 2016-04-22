@@ -18,6 +18,7 @@
 // to set pixel data using a firebase stream.
 #include <Firebase.h>
 #include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
 
 #include <Adafruit_NeoPixel.h>
 #include "colors_ext.h"
