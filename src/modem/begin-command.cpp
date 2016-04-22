@@ -33,10 +33,7 @@ bool BeginCommand::execute(const String& command,
     return false;
   }
 
-  new_firebase_.reset(new Firebase(host));
-  if (auth.length() != 0) {
-    new_firebase_->auth(auth);
-  }
+  new_firebase_.reset(new Firebase(host, auth));
 
   out->println("+OK");
   return true;

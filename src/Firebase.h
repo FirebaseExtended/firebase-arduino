@@ -39,6 +39,8 @@ class Firebase {
  public:
   Firebase(const String& host, const String& auth = "");
 
+  const String& auth() const;
+
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);
   virtual std::unique_ptr<FirebaseGet> getPtr(const String& path);

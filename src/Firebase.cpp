@@ -37,6 +37,10 @@ Firebase::Firebase(const String& host, const String& auth) : host_(host), auth_(
   http_->setReuseConnection(true);
 }
 
+const String& Firebase::auth() const {
+  return auth_;
+}
+
 FirebaseGet Firebase::get(const String& path) {
   return FirebaseGet(host_, auth_, path, http_.get());
 }
