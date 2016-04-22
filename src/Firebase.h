@@ -21,9 +21,11 @@
 #define firebase_h
 
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <WiFiClientSecure.h>
-#include <ESP8266HTTPClient.h>
+#include <memory>
+#include "FirebaseHttpClient.h"
+// TODO(edcoyne): move this into our mock_arduino fork where we actually do the
+// override.
+#define ARDUINO_STRING_OVERRIDE
 #include "third-party/arduino-json-5.1.1/include/ArduinoJson.h"
 
 class FirebaseGet;
@@ -39,21 +41,30 @@ class Firebase {
 
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);
+  virtual std::unique_ptr<FirebaseGet> getPtr(const String& path);
 
   // Set json encoded `value` at `path`.
   FirebaseSet set(const String& path, const String& json);
+  virtual std::unique_ptr<FirebaseSet> setPtr(const String& path, const String& json);
 
   // Add new json encoded `value` to list at `path`.
   FirebasePush push(const String& path, const String& json);
+  virtual std::unique_ptr<FirebasePush> pushPtr(const String& path, const String& json);
 
   // Delete value at `path`.
   FirebaseRemove remove(const String& path);
+  virtual std::unique_ptr<FirebaseRemove> removePtr(const String& path);
 
   // Start a stream of events that affect value at `path`.
   FirebaseStream stream(const String& path);
+  virtual std::unique_ptr<FirebaseStream> streamPtr(const String& path);
+
+ protected:
+  // Used for testing.
+  Firebase() {}
 
  private:
-  HTTPClient http_;
+  std::unique_ptr<FirebaseHttpClient> http_;
   String host_;
   String auth_;
 };
@@ -76,20 +87,20 @@ class FirebaseCall {
   FirebaseCall() {}
   FirebaseCall(const String& host, const String& auth,
                const char* method, const String& path,
-               const String& data = "",        
-               HTTPClient* http = NULL);
-  const FirebaseError& error() const {
+               const String& data = "",
+               FirebaseHttpClient* http = NULL);
+  virtual const FirebaseError& error() const {
     return error_;
   }
 
-  const String& response() {
+  virtual const String& response() {
     return response_;
   }
 
   const JsonObject& json();
 
  protected:
-  HTTPClient* http_;
+  FirebaseHttpClient* http_;
   FirebaseError error_;
   String response_;
   DynamicJsonBuffer buffer_;
@@ -99,7 +110,7 @@ class FirebaseGet : public FirebaseCall {
  public:
   FirebaseGet() {}
   FirebaseGet(const String& host, const String& auth,
-              const String& path, HTTPClient* http = NULL);
+              const String& path, FirebaseHttpClient* http = NULL);
 
  private:
   String json_;
@@ -109,7 +120,8 @@ class FirebaseSet: public FirebaseCall {
  public:
   FirebaseSet() {}
   FirebaseSet(const String& host, const String& auth,
-	      const String& path, const String& value, HTTPClient* http = NULL);
+              const String& path, const String& value, FirebaseHttpClient* http = NULL);
+
 
  private:
   String json_;
@@ -119,9 +131,9 @@ class FirebasePush : public FirebaseCall {
  public:
   FirebasePush() {}
   FirebasePush(const String& host, const String& auth,
-               const String& path, const String& value, HTTPClient* http = NULL);
+               const String& path, const String& value, FirebaseHttpClient* http = NULL);
 
-  const String& name() const {
+  virtual const String& name() const {
     return name_;
   }
 
@@ -133,7 +145,7 @@ class FirebaseRemove : public FirebaseCall {
  public:
   FirebaseRemove() {}
   FirebaseRemove(const String& host, const String& auth,
-                 const String& path, HTTPClient* http = NULL);
+                 const String& path, FirebaseHttpClient* http = NULL);
 };
 
 
@@ -141,10 +153,10 @@ class FirebaseStream : public FirebaseCall {
  public:
   FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
-                 const String& path, HTTPClient* http = NULL);
+                 const String& path, FirebaseHttpClient* http = NULL);
 
   // Return if there is any event available to read.
-  bool available();
+  virtual bool available();
 
   // Event type.
   enum Event {
@@ -153,8 +165,21 @@ class FirebaseStream : public FirebaseCall {
     PATCH
   };
 
+  static inline String EventToName(Event event) {
+    switch(event)  {
+      case UNKNOWN:
+        return "UNKNOWN";
+      case PUT:
+        return "PUT";
+      case PATCH:
+        return "PATCH";
+      default:
+        return "INVALID_EVENT_" + event;
+    }
+  }
+
   // Read next json encoded `event` from stream.
-  Event read(String& event);  
+  virtual Event read(String& event);
 
   const FirebaseError& error() const {
     return _error;
