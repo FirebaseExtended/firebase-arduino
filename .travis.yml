@@ -1,5 +1,6 @@
 language: c++
-sudo: false
+# Need sudo for trusty.
+sudo: required
 # Trusty gives us GCC 4.8 which supports c++11.
 dist: trusty
 env:
