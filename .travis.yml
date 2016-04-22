@@ -1,4 +1,4 @@
-language: c
+language: c++
 sudo: false
 env:
 - ARDUINO_VERSION=1.6.8 ARDUINO_ESP8266_VERSION=2.1.0 ARDUINO_ROOT=${HOME}/arduino-${ARDUINO_VERSION} ARDUINO_ESP8266_ROOT=${ARDUINO_ROOT}/hardware/esp8266com/esp8266 ARDUINO_HOME=${HOME}/Arduino
