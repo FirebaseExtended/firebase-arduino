@@ -1,4 +1,5 @@
 language: c++
+sudo: false
 compiler:
   - gcc
 env:
@@ -6,6 +7,7 @@ env:
 - ARDUINO_VERSION=1.6.8 ARDUINO_ESP8266_VERSION=2.2.0-rc1 ARDUINO_ROOT=${HOME}/arduino-${ARDUINO_VERSION} ARDUINO_ESP8266_ROOT=${ARDUINO_ROOT}/hardware/esp8266com/esp8266 ARDUINO_HOME=${HOME}/Arduino
 - ARDUINO_VERSION=nightly ARDUINO_ESP8266_VERSION=master ARDUINO_ROOT=${HOME}/arduino-${ARDUINO_VERSION} ARDUINO_ESP8266_ROOT=${ARDUINO_ROOT}/hardware/esp8266com/esp8266 ARDUINO_HOME=${HOME}/Arduino
 install:
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 - ( cd ${HOME} && curl -O https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz && tar xvf arduino-${ARDUINO_VERSION}-linux64.tar.xz )
 - git clone --branch ${ARDUINO_ESP8266_VERSION} https://github.com/esp8266/Arduino.git ${ARDUINO_ESP8266_ROOT}
 - git submodule init && git submodule update
