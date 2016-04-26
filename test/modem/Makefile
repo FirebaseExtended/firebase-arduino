@@ -123,7 +123,7 @@ arduino_mock_all.a : ArduinoMockAll.o
 	$(AR) $(ARFLAGS) $@ $^
 
 # Builds ArduinoJson
-ARDUINO_JSON_SRC_ = ../../src/third-party/arduino-json-5.1.1/src
+ARDUINO_JSON_SRC_ = ../../src/third-party/arduino-json-5.2/src
 JsonObject.o : $(ARDUINO_JSON_SRC_)
 	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
 		$(ARDUINO_JSON_SRC_)/JsonObject.cpp

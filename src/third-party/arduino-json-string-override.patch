@@ -1,0 +1,16 @@
+diff --git a/src/third-party/arduino-json-5.2/include/ArduinoJson/Arduino/String.hpp b/src/third-party/arduino-json-5.2/include/ArduinoJson/Arduino/String.hpp
+index a11a651..83cf650 100644
+--- a/src/third-party/arduino-json-5.2/include/ArduinoJson/Arduino/String.hpp
++++ b/src/third-party/arduino-json-5.2/include/ArduinoJson/Arduino/String.hpp
+@@ -9,8 +9,11 @@
+ 
+ #ifndef ARDUINO
+ 
++#ifndef ARDUINO_STRING_OVERRIDE
++#define ARDUINO_STRING_OVERRIDE
+ #include <string>
+ typedef std::string String;
++#endif
+ 
+ #else
+ 
