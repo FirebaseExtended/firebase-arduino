@@ -95,7 +95,7 @@ class FirebaseCall {
     return error_;
   }
 
-  virtual const String& response() {
+  virtual const String& response() const {
     return response_;
   }
 
