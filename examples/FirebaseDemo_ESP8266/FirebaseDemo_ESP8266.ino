@@ -14,8 +14,8 @@
 // limitations under the License.
 //
 
-// FirebasePush_ESP8266 is a sample that push a new value to Firebase
-// every seconds.
+// FirebaseDemo_ESP8266 is a sample that demo the different functions
+// of the FirebaseArduino API.
 
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
@@ -34,20 +34,45 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
   
-  Firebase.begin("example.firebaseio.com", "auth_or_token");
+  Firebase.begin("example.firebaseio.com", "token_or_secret");
 }
 
 int n = 0;
 
 void loop() {
-  // push a new value.
-  String name = Firebase.push("/logs", n++);
+  // set value
+  Firebase.set("number", 42.0);
+  // handle error
   if (Firebase.failed()) {
-      Serial.print("push failed: ");
+      Serial.print("setting /number failed:");
       Serial.println(Firebase.error());  
       return;
   }
-  Serial.print("pushed: ");
+  delay(1000);
+  
+  // update value
+  Firebase.set("number", 43.0);
+  delay(1000);
+
+  // get value 
+  Serial.print("number: ");
+  Serial.println((float)Firebase.get("number"));
+  delay(1000);
+
+  // remove value
+  Firebase.remove("number");
+  delay(1000);
+
+  // set string value
+  Firebase.set("message", "hello world");
+  delay(1000);
+  // set bool value
+  Firebase.set("truth", false);
+  delay(1000);
+
+  // append a new value to /logs
+  String name = Firebase.push("logs", n++);
+  Serial.print("pushed: /logs/");
   Serial.println(name);
   delay(1000);
 }
