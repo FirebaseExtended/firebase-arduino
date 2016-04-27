@@ -39,32 +39,38 @@ void setup() {
 
 void loop() {
   // set value
-  String key = "/" + name;
-  Firebase.set(key, 1);
-  // handle error for last operation
+  Firebase.set("number", 42.0);
+  // handle error
   if (Firebase.failed()) {
-      Serial.print("setting /val failed:");
+      Serial.print("setting /number failed:");
       Serial.println(Firebase.error());  
       return;
   }
   delay(1000);
+  
+  // update value
+  Firebase.set("number", 43.0);
+  delay(1000);
 
   // get value 
-  Serial.print("/val: ");
-  Serial.println((int)Firebase.get("/val"));
+  Serial.print("number: ");
+  Serial.println((float)Firebase.get("number"));
   delay(1000);
 
   // remove value
-  Firebase.remove("/val");
+  Firebase.remove("number");
   delay(1000);
 
-  // push a new value
-  String name = Firebase.push("/tmp", 42.0);
-  Serial.print("pushed: ");
-  Serial.println(name);
-  delay(1000);  
+  // set string value
+  Firebase.set("message", "hello world");
+  delay(1000);
+  // set bool value
+  Firebase.set("truth", false);
+  delay(1000);
 
-  // remove pushed value
-  Firebase.remove("/" + name);
+  // append a new value to /logs
+  String name = Firebase.push("logs", n++);
+  Serial.print("pushed: /logs/");
+  Serial.println(name);
   delay(1000);
 }
