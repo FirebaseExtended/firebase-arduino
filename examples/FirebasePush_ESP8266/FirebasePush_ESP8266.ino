@@ -14,15 +14,11 @@
 // limitations under the License.
 //
 
-// FirebasePush_ESP8266 is a sample that push a new timestamp to firebase
-// on each reset.
+// FirebasePush_ESP8266 is a sample that push a new value to Firebase
+// every seconds.
 
 #include <ESP8266WiFi.h>
-
-#include <Firebase.h>
-
-// create firebase client.
-Firebase fbase("example.firebaseio.com", "secret_or_token");
+#include <FirebaseArduino.h>
 
 void setup() {
   Serial.begin(9600);
@@ -37,29 +33,21 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-
-   // add a new entry.
-  FirebasePush push = fbase.push("/logs", "{\".sv\": \"timestamp\"}");
-  if (push.error()) {
-      Serial.println("Firebase push failed");
-      Serial.println(push.error().message());  
-      return;
-  }
-
-  // print key.
-  Serial.println("Name: " + push.name());
-
-  // get all entries.
-  FirebaseGet get = fbase.get("/logs");
-  if (get.error()) {
-      Serial.println("Firebase get failed");
-      Serial.println(push.error().message());  
-      return;
-  }
-  // Print written timestamp.
-  String data = get.json()[push.name()];
-  Serial.println("Timestamp:" + data);
+  
+  Firebase.begin("example.firebaseio.com", "auth_or_token");
 }
 
+int n = 0;
+
 void loop() {
+  // push a new value.
+  String name = Firebase.push("/logs", n++);
+  if (Firebase.failed()) {
+      Serial.print("push failed: ");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  Serial.print("pushed: ");
+  Serial.println(name);
+  delay(1000);
 }
