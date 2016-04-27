@@ -34,20 +34,37 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
   
-  Firebase.begin("example.firebaseio.com", "auth_or_token");
+  Firebase.begin("example.firebaseio.com", "token_or_secret");
 }
 
-int n = 0;
-
 void loop() {
-  // push a new value.
-  String name = Firebase.push("/logs", n++);
+  // set value
+  String key = "/" + name;
+  Firebase.set(key, 1);
+  // handle error for last operation
   if (Firebase.failed()) {
-      Serial.print("push failed: ");
+      Serial.print("removing /val failed:");
       Serial.println(Firebase.error());  
       return;
   }
+  delay(1000);
+
+  // get value 
+  Serial.print("/val: ");
+  Serial.println((int)Firebase.get("/val"));
+  delay(1000);
+
+  // remove value
+  Firebase.remove("/val");
+  delay(1000);
+
+  // push a new value
+  String name = Firebase.push("/tmp", 42.0);
   Serial.print("pushed: ");
   Serial.println(name);
+  delay(1000);  
+
+  // remove pushed value
+  Firebase.remove("/" + name);
   delay(1000);
 }
