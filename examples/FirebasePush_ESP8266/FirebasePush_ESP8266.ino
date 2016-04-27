@@ -19,10 +19,7 @@
 
 #include <ESP8266WiFi.h>
 
-#include <Firebase.h>
-
-// create firebase client.
-Firebase fbase("example.firebaseio.com", "secret_or_token");
+#include <FirebaseArduino.h>
 
 void setup() {
   Serial.begin(9600);
@@ -37,28 +34,18 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
+  
+  Firebase.begin("example.firebaseio.com", "auth_or_token");
 
-   // add a new entry.
-  FirebasePush push = fbase.push("/logs", "{\".sv\": \"timestamp\"}");
-  if (push.error()) {
-      Serial.println("Firebase push failed");
-      Serial.println(push.error().message());  
+  // add a new entry.
+  String name = Firebase.push("/logs", "{\".sv\": \"timestamp\"}");
+  if (Firebase.failed()) {
+      Serial.println(" push failed");
+      Serial.println(Firebase.error());  
       return;
   }
-
-  // print key.
-  Serial.println("Name: " + push.name());
-
-  // get all entries.
-  FirebaseGet get = fbase.get("/logs");
-  if (get.error()) {
-      Serial.println("Firebase get failed");
-      Serial.println(push.error().message());  
-      return;
-  }
-  // Print written timestamp.
-  String data = get.json()[push.name()];
-  Serial.println("Timestamp:" + data);
+  Serial.print("pushed: ");
+  Serial.println(name);
 }
 
 void loop() {
