@@ -41,7 +41,7 @@ void FirebaseArduino::set(const String& path, const JsonVariant& value) {
 FirebaseObject FirebaseArduino::get(const char* path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
-  if (!error_) {
+  if (failed()) {
     return FirebaseObject{""};
   }
   return FirebaseObject(get.response());
