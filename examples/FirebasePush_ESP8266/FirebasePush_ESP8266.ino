@@ -14,11 +14,10 @@
 // limitations under the License.
 //
 
-// FirebasePush_ESP8266 is a sample that push a new timestamp to firebase
-// on each reset.
+// FirebasePush_ESP8266 is a sample that push a new value to Firebase
+// every seconds.
 
 #include <ESP8266WiFi.h>
-
 #include <FirebaseArduino.h>
 
 void setup() {
@@ -36,17 +35,19 @@ void setup() {
   Serial.println(WiFi.localIP());
   
   Firebase.begin("example.firebaseio.com", "auth_or_token");
+}
 
-  // add a new entry.
-  String name = Firebase.push("/logs", "{\".sv\": \"timestamp\"}");
+int n = 0;
+
+void loop() {
+  // push a new value.
+  String name = Firebase.push("/logs", n++);
   if (Firebase.failed()) {
-      Serial.println(" push failed");
+      Serial.print("push failed: ");
       Serial.println(Firebase.error());  
       return;
   }
   Serial.print("pushed: ");
   Serial.println(name);
-}
-
-void loop() {
+  delay(1000);
 }
