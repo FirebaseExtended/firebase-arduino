@@ -72,11 +72,11 @@ FirebaseObject FirebaseArduino::readEvent() {
 }
 
 bool FirebaseArduino::success() {
-  return error_;
+  return error_.code() == 0;
 }
 
 bool FirebaseArduino::failed() {
-  return !error_;
+  return error_.code() != 0;
 }
 
 const String& FirebaseArduino::error() {
