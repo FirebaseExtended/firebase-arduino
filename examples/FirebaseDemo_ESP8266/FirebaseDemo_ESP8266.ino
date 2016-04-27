@@ -43,7 +43,7 @@ void loop() {
   Firebase.set(key, 1);
   // handle error for last operation
   if (Firebase.failed()) {
-      Serial.print("removing /val failed:");
+      Serial.print("setting /val failed:");
       Serial.println(Firebase.error());  
       return;
   }
