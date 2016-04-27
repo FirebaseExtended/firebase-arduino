@@ -14,8 +14,8 @@
 // limitations under the License.
 //
 
-// FirebasePush_ESP8266 is a sample that push a new value to Firebase
-// every seconds.
+// FirebaseDemo_ESP8266 is a sample that demo the different functions
+// of the FirebaseArduino API.
 
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
@@ -36,6 +36,8 @@ void setup() {
   
   Firebase.begin("example.firebaseio.com", "token_or_secret");
 }
+
+int n = 0;
 
 void loop() {
   // set value
