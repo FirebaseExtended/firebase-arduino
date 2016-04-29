@@ -1,4 +1,5 @@
 language: c++
+cache: ccache
 sudo: false
 addons:
   apt:
