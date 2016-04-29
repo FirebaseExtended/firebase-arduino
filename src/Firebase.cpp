@@ -32,17 +32,12 @@ String makeFirebaseURL(const String& path, const String& auth) {
 
 }  // namespace
 
-Firebase::Firebase(const String& host) : host_(host) {
+Firebase::Firebase(const String& host, const String& auth) : host_(host), auth_(auth) {
   http_.reset(FirebaseHttpClient::create());
   http_->setReuseConnection(true);
 }
 
-Firebase& Firebase::auth(const String& auth) {
-  auth_ = auth;
-  return *this;
-}
-
-const String& Firebase::auth() {
+const String& Firebase::auth() const {
   return auth_;
 }
 
@@ -168,7 +163,7 @@ FirebasePush::FirebasePush(const String& host, const String& auth,
                            FirebaseHttpClient* http)
   : FirebaseCall(host, auth, "POST", path, value, http) {
   if (!error()) {
-    //name_ = json()["name"].as<const char*>();
+    name_ = json()["name"].as<const char*>();
   }
 }
 

@@ -26,7 +26,7 @@
 // TODO(edcoyne): move this into our mock_arduino fork where we actually do the
 // override.
 #define ARDUINO_STRING_OVERRIDE
-#include "third-party/arduino-json-5.1.1/include/ArduinoJson.h"
+#include "third-party/arduino-json-5.2/include/ArduinoJson.h"
 
 class FirebaseGet;
 class FirebaseSet;
@@ -37,14 +37,9 @@ class FirebaseStream;
 // Firebase REST API client.
 class Firebase {
  public:
-  explicit Firebase(const String& host);
-  Firebase& auth(const String& auth);
-  virtual ~Firebase() = default;
+  Firebase(const String& host, const String& auth = "");
 
-  Firebase(const Firebase&) = delete;
-
-  // Fetch auth string back.
-  const String& auth();
+  const String& auth() const;
 
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const String& path);

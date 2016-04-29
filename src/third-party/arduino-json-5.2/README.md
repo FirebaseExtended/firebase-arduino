@@ -15,7 +15,8 @@ Features
 * JSON decoding (comments are supported)
 * JSON encoding (with optional indentation)
 * Elegant API, very easy to use
-* Efficient (no malloc, nor copy)
+* Fixed memory allocation (zero malloc)
+* No data duplication (zero copy)
 * Portable (written in C++98)
 * Self-contained (no external dependency)
 * Small footprint
@@ -91,18 +92,18 @@ From StackOverflow user `thegreendroid`:
 > It has a really elegant, simple API and it works like a charm on embedded and Windows/Linux platforms. We recently started using this on an embedded project and I can vouch for its quality.
 
 From GitHub user `zacsketches`:
-
 > Thanks for a great library!!!
 > I've been watching you consistently develop this library over the past six months, and I used it today for a publish and subscribe architecture designed to help hobbyists move into more advanced robotics. Your library allowed me to implement remote subscription in order to facilitate multi-processor robots.
 > ArduinoJson saved me a week's worth of time!!
 
 [From Reddit user `erm_what_`](https://www.reddit.com/r/arduino/comments/3jj6ep/announcing_arduinojson_50/cusjk8c):
-
 > This is a great library and I wouldn't be able to do the project I'm doing without it. I completely recommend it.
 
 [From Reddit user `makerhacks`](https://www.reddit.com/r/arduino/comments/3jj6ep/announcing_arduinojson_50/cusqg7b):
-
 > I am just starting an ESP8266 clock project and now I can output JSON from my server script and interpret it painlessly.
+
+[From Twitter user `@hemalchevli`](https://twitter.com/hemalchevli/status/715788439397011456):
+> ArduinoJson library should be used as a benchmark/reference for making libraries. Truly elegant.
 
 Donators
 --------
@@ -116,6 +117,7 @@ Special thanks to the following persons and companies who made generous donation
 * A B Doodkorte
 * Scott Smith
 * Johann Stieger
+* Gustavo Donizeti Gini
 
 ---
 
