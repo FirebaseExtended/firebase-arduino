@@ -14,13 +14,13 @@ install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 - ( cd ${HOME} && curl -O https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz && tar xvf arduino-${ARDUINO_VERSION}-linux64.tar.xz )
 - ( cd ${HOME} && wget -q -O SoftwareSerial.zip https://github.com/plerup/espsoftwareserial/archive/097712eb07f5b3a70ef419b6e7a7ed2ada5aab85.zip && unzip -q SoftwareSerial.zip
-  && rm -rf SoftwareSerial.zip && mv espsoftwareserial-* SoftwareSerial && mv SoftwareSerial ${ARDUINO_HOME}/libraries/)
+  && rm -rf SoftwareSerial.zip && mv espsoftwareserial-* SoftwareSerial)
 - git clone --branch ${ARDUINO_ESP8266_VERSION} https://github.com/esp8266/Arduino.git ${ARDUINO_ESP8266_ROOT}
 - git submodule init && git submodule update
 - ( cd ${ARDUINO_ESP8266_ROOT}/tools && python get.py )
 before_script:
 - mkdir -p ${ARDUINO_HOME}/libraries
-- ( cd ${ARDUINO_HOME}/libraries && ln -s ${TRAVIS_BUILD_DIR} firebase-arduino && ln -s ${TRAVIS_BUILD_DIR}/src/third-party/arduino-json-5.2 ArduinoJson )
+- ( cd ${ARDUINO_HOME}/libraries && ln -s ${TRAVIS_BUILD_DIR} firebase-arduino && ln -s ${TRAVIS_BUILD_DIR}/src/third-party/arduino-json-5.2 ArduinoJson && ln -s ${HOME}/SoftwareSerial SoftwareSerial )
 script:
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseDemo_ESP8266/FirebaseDemo_ESP8266.ino
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseSerialHost_ESP8266/FirebaseSerialHost_ESP8266.ino
