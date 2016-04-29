@@ -91,6 +91,8 @@ class FirebaseCall {
                const char* method, const String& path,
                const String& data = "",
                FirebaseHttpClient* http = NULL);
+  virtual ~FirebaseCall() {}
+
   virtual const FirebaseError& error() const {
     return error_;
   }
@@ -134,6 +136,7 @@ class FirebasePush : public FirebaseCall {
   FirebasePush() {}
   FirebasePush(const String& host, const String& auth,
                const String& path, const String& value, FirebaseHttpClient* http = NULL);
+  virtual ~FirebasePush() {}
 
   virtual const String& name() const {
     return name_;
@@ -156,6 +159,7 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream() {}
   FirebaseStream(const String& host, const String& auth,
                  const String& path, FirebaseHttpClient* http = NULL);
+  virtual ~FirebaseStream() {}
 
   // Return if there is any event available to read.
   virtual bool available();
