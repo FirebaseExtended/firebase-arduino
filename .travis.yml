@@ -13,23 +13,21 @@ env:
 - ARDUINO_VERSION=nightly ARDUINO_ESP8266_VERSION=master LIB_NEOPIXEL_VERSION=master LIB_GFX_VERSION=master LIB_SSD1306_VERSION=master ARDUINO_ROOT=${HOME}/arduino-${ARDUINO_VERSION} ARDUINO_ESP8266_ROOT=${ARDUINO_ROOT}/hardware/esp8266com/esp8266 ARDUINO_HOME=${HOME}/Arduino
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-- ( cd ${HOME} && curl -O https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz && tar xf arduino-${ARDUINO_VERSION}-linux64.tar.xz )
-- ( cd ${HOME} && wget -q -O SoftwareSerial.zip https://github.com/plerup/espsoftwareserial/archive/097712eb07f5b3a70ef419b6e7a7ed2ada5aab85.zip && unzip -q SoftwareSerial.zip
-  && rm -rf SoftwareSerial.zip && mv espsoftwareserial-* SoftwareSerial)
-- (LIB=Adafruit_NeoPixel VERSION=$LIB_NEOPIXEL_VERSION && cd ${HOME} && wget https://github.com/adafruit/$LIB/archive/$VERSION.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-* $LIB)
-- (LIB=Adafruit-GFX-Library VERSION=$LIB_GFX_VERSION && cd ${HOME} && wget https://github.com/adafruit/$LIB/archive/$VERSION.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-* $LIB)
-- (LIB=Adafruit_SSD1306 VERSION=$LIB_SSD1306_VERSION && cd ${HOME} && wget https://github.com/adafruit/$LIB/archive/$VERSION.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-* $LIB)
+- ( cd ${HOME} && wget https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz && tar xf arduino-${ARDUINO_VERSION}-linux64.tar.xz )
+- ( LIB=SoftwareSerial VERSION=097712eb07f5b3a70ef419b6e7a7ed2ada5aab85 && cd ${HOME} && wget https://github.com/plerup/espsoftwareserial/archive/${VERSION}.zip -q -O ${LIB}.zip && unzip -q ${LIB}.zip && rm ${LIB}.zip && mv espsoftwareserial-* ${LIB} )
+- ( LIB=Adafruit_NeoPixel VERSION=${LIB_NEOPIXEL_VERSION} && cd ${HOME} && wget https://github.com/adafruit/${LIB}/archive/${VERSION}.zip -q -O ${LIB}.zip && unzip -q ${LIB}.zip && rm ${LIB}.zip && mv ${LIB}-* ${LIB} )
+- ( LIB=Adafruit-GFX-Library VERSION=${LIB_GFX_VERSION} && cd ${HOME} && wget https://github.com/adafruit/${LIB}/archive/${VERSION}.zip -q -O ${LIB}.zip && unzip -q ${LIB}.zip && rm ${LIB}.zip && mv ${LIB}-* ${LIB} )
+- ( LIB=Adafruit_SSD1306 VERSION=${LIB_SSD1306_VERSION} && cd ${HOME} && wget https://github.com/adafruit/${LIB}/archive/${VERSION}.zip -q -O ${LIB}.zip && unzip -q ${LIB}.zip && rm ${LIB}.zip && mv ${LIB}-* ${LIB} )
 - git clone --branch ${ARDUINO_ESP8266_VERSION} https://github.com/esp8266/Arduino.git ${ARDUINO_ESP8266_ROOT}
 - git submodule init && git submodule update
 - ( cd ${ARDUINO_ESP8266_ROOT}/tools && python get.py )
 before_script:
 - mkdir -p ${ARDUINO_HOME}/libraries
-- ( cd ${ARDUINO_HOME}/libraries && ln -s ${TRAVIS_BUILD_DIR} firebase-arduino && ln -s ${TRAVIS_BUILD_DIR}/src/third-party/arduino-json-5.2 ArduinoJson && ln -s ${HOME}/SoftwareSerial ./
-  && ln -s ${HOME}/Adafruit_NeoPixel ./ && ln -s ${HOME}/Adafruit-GFX-Library ./ && ln -s ${HOME}/Adafruit_SSD1306 ./)
+- ( cd ${ARDUINO_HOME}/libraries && ln -s ${TRAVIS_BUILD_DIR} firebase-arduino && ln -s ${TRAVIS_BUILD_DIR}/src/third-party/arduino-json-5.2 ArduinoJson && ln -s ${HOME}/SoftwareSerial ./ && ln -s ${HOME}/Adafruit_NeoPixel ./ && ln -s ${HOME}/Adafruit-GFX-Library ./ && ln -s ${HOME}/Adafruit_SSD1306 ./)
 script:
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseDemo_ESP8266/FirebaseDemo_ESP8266.ino
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseSerialHost_ESP8266/FirebaseSerialHost_ESP8266.ino
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/Firebase_ESP8266_LEDs/Firebase_ESP8266_Neopixel/Firebase_ESP8266_Neopixel.ino
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseStream_ESP8266/FirebaseStream_ESP8266.ino
-- (cd test && make check)
-- (cd test/modem/ && make test)
+- ( cd test && make check )
+- ( cd test/modem/ && make test )
