@@ -26,11 +26,8 @@
 const int PIN=13;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
 
-#define JSON_BUFFER_SIZE 10*4
-
 // TODO: Replace with your own credentials and keep these safe.
-Firebase fbase = Firebase("YOUR-PROJECT.firebaseio.com")
-                   .auth("YOUR_AUTH_SECRET");
+Firebase fbase = Firebase("YOUR-PROJECT.firebaseio.com", "YOUR_AUTH_SECRET");
 
 void setup() {
   Serial.begin(9600);
@@ -75,14 +72,8 @@ void loop() {
       return;
   }
 
-  // Use dynamic for large JSON objects
-  //  DynamicJsonBuffer jsonBuffer;
-  StaticJsonBuffer<JSON_OBJECT_SIZE(JSON_BUFFER_SIZE)> jsonBuffer;
-
   // create an empty object
-  String ref = get.json();
-  Serial.println(ref);
-  JsonObject& pixelJSON = jsonBuffer.parseObject((char*)ref.c_str());
+  const JsonObject& pixelJSON = get.json();
 
   if(pixelJSON.success()){
     for (int i=0; i < strip.numPixels(); i++) {
@@ -94,7 +85,7 @@ void loop() {
     strip.show();
   } else {
     Serial.println("Parse fail.");
-    Serial.println(get.json());
+    Serial.println(get.response());
   }
 }
 
