@@ -16,9 +16,9 @@ install:
 - ( cd ${HOME} && curl -O https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz && tar xf arduino-${ARDUINO_VERSION}-linux64.tar.xz )
 - ( cd ${HOME} && wget -q -O SoftwareSerial.zip https://github.com/plerup/espsoftwareserial/archive/097712eb07f5b3a70ef419b6e7a7ed2ada5aab85.zip && unzip -q SoftwareSerial.zip
   && rm -rf SoftwareSerial.zip && mv espsoftwareserial-* SoftwareSerial)
-- (cd ${HOME} && LIB=Adafruit_NeoPixel && wget https://github.com/adafruit/$LIB/archive/master.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-master $LIB)
-- (cd ${HOME} && LIB=Adafruit-GFX-Library && wget https://github.com/adafruit/$LIB/archive/master.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-master $LIB)
-- (cd ${HOME} && LIB=Adafruit_SSD1306 && wget https://github.com/adafruit/$LIB/archive/master.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-master $LIB)
+- (LIB=Adafruit_NeoPixel VERSION=1.0.5 && cd ${HOME} && wget https://github.com/adafruit/$LIB/archive/v$VERSION.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-master $LIB)
+- (LIB=Adafruit-GFX-Library VERSION=1.1.5 && cd ${HOME} && wget https://github.com/adafruit/$LIB/archive/v$VERSION.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-master $LIB)
+- (LIB=Adafruit_SSD1306 VERSION=1.1.0 && cd ${HOME} && wget https://github.com/adafruit/$LIB/archive/$VERSION.zip -O $LIB.zip && unzip $LIB.zip && mv $LIB-master $LIB)
 - git clone --branch ${ARDUINO_ESP8266_VERSION} https://github.com/esp8266/Arduino.git ${ARDUINO_ESP8266_ROOT}
 - git submodule init && git submodule update
 - ( cd ${ARDUINO_ESP8266_ROOT}/tools && python get.py )
