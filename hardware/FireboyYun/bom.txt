@@ -1,0 +1,7 @@
+Partlist exported from fireboy_yun.sch at 4/7/16 10:39 AM
+
+Qty Value                  Device                 Package         Parts                                                                                              Description                                                              
+13  1X2-3.5MM              1X2-3.5MM              1X2-3.5MM       DC_5V_8A, L1_IO, L1_PWR, L2_IO, L2_PWR, L3_IO, L3_PWR, L4_IO, L4_PWR, SW_P1, SW_P2, SW_RST, SW_UND 3.5mm Terminal block                                                     
+1   1X4-BIG                1X4-BIG                1X04-BIG        DISPLAY                                                                                            4-pin connector                                                          
+1   220                    100OHM-1/4W-5%(PTH)    AXIAL-0.3       PWR_LED_R1                                                                                         RES-08059                                                                
+1   Blue                   LED3MM                 LED3MM          PWR_LED                                                                                            LED                                                                      

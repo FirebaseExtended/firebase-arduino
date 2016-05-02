@@ -18,11 +18,11 @@
 // public Firebase and optionally display them on a OLED i2c screen.
 
 #include <Firebase.h>
+#include <ESP8266WiFi.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <ArduinoJson.h>
 
-#define OLED_RESET 10
+#define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
 
 Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
@@ -44,7 +44,7 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  stream = fbase.stream("/bitcoin");  
+  stream = fbase.stream("/bitcoin/last");  
 }
 
 
@@ -65,8 +65,8 @@ void loop() {
        Serial.println(event);
        JsonObject& json = buf.parseObject((char*)event.c_str());
        String path = json["path"];
-       float data = json["data"];       
-     
+       float data = json["data"];
+
        // TODO(proppy): parse JSON object.
        display.clearDisplay();
        display.setTextSize(2);
