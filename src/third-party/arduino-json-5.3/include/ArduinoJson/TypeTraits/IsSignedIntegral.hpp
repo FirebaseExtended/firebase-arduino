@@ -10,32 +10,24 @@
 #include "../Configuration.hpp"
 #include "IsSame.hpp"
 
-#include <stdint.h>
-
 namespace ArduinoJson {
 namespace TypeTraits {
 
 // A meta-function that returns true if T is an integral type.
 template <typename T>
-struct IsIntegral {
+struct IsSignedIntegral {
   static const bool value = TypeTraits::IsSame<T, signed char>::value ||
-                            TypeTraits::IsSame<T, unsigned char>::value ||
                             TypeTraits::IsSame<T, signed short>::value ||
-                            TypeTraits::IsSame<T, unsigned short>::value ||
                             TypeTraits::IsSame<T, signed int>::value ||
-                            TypeTraits::IsSame<T, unsigned int>::value ||
                             TypeTraits::IsSame<T, signed long>::value ||
-                            TypeTraits::IsSame<T, unsigned long>::value ||
 #if ARDUINOJSON_USE_LONG_LONG
-                            TypeTraits::IsSame<T, long long>::value ||
-                            TypeTraits::IsSame<T, unsigned long long>::value ||
+                            TypeTraits::IsSame<T, signed long long>::value ||
 #endif
 
 #if ARDUINOJSON_USE_INT64
-                            TypeTraits::IsSame<T, __int64>::value ||
-                            TypeTraits::IsSame<T, unsigned __int64>::value ||
+                            TypeTraits::IsSame<T, signed __int64>::value ||
 #endif
-                            TypeTraits::IsSame<T, char>::value;
+                            false;
 };
 }
 }

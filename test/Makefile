@@ -16,7 +16,7 @@
 
 FIREBASE_DIR=..
 GTEST_DIR=googletest/googletest
-ARDUINOJSON_DIR=../src/third-party/arduino-json-5.2
+ARDUINOJSON_DIR=../src/third-party/arduino-json-5.3
 
 FIREBASE_SRCS=${FIREBASE_DIR}/src/FirebaseObject.cpp
 GTEST_SRCS=${GTEST_DIR}/src/gtest-all.cpp
