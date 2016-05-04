@@ -14,8 +14,8 @@
 // limitations under the License.
 //
 
-// Firebase_ESP8266-Neopixel is a sample that demonstrates how
-// to set pixel data using a firebase stream.
+// FirebaseNeoPixel is a sample that demonstrates how
+// to set pixel data from Firebase.
 #include <Firebase.h>
 #include <ESP8266WiFi.h>
 
