@@ -1,6 +1,13 @@
 ArduinoJson: change log
 =======================
 
+v5.3.0
+------
+
+* Added custom implementation of `ftoa` (issues #266, #267, #269 and #270)
+* Added `JsonVariant JsonBuffer::parse()` (issue #265)
+* Fixed `unsigned long` printed as `signed long` (issue #170)
+
 v5.2.0
 ------
 
