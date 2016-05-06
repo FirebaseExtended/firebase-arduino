@@ -45,9 +45,9 @@ firebase::modem::SerialTransceiver transceiver;
 
 void ConnectWifi(const String& ssid, const String& password = "") {
   if (password != "") {
-    WiFi.begin(ssid, password);
+    WiFi.begin(ssid.c_str(), password.c_str());
   } else {
-    WiFi.begin(ssid);
+    WiFi.begin(ssid.c_str());
   }
 
   Serial.print("connecting");
