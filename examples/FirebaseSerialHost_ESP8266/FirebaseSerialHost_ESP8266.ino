@@ -43,7 +43,7 @@ firebase::modem::SerialTransceiver transceiver;
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
 
-void ConnectWifi(const char* ssid, const char* password = "") {
+void ConnectWifi(const String& ssid, const String& password = "") {
   if (password != "") {
     WiFi.begin(ssid, password);
   } else {
