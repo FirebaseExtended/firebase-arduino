@@ -52,7 +52,7 @@ void ConnectWifi(const String& ssid, const String& password = "") {
 
 void setup() {
   Serial.begin(9600);
-  ConnectWifi(SSID, PASS);
+  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
 
   strip.begin();
   strip.setBrightness(25); // 0 ... 255

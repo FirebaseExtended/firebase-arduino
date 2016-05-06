@@ -54,7 +54,7 @@ void ConnectWifi(const String& ssid, const String& password = "") {
 
 void setup() {
   Serial.begin(9600);
-  ConnectWifi(SSID, PASS);
+  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
   display.display();

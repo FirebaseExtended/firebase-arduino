@@ -45,7 +45,7 @@ void ConnectWifi(const String& ssid, const String& password = "") {
 
 void setup() {
   Serial.begin(9600);
-  ConnectWifi(SSID, PASS);
+  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 
   // power grove connector

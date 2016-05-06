@@ -62,7 +62,7 @@ void ConnectWifi(const String& ssid, const String& password = "") {
 
 void setup() {
   Serial.begin(9600);
-  ConnectWifi(SSID, PASS);
+  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
 
   data_serial.begin(9600);
   while (!data_serial) {
