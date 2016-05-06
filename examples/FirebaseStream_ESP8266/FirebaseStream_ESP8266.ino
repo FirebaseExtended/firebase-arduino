@@ -35,7 +35,7 @@ FirebaseStream stream;
 
 Firebase fbase = Firebase(FIREBASE_HOST, FIREBASE_AUTH);
 
-void ConnectWifi(const String& ssid, const String& password = "") {
+void ConnectWifi(const char* ssid, const char* password = "") {
   if (password != "") {
     WiFi.begin(ssid, password);
   } else {
