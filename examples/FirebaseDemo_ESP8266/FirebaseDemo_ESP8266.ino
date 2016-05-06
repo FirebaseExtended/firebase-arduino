@@ -20,11 +20,19 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
-void setup() {
-  Serial.begin(9600);
+// Set these to run example.
+#define FIREBASE_HOST "example.firebaseio.com"
+#define FIREBASE_AUTH "token_or_secret"
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
 
-  // connect to wifi.
-  WiFi.begin("SSID", "PASSWORD");
+void ConnectWifi(const String& ssid, const String& password = "") {
+  if (pass != "") {
+    WiFi.begin(ssid, password);
+  } else {
+    WiFi.begin(ssid);
+  }
+
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -33,8 +41,12 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  
-  Firebase.begin("example.firebaseio.com", "token_or_secret");
+}
+
+void setup() {
+  Serial.begin(9600);
+  ConnectWifi(SSID, PASS);
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 int n = 0;

@@ -32,3 +32,4 @@ script:
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseRoom_ESP8266/FirebaseRoom_ESP8266.ino
 - ( cd test && make check )
 - ( cd test/modem/ && make test )
+- test/travis/check_all_examples_use_standard_init.sh
