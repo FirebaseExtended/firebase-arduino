@@ -27,15 +27,16 @@
 /**
  * Gateway class for Arduino clients to interact with the Firebase backend.
  * This implementation is designed to follow Arduino best practices and favor
- * simplicity over all else. For more complicated usecases and more control
- * see the Firebase class in Firebase.h.
+ * simplicity over all else. 
+ * For more complicated usecases and more control see the Firebase class in 
+ * Firebase.h.
  */
 class FirebaseArduino {
  public:
   /**
    * Must be called first. This sets the class up for use.
-   * \param host Your firebase db server domain name, usually X.firebaseIO.com.
-   * \param auth Optional authentication for the db, a Secret or Token.
+   * \param host Your firebase db domain name, usually X.firebaseIO.com.
+   * \param auth Optional authentication for the db, a secret or token.
    */
   void begin(const char* host, const char* auth = "");
 
