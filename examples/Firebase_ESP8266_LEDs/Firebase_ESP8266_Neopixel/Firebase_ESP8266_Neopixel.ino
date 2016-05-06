@@ -34,7 +34,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
 Firebase fbase = Firebase(FIREBASE_HOST, FIREBASE_AUTH);
 
 void ConnectWifi(const String& ssid, const String& password = "") {
-  if (pass != "") {
+  if (password != "") {
     WiFi.begin(ssid, password);
   } else {
     WiFi.begin(ssid);

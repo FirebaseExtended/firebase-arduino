@@ -27,7 +27,7 @@
 #define WIFI_PASSWORD "PASSWORD"
 
 void ConnectWifi(const String& ssid, const String& password = "") {
-  if (pass != "") {
+  if (password != "") {
     WiFi.begin(ssid, password);
   } else {
     WiFi.begin(ssid);
