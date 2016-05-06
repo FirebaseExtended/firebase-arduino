@@ -25,17 +25,23 @@
 #define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
 
-Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
 FirebaseStream stream;
 
-void setup() {
-  Serial.begin(9600);
+// Set these to run example.
+#define FIREBASE_HOST "example.firebaseio.com"
+#define FIREBASE_AUTH "token_or_secret"
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
 
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
-  display.display();
+Firebase fbase = Firebase(FIREBASE_HOST, FIREBASE_AUTH);
 
-  // connect to wifi.
-  WiFi.begin("SSID", "PASSWORD");
+void ConnectWifi(const String& ssid, const String& password = "") {
+  if (pass != "") {
+    WiFi.begin(ssid, password);
+  } else {
+    WiFi.begin(ssid);
+  }
+
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -44,6 +50,15 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
+}
+
+void setup() {
+  Serial.begin(9600);
+  ConnectWifi(SSID, PASS);
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
+  display.display();
+
   stream = fbase.stream("/bitcoin/last");  
 }
 

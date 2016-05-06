@@ -1,12 +1,16 @@
 #!/bin/bash
-STANDARD_SNIPPET=test/travis/example_standard_init.cc.snip
+FBASE_SNIPPET=test/travis/firebase_init.cc.snip
+FBASE_ARDUINO_SNIPPET=test/travis/firebase_arduino_init.cc.snip
+NO_FBASE_SNIPPET=test/travis/no_firebase_init.cc.snip
 for example in `find examples/ -name *.ino`;
 do
   echo $example;
-  xxd -p $example | tr -d '\n' | grep `xxd -p $STANDARD_SNIPPET | tr -d '\n'`;
+  (xxd -p $example | tr -d '\n' | grep -q `xxd -p $FBASE_SNIPPET | tr -d '\n'`) ||
+  (xxd -p $example | tr -d '\n' | grep -q `xxd -p $FBASE_ARDUINO_SNIPPET | tr -d '\n'`) ||
+  (xxd -p $example | tr -d '\n' | grep -q `xxd -p $NO_FBASE_SNIPPET | tr -d '\n'`);
   if [ $? -ne 0 ];
   then
-    echo $example does not contain standard defined in $STANDARD_SNIPPET.
+    echo $example does not contain standard defined in test/travis/*_init.cc.snip.
     exit 1;
   fi;
 done;
