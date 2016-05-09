@@ -20,10 +20,6 @@
 #include "Firebase.h"
 #include "FirebaseObject.h"
 
-#ifndef FIREBASE_JSONBUFFER_SIZE
-#define FIREBASE_JSONBUFFER_SIZE 200
-#endif // FIREBASE_JSONBUFFER_SIZE
-
 class FirebaseArduino {
  public:
   void begin(const char* host, const char* auth = "");
