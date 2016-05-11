@@ -20,37 +20,35 @@
 #include "Firebase.h"
 #include "FirebaseObject.h"
 
-#ifndef FIREBASE_JSONBUFFER_SIZE
-#define FIREBASE_JSONBUFFER_SIZE 200
-#endif // FIREBASE_JSONBUFFER_SIZE
-
 /**
- * Gateway class for Arduino clients to interact with the Firebase backend.
+ * Main class for Arduino clients to interact with Firebase.
  * This implementation is designed to follow Arduino best practices and favor
- * simplicity over all else. For more complicated usecases and more control
- * see the Firebase class in Firebase.h.
+ * simplicity over all else. 
+ * For more complicated usecases and more control see the Firebase class in 
+ * Firebase.h.
  */
 class FirebaseArduino {
  public:
   /**
-   * Must be called first. This sets the class up for use.
-   * \param host Your firebase db server domain name, usually X.firebaseIO.com.
-   * \param auth Optional authentication for the db, a Secret or Token.
+   * Must be called first. This initialize the client with the given 
+   * firebase host and credentials.
+   * \param host Your firebase db host, usually X.firebaseio.com.
+   * \param auth Optional credentials for the db, a secret or token.
    */
   void begin(const char* host, const char* auth = "");
 
   /**
-   * Adds the data in value to the list located at path. Equivilent to the
-   * REST API's POST.
+   * Writes data to a new child location under the parent at path. 
+   * Equivalent to the REST API's POST.
    * You should check success() after calling.
-   * \param path The path inside of your db to the list you wish to update.
-   * \param value Data that you wish to add to the list.
-   * \return The child name where the data was written.
+   * \param path The path inside of your db to the parent object.
+   * \param value Data that you wish to add under the parent.
+   * \return The unique child key where the data was written.
    */
   String push(const String& path, const JsonVariant& value);
 
   /**
-   * Writes the data in value to the node located at path Equivilent to the
+   * Writes the data in value to the node located at path equivalent to the
    * REST API's PUT.
    * You should check success() after calling.
    * \param path The path inside of your db to the node you wish to update.
@@ -62,16 +60,16 @@ class FirebaseArduino {
   /**
    * Gets the value located at path.
    * You should check success() after calling.
-   * \param path The path inside of your db of the node you wish to retrieve.
+   * \param path The path to the node you wish to retrieve.
    * \return The data located at that path. This may either be a single element
    * or it may be a json structure. Will only be populated if success() is true.
    */
   FirebaseObject get(const char* path);
 
   /**
-   * Remove the variable, and possibly entire tree, located at path.
+   * Remove the node, and possibly entire tree, located at path.
    * You should check success() after calling.
-   * \param path The path inside of your db to the node you wish to remove,
+   * \param path The path to the node you wish to remove,
    * including all of its children.
    */
   void remove(const char* path);
