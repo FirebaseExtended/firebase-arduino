@@ -20,10 +20,6 @@
 #include "Firebase.h"
 #include "FirebaseObject.h"
 
-#ifndef FIREBASE_JSONBUFFER_SIZE
-#define FIREBASE_JSONBUFFER_SIZE 200
-#endif // FIREBASE_JSONBUFFER_SIZE
-
 /**
  * Gateway class for Arduino clients to interact with the Firebase backend.
  * This implementation is designed to follow Arduino best practices and favor

@@ -19,7 +19,9 @@
 
 #include "third-party/arduino-json-5.3/include/ArduinoJson.h"
 
+#ifndef FIREBASE_JSONBUFFER_SIZE
 #define FIREBASE_JSONBUFFER_SIZE 200
+#endif // FIREBASE_JSONBUFFER_SIZE
 
 /**
  * Represents value stored in firebase, may be a singular value (leaf node) or
