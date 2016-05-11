@@ -4,7 +4,7 @@
    :end-before: ----
 Class Documentation
 ===================
-.. doxygenclass:: firebase-arduino
+.. doxygenclass:: FirebaseArduino
    :project: firebase-arduino
    :members:
 ----
