@@ -51,6 +51,11 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   Firebase.begin("example.firebaseio.com", "secret_or_token");
+  Firebase.set("pushbutton", 0);
+  Firebase.set("sunlight", 0);
+  Firebase.set("redlight", 0);
+  Firebase.set("cooldown", 0);
+  Firebase.set("brrr", 0);
 }
 
 int button = 0;
