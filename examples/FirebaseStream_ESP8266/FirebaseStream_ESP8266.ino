@@ -17,16 +17,13 @@
 // FirebaseStream_ESP8266 is a sample that stream bitcoin price from a
 // public Firebase and optionally display them on a OLED i2c screen.
 
-#include <Firebase.h>
+#include <FirebaseArduino.h>
 #include <ESP8266WiFi.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
 #define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
-
-Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
-FirebaseStream stream;
 
 void setup() {
   Serial.begin(9600);
@@ -44,30 +41,31 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  stream = fbase.stream("/bitcoin/last");  
+  
+  Firebase.begin("publicdata-cryptocurrency.firebaseio.com");
+  Firebase.stream("/bitcoin/last");  
 }
 
 
 void loop() {
-  if (stream.error()) {
+  if (Firebase.failed()) {
     Serial.println("streaming error");
-    Serial.println(stream.error().message());
+    Serial.println(Firebase.error());
   }
   
-  if (stream.available()) {
-     String event;
-     auto type = stream.read(event);
+  if (Firebase.available()) {
+     FirebaseObject event = Firebase.readEvent();
+     String event_type = event["type"];
+     event_type.toLowerCase();
+     
      Serial.print("event: ");
-     Serial.println(type);
-     if (type == FirebaseStream::Event::PUT) {
-       StaticJsonBuffer<200> buf;
+     Serial.println(event_type);
+     if (event_type == "put") {
        Serial.print("data: ");
-       Serial.println(event);
-       JsonObject& json = buf.parseObject((char*)event.c_str());
-       String path = json["path"];
-       float data = json["data"];
+       Serial.println(event["data"].asString());
+       String path = event["path"];
+       float data = event["data"]["data"];
 
-       // TODO(proppy): parse JSON object.
        display.clearDisplay();
        display.setTextSize(2);
        display.setTextColor(WHITE);
