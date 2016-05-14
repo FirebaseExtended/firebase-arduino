@@ -17,10 +17,18 @@
 #include "FirebaseArduino.h"
 
 void FirebaseArduino::begin(const char* host, const char* auth) {
+  begin(String(host), String(auth));
+}
+
+void FirebaseArduino::begin(const String& host, const String& auth) {
   http_.reset(FirebaseHttpClient::create());
   http_->setReuseConnection(true);
   host_ = host;
   auth_ = auth;
+}
+
+String FirebaseArduino::FirebaseArduino::push(const char* path, const JsonVariant& value) {
+  return push(String(path), value);
 }
 
 String FirebaseArduino::FirebaseArduino::push(const String& path, const JsonVariant& value) {
@@ -31,6 +39,10 @@ String FirebaseArduino::FirebaseArduino::push(const String& path, const JsonVari
   return push.name();
 }
 
+void FirebaseArduino::set(const char* path, const JsonVariant& value) {
+  set(String(path), value);
+}
+
 void FirebaseArduino::set(const String& path, const JsonVariant& value) {
   String buf;
   value.printTo(buf);
@@ -39,6 +51,10 @@ void FirebaseArduino::set(const String& path, const JsonVariant& value) {
 }
 
 FirebaseObject FirebaseArduino::get(const char* path) {
+ return get(String(path));
+}
+
+FirebaseObject FirebaseArduino::get(const String path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -48,11 +64,19 @@ FirebaseObject FirebaseArduino::get(const char* path) {
 }
 
 void FirebaseArduino::remove(const char* path) {
+ remove(String(path));
+}
+
+void FirebaseArduino::remove(const String& path) {
   auto remove = FirebaseRemove(host_, auth_, path, http_.get());
   error_ = remove.error();
 }
 
 void FirebaseArduino::stream(const char* path) {
+  stream(String(path));
+}
+
+void FirebaseArduino::stream(const String& path) {
   auto stream = FirebaseStream(host_, auth_, path, http_.get());
   error_ = stream.error();
 }
