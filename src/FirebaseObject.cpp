@@ -16,57 +16,76 @@
 
 #include "FirebaseObject.h"
 
-namespace {
-template<typename T>
-T decodeJsonLiteral(const String& json) {
-  return JsonVariant{ArduinoJson::RawJson{json.c_str()}};
-}
-
-// ugly workaround to https://github.com/bblanchon/ArduinoJson/issues/265
-template<>
-String decodeJsonLiteral<String>(const String& json) {
-  StaticJsonBuffer<JSON_ARRAY_SIZE(1)> buf;
-  String array = "[" + json + "]";
-  return buf.parseArray(&array[0])[0];
-}
-}  // namespace
 
 FirebaseObject::FirebaseObject(const String& data) : data_{data} {
-  if (data_[0] == '{') {
-    json_ = &buffer_.parseObject(&data_[0]);
-  } else if (data_[0] == '"') {
-    data_ = decodeJsonLiteral<String>(data_);
+  json_ = buffer_.parse(&data_[0]);
+  // TODO(proppy): find a way to check decoding error, tricky because
+  // ArduinoJson doesn't surface error for variant parsing.
+  // See: https://github.com/bblanchon/ArduinoJson/issues/279
+}
+
+bool FirebaseObject::getBool(const String& path) {
+  JsonVariant variant = getJsonVariant(path);
+  if (!variant.is<bool>()) {
+    error_ = "failed to convert to bool";
+    return 0;
   }
+  return static_cast<bool>(variant);
 }
 
-FirebaseObject::operator bool() {
-  return decodeJsonLiteral<bool>(data_);
+int FirebaseObject::getInt(const String& path) {
+  JsonVariant variant = getJsonVariant(path);
+  if (!variant.is<int>()) {
+    error_ = "failed to convert to int";
+    return 0;
+  }
+  return static_cast<int>(variant);
 }
 
-FirebaseObject::operator int() {
-    return decodeJsonLiteral<int>(data_);
+float FirebaseObject::getFloat(const String& path) {
+  JsonVariant variant = getJsonVariant(path);
+  if (!variant.is<float>()) {
+    error_ = "failed to convert to float";
+    return 0;
+  }
+  return static_cast<float>(variant);
 }
 
-FirebaseObject::operator float() {
-    return decodeJsonLiteral<float>(data_);
+String FirebaseObject::getString(const String& path) {
+  JsonVariant variant = getJsonVariant(path);
+  if (!variant.is<const char *>()) {
+    error_ = "failed to convert to string";
+    return "";
+  }
+  return static_cast<const char*>(variant);
 }
 
-FirebaseObject::operator const String&() {
-    return data_;
+JsonVariant FirebaseObject::getJsonVariant(const String& path) {
+  String key(path);
+  char* start = &key[0];
+  char* end = start + key.length();
+  if (*start == '/') {
+    start++;
+  }
+  JsonVariant json = json_;
+  while (start < end) {
+    char* p = start;
+    while (*p && (*p != '/')) p++;
+    *p = 0;
+    json = json.asObject().get(start);
+    start = p + 1;
+  }
+  return json;
 }
 
-FirebaseObject::operator const JsonObject&() {
-  return *json_;
+bool FirebaseObject::failed() const {
+  return error_.length() > 0;
 }
 
-JsonObjectSubscript<const char*> FirebaseObject::operator[](const char* key) {
-    return json_->operator[](key);
+bool FirebaseObject::success() const {
+  return error_.length() == 0;
 }
 
-JsonObjectSubscript<const String&> FirebaseObject::operator[](const String& key) {
-  return json_->operator[](key);
-}
-
-JsonVariant FirebaseObject::operator[](JsonObjectKey key) const {
-  return json_->operator[](key);
+const String& FirebaseObject::error() const {
+  return error_;
 }

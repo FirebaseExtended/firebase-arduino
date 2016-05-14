@@ -38,6 +38,7 @@ void FirebaseArduino::set(const String& path, const JsonVariant& value) {
   error_ = set.error();
 }
 
+
 FirebaseObject FirebaseArduino::get(const char* path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
@@ -46,6 +47,44 @@ FirebaseObject FirebaseArduino::get(const char* path) {
   }
   return FirebaseObject(get.response());
 }
+
+int FirebaseArduino::getInt(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return 0;
+  }
+  return FirebaseObject(get.response()).getInt();
+}
+
+
+float FirebaseArduino::getFloat(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return 0.0f;
+  }
+  return FirebaseObject(get.response()).getFloat();
+}
+
+String FirebaseArduino::getString(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return "";
+  }
+  return FirebaseObject(get.response()).getString();
+}
+
+bool FirebaseArduino::getBool(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return "";
+  }
+  return FirebaseObject(get.response()).getBool();
+}
+
 
 void FirebaseArduino::remove(const char* path) {
   auto remove = FirebaseRemove(host_, auth_, path, http_.get());

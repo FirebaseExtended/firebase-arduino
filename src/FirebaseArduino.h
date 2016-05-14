@@ -58,13 +58,44 @@ class FirebaseArduino {
 
 
   /**
-   * Gets the value located at path.
+   * Gets the integer value located at path.
    * You should check success() after calling.
    * \param path The path to the node you wish to retrieve.
-   * \return The data located at that path. This may either be a single element
-   * or it may be a json structure. Will only be populated if success() is true.
+   * \return The integer value located at that path. Will only be populated if success() is true.
    */
-  FirebaseObject get(const char* path);
+  int getInt(const char* path);
+
+  /**
+   * Gets the float value located at path.
+   * You should check success() after calling.
+   * \param path The path to the node you wish to retrieve.
+   * \return The float value located at that path. Will only be populated if success() is true.
+   */
+  int getFloat(const char* path);
+
+  /**
+   * Gets the string value located at path.
+   * You should check success() after calling.
+   * \param path The path to the node you wish to retrieve.
+   * \return The string value located at that path. Will only be populated if success() is true.
+   */
+  int getString(const char* path);
+
+  /**
+   * Gets the boolean value located at path.
+   * You should check success() after calling.
+   * \param path The path to the node you wish to retrieve.
+   * \return The boolean value located at that path. Will only be populated if success() is true.
+   */
+  int getBool(const char* path);
+
+  /**
+   * Gets the json object value located at path.
+   * You should check success() after calling.
+   * \param path The path to the node you wish to retrieve.
+   * \return a FirebaseObject value located at that path. Will only be populated if success() is true.
+   */
+  FirebaseObject getObject(const char* path);
 
   /**
    * Remove the node, and possibly entire tree, located at path.
@@ -94,7 +125,7 @@ class FirebaseArduino {
   /**
    * Reads the next event in a stream. This is only meaningful once stream() has
    * been called.
-   * \return Object will have ["type"] that describes the event type, ["path"]
+   * \return FirebaseObject will have ["type"] that describes the event type, ["path"]
    * that describes the effected path and ["data"] that was updated.
    */
   FirebaseObject readEvent();
