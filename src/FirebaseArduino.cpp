@@ -54,7 +54,7 @@ FirebaseObject FirebaseArduino::get(const char* path) {
  return get(String(path));
 }
 
-FirebaseObject FirebaseArduino::get(const String path) {
+FirebaseObject FirebaseArduino::get(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
