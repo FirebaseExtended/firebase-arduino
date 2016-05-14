@@ -64,6 +64,14 @@ class FirebaseObject {
   String getString(const String& path = "");
 
   /**
+   * Return the value as a JsonVariant.
+   * \param optional path in the JSON object.
+   * \return result as a JsonVariant.
+   */
+  JsonVariant getJsonVariant(const String& path = "");
+
+
+  /**
    *
    * \return Whether there was an error decoding or accessing the JSON object.
    */
@@ -80,8 +88,8 @@ class FirebaseObject {
    * \return Error message if failed() is true.
    */
   const String& error() const;
+
  private:
-  JsonVariant getJsonVariant(const String& path = "");
   String data_;
   StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE> buffer_;
   JsonVariant json_;
