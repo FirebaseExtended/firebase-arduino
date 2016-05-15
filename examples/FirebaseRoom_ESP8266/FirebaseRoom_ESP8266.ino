@@ -20,23 +20,24 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
+const int pinGrove = 15;
+const int pinVibrator = 5;
+const int pinLightSensor = A0;
+const int pinLed = 12;
+const int pinButton = 14;
+const int pinFan = 13;
+
 void setup() {
   Serial.begin(9600);
 
-  // power grove connector
-  pinMode(15, OUTPUT);
-  digitalWrite(15, HIGH);
+  pinMode(pinGrove, OUTPUT);
+  digitalWrite(pinGrove, HIGH);
 
-  // pin 5 is connected to a vibrator motor.
-  pinMode(5, OUTPUT);
-  // pin A0 is connected to a light sensor.
-  pinMode(A0, INPUT);
-  // pin 12 is connected to a red LED.
-  pinMode(12, OUTPUT);
-  // pin 14 is connected to a push button.
-  pinMode(14, INPUT);
-  // pin 13 is connected to a fan.
-  pinMode(13, OUTPUT);
+  pinMode(pinVibrator, OUTPUT);
+  pinMode(pinLightSensor, INPUT);
+  pinMode(pinLed, OUTPUT);
+  pinMode(pinButton, INPUT);
+  pinMode(pinFan, OUTPUT);
 
   // connect to wifi.
   WiFi.begin("SSID", "PASSWORD");
@@ -48,7 +49,7 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  
+
   Firebase.begin("example.firebaseio.com", "secret_or_token");
 }
 
@@ -56,15 +57,15 @@ int button = 0;
 float light = 0.0;
 
 void loop() {
-  digitalWrite(12, (int)Firebase.get("redlight"));
-  digitalWrite(13, (int)Firebase.get("cooldown"));
-  digitalWrite(5, (int)Firebase.get("brrr"));
-  int newButton = digitalRead(14);
+  digitalWrite(pinLed, (int)Firebase.get("redlight"));
+  digitalWrite(pinFan, (int)Firebase.get("cooldown"));
+  digitalWrite(pinVibrator, (int)Firebase.get("brrr"));
+  int newButton = digitalRead(pinButton);
   if (newButton != button) {
     button = newButton;
     Firebase.set("pushbutton", button);
   }
-  float newLight = analogRead(A0);
+  float newLight = analogRead(pinLightSensor);
   if (abs(newLight - light) > 100) {
     light = newLight;
     Firebase.set("sunlight", light);
