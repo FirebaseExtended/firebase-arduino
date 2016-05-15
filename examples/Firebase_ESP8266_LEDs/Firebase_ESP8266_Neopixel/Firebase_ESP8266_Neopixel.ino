@@ -35,9 +35,9 @@ Firebase fbase = Firebase(FIREBASE_HOST, FIREBASE_AUTH);
 
 void ConnectWifi(const String& ssid, const String& password = "") {
   if (password != "") {
-    WiFi.begin(ssid.c_str(), password.c_str());
+    WiFi.begin(ssid, password);
   } else {
-    WiFi.begin(ssid.c_str());
+    WiFi.begin(ssid);
   }
 
   Serial.print("connecting");

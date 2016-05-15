@@ -26,7 +26,8 @@
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
 
-void ConnectWifi(const String& ssid, const String& password = "") {
+void setup() {
+  Serial.begin(9600);
   if (password != "") {
     WiFi.begin(ssid.c_str(), password.c_str());
   } else {
@@ -41,10 +42,7 @@ void ConnectWifi(const String& ssid, const String& password = "") {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-}
 
-void setup() {
-  Serial.begin(9600);
   ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
