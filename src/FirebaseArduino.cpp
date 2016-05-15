@@ -16,7 +16,7 @@
 
 #include "FirebaseArduino.h"
 
-void FirebaseArduino::begin(const char* host, const char* auth) {
+void FirebaseArduino::begin(const String& host, const String& auth) {
   http_.reset(FirebaseHttpClient::create());
   http_->setReuseConnection(true);
   host_ = host;
@@ -38,7 +38,7 @@ void FirebaseArduino::set(const String& path, const JsonVariant& value) {
   error_ = set.error();
 }
 
-FirebaseObject FirebaseArduino::get(const char* path) {
+FirebaseObject FirebaseArduino::get(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -47,7 +47,7 @@ FirebaseObject FirebaseArduino::get(const char* path) {
   return FirebaseObject(get.response());
 }
 
-int FirebaseArduino::getInt(const char* path) {
+int FirebaseArduino::getInt(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -57,7 +57,7 @@ int FirebaseArduino::getInt(const char* path) {
 }
 
 
-float FirebaseArduino::getFloat(const char* path) {
+float FirebaseArduino::getFloat(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -66,7 +66,7 @@ float FirebaseArduino::getFloat(const char* path) {
   return FirebaseObject(get.response()).getFloat();
 }
 
-String FirebaseArduino::getString(const char* path) {
+String FirebaseArduino::getString(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -75,7 +75,7 @@ String FirebaseArduino::getString(const char* path) {
   return FirebaseObject(get.response()).getString();
 }
 
-bool FirebaseArduino::getBool(const char* path) {
+bool FirebaseArduino::getBool(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -83,13 +83,12 @@ bool FirebaseArduino::getBool(const char* path) {
   }
   return FirebaseObject(get.response()).getBool();
 }
-
-void FirebaseArduino::remove(const char* path) {
+void FirebaseArduino::remove(const String& path) {
   auto remove = FirebaseRemove(host_, auth_, path, http_.get());
   error_ = remove.error();
 }
 
-void FirebaseArduino::stream(const char* path) {
+void FirebaseArduino::stream(const String& path) {
   auto stream = FirebaseStream(host_, auth_, path, http_.get());
   error_ = stream.error();
 }

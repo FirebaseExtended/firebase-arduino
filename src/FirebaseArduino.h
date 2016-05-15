@@ -35,7 +35,7 @@ class FirebaseArduino {
    * \param host Your firebase db host, usually X.firebaseio.com.
    * \param auth Optional credentials for the db, a secret or token.
    */
-  void begin(const char* host, const char* auth = "");
+  void begin(const String& host, const String& auth = "");
 
   /**
    * Writes data to a new child location under the parent at path. 
@@ -63,7 +63,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The integer value located at that path. Will only be populated if success() is true.
    */
-  int getInt(const char* path);
+  int getInt(const String& path);
 
   /**
    * Gets the float value located at path.
@@ -71,7 +71,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The float value located at that path. Will only be populated if success() is true.
    */
-  float getFloat(const char* path);
+  float getFloat(const String& path);
 
   /**
    * Gets the string value located at path.
@@ -79,7 +79,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The string value located at that path. Will only be populated if success() is true.
    */
-  String getString(const char* path);
+  String getString(const String& path);
 
   /**
    * Gets the boolean value located at path.
@@ -87,7 +87,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The boolean value located at that path. Will only be populated if success() is true.
    */
-  bool getBool(const char* path);
+  bool getBool(const String& path);
 
   /**
    * Gets the json object value located at path.
@@ -95,7 +95,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return a FirebaseObject value located at that path. Will only be populated if success() is true.
    */
-  FirebaseObject get(const char* path);
+  FirebaseObject get(const String& path);
 
   /**
    * Remove the node, and possibly entire tree, located at path.
@@ -103,7 +103,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to remove,
    * including all of its children.
    */
-  void remove(const char* path);
+  void remove(const String& path);
 
   /**
    * Starts streaming any changes made to the node located at path, including
@@ -113,7 +113,7 @@ class FirebaseArduino {
    * monitoring available() and calling readEvent() to get new events.
    * \param path The path inside of your db to the node you wish to monitor.
    */
-  void stream(const char* path);
+  void stream(const String& path);
 
   /**
    * Checks if there are new events available. This is only meaningful once
