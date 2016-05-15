@@ -31,48 +31,69 @@ class FirebaseObject {
  public:
   /**
    * Construct from json.
-   * \param data Json formatted string.
+   * \param data JSON formatted string.
    */
   FirebaseObject(const String& data);
 
   /**
-   * Interpret result as a bool, only applicable if result is a single element
-   * and not a tree.
+   * Return the value as a boolean.
+   * \param optional path in the JSON object.
+   * \return result as a bool.
    */
-  operator bool();
+  bool getBool(const String& path = "");
 
   /**
-   * Interpret result as a int, only applicable if result is a single element
-   * and not a tree.
+   * Return the value as an int.
+   * \param optional path in the JSON object.
+   * \return result as an integer.
    */
-  operator int();
+  int getInt(const String& path = "");
 
   /**
-   * Interpret result as a float, only applicable if result is a single element
-   * and not a tree.
+   * Return the value as a float.
+   * \param optional path in the JSON object.
+   * \return result as a float.
    */
-  operator float();
+  float getFloat(const String& path = "");
 
   /**
-   * Interpret result as a String, only applicable if result is a single element
-   * and not a tree.
+   * Return the value as a String.
+   * \param optional path in the JSON object.
+   * \return result as a String.
    */
-  operator const String&();
+  String getString(const String& path = "");
 
   /**
-   * Interpret result as a JsonObject, if the result is a tree use this or the
-   * operator[] methods below.
+   * Return the value as a JsonVariant.
+   * \param optional path in the JSON object.
+   * \return result as a JsonVariant.
    */
-  operator const JsonObject&();
+  JsonVariant getJsonVariant(const String& path = "");
 
-  //TODO(proppy): Add comments to these.
-  JsonObjectSubscript<const char*> operator[](const char* key);
-  JsonObjectSubscript<const String&> operator[](const String& key);
-  JsonVariant operator[](JsonObjectKey key) const;
+
+  /**
+   *
+   * \return Whether there was an error decoding or accessing the JSON object.
+   */
+  bool success() const;
+
+  /**
+   *
+   * \return Whether there was an error decoding or accessing the JSON object.
+   */
+  bool failed() const;
+
+  /**
+   *
+   * \return Error message if failed() is true.
+   */
+  const String& error() const;
+
  private:
   String data_;
   StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE> buffer_;
-  JsonObject* json_;
+  JsonVariant json_;
+  String error_;
 };
 
 #endif // FIREBASE_OBJECT_H

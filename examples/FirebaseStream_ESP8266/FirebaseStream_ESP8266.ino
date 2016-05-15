@@ -55,16 +55,16 @@ void loop() {
   
   if (Firebase.available()) {
      FirebaseObject event = Firebase.readEvent();
-     String event_type = event["type"];
-     event_type.toLowerCase();
+     String eventType = event.getString("type");
+     eventType.toLowerCase();
      
      Serial.print("event: ");
-     Serial.println(event_type);
-     if (event_type == "put") {
+     Serial.println(eventType);
+     if (eventType == "put") {
        Serial.print("data: ");
-       Serial.println(event["data"].asString());
-       String path = event["path"];
-       float data = event["data"];
+       Serial.println(event.getString("data"));
+       String path = event.getString("path");
+       float data = event.getFloat("data");
 
        display.clearDisplay();
        display.setTextSize(2);
