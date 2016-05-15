@@ -22,41 +22,45 @@
 #include <Adafruit_NeoPixel.h>
 #include "colors_ext.h"
 
-const int PIN=13;
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
-
 // Set these to run example.
 #define FIREBASE_HOST "example.firebaseio.com"
 #define FIREBASE_AUTH "token_or_secret"
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
 
+const int PIN=13;
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
+
+// TODO: Replace with your own credentials and keep these safe.
 Firebase fbase = Firebase(FIREBASE_HOST, FIREBASE_AUTH);
-
-void ConnectWifi(const String& ssid, const String& password = "") {
-  if (password != "") {
-    WiFi.begin(ssid, password);
-  } else {
-    WiFi.begin(ssid);
-  }
-
-  Serial.print("connecting");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
-  Serial.println();
-  Serial.print("connected: ");
-  Serial.println(WiFi.localIP());
-}
 
 void setup() {
   Serial.begin(9600);
-  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
 
   strip.begin();
   strip.setBrightness(25); // 0 ... 255
   strip.show(); // Initialize all pixels to 'off'
+
+  // Not connected, set the LEDs red
+  colorWipe(&strip, 0xFF0000, 50);
+
+  // connect to wifi.
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("connecting");
+
+  int count = 0;
+  while (WiFi.status() != WL_CONNECTED) {
+    // Draw rainbows while connecting
+    Serial.print(".");
+    if (count < strip.numPixels()){
+       strip.setPixelColor(count++, Wheel(&strip, count * 8));
+       strip.show();
+    }
+    delay(20);
+  }
+  Serial.println();
+  Serial.print("connected: ");
+  Serial.println(WiFi.localIP());
 
   // Connected, set the LEDs green
   colorWipe(&strip, 0x00FF00, 50);
