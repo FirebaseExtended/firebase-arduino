@@ -35,7 +35,6 @@ class FirebaseArduino {
    * \param host Your firebase db host, usually X.firebaseio.com.
    * \param auth Optional credentials for the db, a secret or token.
    */
-  void begin(const char* host, const char* auth = "");
   void begin(const String& host, const String& auth = "");
 
   /**
@@ -46,7 +45,6 @@ class FirebaseArduino {
    * \param value Data that you wish to add under the parent.
    * \return The unique child key where the data was written.
    */
-  String push(const char* path, const JsonVariant& value);
   String push(const String& path, const JsonVariant& value);
 
   /**
@@ -56,7 +54,6 @@ class FirebaseArduino {
    * \param path The path inside of your db to the node you wish to update.
    * \param value Data that you wish to write.
    */
-  void set(const char* path, const JsonVariant& value);
   void set(const String& path, const JsonVariant& value);
 
 
@@ -67,7 +64,6 @@ class FirebaseArduino {
    * \return The data located at that path. This may either be a single element
    * or it may be a json structure. Will only be populated if success() is true.
    */
-  FirebaseObject get(const char* path);
   FirebaseObject get(const String& path);
 
   /**
@@ -76,7 +72,6 @@ class FirebaseArduino {
    * \param path The path to the node you wish to remove,
    * including all of its children.
    */
-  void remove(const char* path);
   void remove(const String& path);
 
   /**
@@ -87,7 +82,6 @@ class FirebaseArduino {
    * monitoring available() and calling readEvent() to get new events.
    * \param path The path inside of your db to the node you wish to monitor.
    */
-  void stream(const char* path);
   void stream(const String& path);
 
   /**
