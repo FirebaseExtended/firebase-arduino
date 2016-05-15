@@ -13,11 +13,11 @@
 
 1. Get a [Wio Link](http://www.seeedstudio.com/wiki/Wio_Link)
 1. Connect:
-- a [Grove - Vibration Motor](http://www.seeedstudio.com/wiki/Grove_-_Vibration_Motor) on `pin 5`
-- a [Grove - Light Sensor](http://www.seeedstudio.com/wiki/Grove_-_Light_Sensor) on `pin A0`
-- a [Grove - Red LED](http://www.seeedstudio.com/wiki/Grove_-_Red_LED) on `pin 12`
-- a [Grove - Button](http://www.seeedstudio.com/wiki/Grove_-_Button) on `pin 14`
-- a [Grove - Mini Fan](http://www.seeedstudio.com/wiki/Grove_-_Mini_Fan) on `pin 13`
+  - a [Grove - Vibration Motor](http://www.seeedstudio.com/wiki/Grove_-_Vibration_Motor) on `pin 5`
+  - a [Grove - Light Sensor](http://www.seeedstudio.com/wiki/Grove_-_Light_Sensor) on `pin A0`
+  - a [Grove - Red LED](http://www.seeedstudio.com/wiki/Grove_-_Red_LED) on `pin 12`
+  - a [Grove - Button](http://www.seeedstudio.com/wiki/Grove_-_Button) on `pin 14`
+  - a [Grove - Mini Fan](http://www.seeedstudio.com/wiki/Grove_-_Mini_Fan) on `pin 13`
 
 ## Configuration
 
@@ -45,10 +45,10 @@
 
 ## Homeworks
 
+- Build a [Firebase web app](https://www.firebase.com/docs/web/) that interacts with the room.
 - Connect other Grove modules to the room and submit new [PRs](https://github.com/googlesamples/firebase-arduino/pulls)
-- Reduce the number of Firebase API call using `ArduinoJson`
-- Reduce the number of Firebase API call using `Firebase.stream()`
+- Reduce the number of Firebase API calls using `FirebaseObject` or `FirebaseStream`.
 - Watch or star the [GitHub repo repo](https://github.com/googlesamples/firebase-arduino)
-- Give [feedbacks](gitter.im/googlesamples/firebase-arduino)
+- Give [feedback](gitter.im/googlesamples/firebase-arduino)
 - Report [bugs](https://github.com/googlesamples/firebase-arduino/issues/new)
 - [Fork](https://github.com/googlesamples/firebase-arduino#fork-destination-box) and [contribute](https://github.com/googlesamples/firebase-arduino/blob/master/CONTRIBUTING.md)
