@@ -47,7 +47,7 @@ FirebaseObject FirebaseArduino::get(const String& path) {
   return FirebaseObject(get.response());
 }
 
-int FirebaseArduino::getInt(const char* path) {
+int FirebaseArduino::getInt(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -57,7 +57,7 @@ int FirebaseArduino::getInt(const char* path) {
 }
 
 
-float FirebaseArduino::getFloat(const char* path) {
+float FirebaseArduino::getFloat(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -66,7 +66,7 @@ float FirebaseArduino::getFloat(const char* path) {
   return FirebaseObject(get.response()).getFloat();
 }
 
-String FirebaseArduino::getString(const char* path) {
+String FirebaseArduino::getString(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {
@@ -75,7 +75,7 @@ String FirebaseArduino::getString(const char* path) {
   return FirebaseObject(get.response()).getString();
 }
 
-bool FirebaseArduino::getBool(const char* path) {
+bool FirebaseArduino::getBool(const String& path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
   if (failed()) {

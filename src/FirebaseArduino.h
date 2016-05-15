@@ -63,7 +63,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The integer value located at that path. Will only be populated if success() is true.
    */
-  int getInt(const char* path);
+  int getInt(const String& path);
 
   /**
    * Gets the float value located at path.
@@ -71,7 +71,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The float value located at that path. Will only be populated if success() is true.
    */
-  float getFloat(const char* path);
+  float getFloat(const String& path);
 
   /**
    * Gets the string value located at path.
@@ -79,7 +79,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The string value located at that path. Will only be populated if success() is true.
    */
-  String getString(const char* path);
+  String getString(const String& path);
 
   /**
    * Gets the boolean value located at path.
@@ -87,7 +87,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The boolean value located at that path. Will only be populated if success() is true.
    */
-  bool getBool(const char* path);
+  bool getBool(const String& path);
 
   /**
    * Gets the json object value located at path.
