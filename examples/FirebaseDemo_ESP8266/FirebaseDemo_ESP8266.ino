@@ -56,7 +56,7 @@ void loop() {
 
   // get value 
   Serial.print("number: ");
-  Serial.println((float)Firebase.get("number"));
+  Serial.println(Firebase.getFloat("number"));
   delay(1000);
 
   // remove value

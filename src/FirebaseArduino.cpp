@@ -47,6 +47,42 @@ FirebaseObject FirebaseArduino::get(const String& path) {
   return FirebaseObject(get.response());
 }
 
+int FirebaseArduino::getInt(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return 0;
+  }
+  return FirebaseObject(get.response()).getInt();
+}
+
+
+float FirebaseArduino::getFloat(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return 0.0f;
+  }
+  return FirebaseObject(get.response()).getFloat();
+}
+
+String FirebaseArduino::getString(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return "";
+  }
+  return FirebaseObject(get.response()).getString();
+}
+
+bool FirebaseArduino::getBool(const char* path) {
+  auto get = FirebaseGet(host_, auth_, path, http_.get());
+  error_ = get.error();
+  if (failed()) {
+    return "";
+  }
+  return FirebaseObject(get.response()).getBool();
+}
 void FirebaseArduino::remove(const String& path) {
   auto remove = FirebaseRemove(host_, auth_, path, http_.get());
   error_ = remove.error();
@@ -67,7 +103,7 @@ FirebaseObject FirebaseArduino::readEvent() {
   String event = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
   FirebaseObject obj = FirebaseObject(event);
-  obj["type"] = type;
+  obj.getJsonVariant().asObject()["type"] = type;
   return obj;
 }
 
