@@ -1,7 +1,7 @@
 # FirebaseRoom
 
 FirebaseRoom is a sample that shows basic usage of FirebaseArduino to push
-sensors data to Firebase, and trigger actuators from Firebase.
+sensor data to Firebase, and trigger actuators from Firebase.
 
 ## Software setup
 
@@ -27,10 +27,10 @@ sensors data to Firebase, and trigger actuators from Firebase.
 1. Go to https://www.firebase.com/ and create a new Firebase
 1. Copy the `Firebase Hostname`
 1. Go to `Secrets`
-1. Click `Firebase Secrets > Shows`
+1. Click `Firebase Secrets > Show`
 1. Copy the `Firebase Secret`
 1. Start Arduino
-1. Click `File > Examples > firebase-arduino > FirebaseRoom_ESP8266`
+1. Click `File > Examples > FirebaseArduino > FirebaseRoom_ESP8266`
 1. Replace `SSID` and `PASSWORD` with WiFi credentials
 1. Replace `example.firebaseio.com` with the `Firebase Hostname` from step `2.`
 1. Replace `secret_or_token` with `Firebase Secret` from step `5.`
