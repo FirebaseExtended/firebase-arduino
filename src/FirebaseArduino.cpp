@@ -38,7 +38,6 @@ void FirebaseArduino::set(const String& path, const JsonVariant& value) {
   error_ = set.error();
 }
 
-
 FirebaseObject FirebaseArduino::get(const char* path) {
   auto get = FirebaseGet(host_, auth_, path, http_.get());
   error_ = get.error();
@@ -84,7 +83,6 @@ bool FirebaseArduino::getBool(const char* path) {
   }
   return FirebaseObject(get.response()).getBool();
 }
-
 
 void FirebaseArduino::remove(const char* path) {
   auto remove = FirebaseRemove(host_, auth_, path, http_.get());

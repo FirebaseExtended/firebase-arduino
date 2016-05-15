@@ -16,7 +16,6 @@
 
 #include "FirebaseObject.h"
 
-
 FirebaseObject::FirebaseObject(const String& data) : data_{data} {
   json_ = buffer_.parse(&data_[0]);
   // TODO(proppy): find a way to check decoding error, tricky because
@@ -64,15 +63,21 @@ JsonVariant FirebaseObject::getJsonVariant(const String& path) {
   String key(path);
   char* start = &key[0];
   char* end = start + key.length();
+  // skip first `/`.
   if (*start == '/') {
     start++;
   }
   JsonVariant json = json_;
   while (start < end) {
+    // TODO(proppy) split in a separate function.
     char* p = start;
+    // advance to next `/`.
     while (*p && (*p != '/')) p++;
+    // make `start` a C string.
     *p = 0;
+    // return json variant at `start`.
     json = json.asObject().get(start);
+    // advance to next path element.
     start = p + 1;
   }
   return json;
