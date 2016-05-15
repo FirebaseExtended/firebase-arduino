@@ -20,19 +20,29 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
-// Set these to run example.
-#define FIREBASE_HOST "example.firebaseio.com"
-#define FIREBASE_AUTH "token_or_secret"
-#define WIFI_SSID "SSID"
-#define WIFI_PASSWORD "PASSWORD"
+const int grovePowerPin = 15;
+const int vibratorPin = 5;
+const int lightSensorPin = A0;
+const int ledPin = 12;
+const int buttonPin = 14;
+const int fanPin = 13;
 
-void ConnectWifi(const String& ssid, const String& password = "") {
-  if (password != "") {
-    WiFi.begin(ssid.c_str(), password.c_str());
-  } else {
-    WiFi.begin(ssid.c_str());
-  }
+void setup() {
+  Serial.begin(9600);
+  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 
+  pinMode(grovePowerPin, OUTPUT);
+  digitalWrite(grovePowerPin, HIGH);
+
+  pinMode(vibratorPin, OUTPUT);
+  pinMode(lightSensorPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+  pinMode(fanPin, OUTPUT);
+
+  // connect to wifi.
+  WiFi.begin("SSID", "PASSWORD");
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -41,42 +51,28 @@ void ConnectWifi(const String& ssid, const String& password = "") {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-}
 
-void setup() {
-  Serial.begin(9600);
-  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
-  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-
-  // power grove connector
-  pinMode(15, OUTPUT);
-  digitalWrite(15, HIGH);
-
-  // pin 5 is connected to a vibrator motor.
-  pinMode(5, OUTPUT);
-  // pin A0 is connected to a light sensor.
-  pinMode(A0, INPUT);
-  // pin 12 is connected to a red LED.
-  pinMode(12, OUTPUT);
-  // pin 14 is connected to a push button.
-  pinMode(14, INPUT);
-  // pin 13 is connected to a fan.
-  pinMode(13, OUTPUT);
+  Firebase.begin("example.firebaseio.com", "secret_or_token");
+  Firebase.set("pushbutton", 0);
+  Firebase.set("sunlight", 0);
+  Firebase.set("redlight", 0);
+  Firebase.set("cooldown", 0);
+  Firebase.set("brrr", 0);
 }
 
 int button = 0;
 float light = 0.0;
 
 void loop() {
-  digitalWrite(12, (int)Firebase.get("redlight"));
-  digitalWrite(13, (int)Firebase.get("cooldown"));
-  digitalWrite(5, (int)Firebase.get("brrr"));
-  int newButton = digitalRead(14);
+  digitalWrite(ledPin, Firebase.getInt("redlight"));
+  digitalWrite(fanPin, Firebase.getInt("cooldown"));
+  digitalWrite(vibratorPin, Firebase.getInt("brrr"));
+  int newButton = digitalRead(buttonPin);
   if (newButton != button) {
     button = newButton;
     Firebase.set("pushbutton", button);
   }
-  float newLight = analogRead(A0);
+  float newLight = analogRead(lightSensorPin);
   if (abs(newLight - light) > 100) {
     light = newLight;
     Firebase.set("sunlight", light);

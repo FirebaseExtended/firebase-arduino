@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/googlesamples/firebase-arduino.svg?branch=master)](https://travis-ci.org/googlesamples/firebase-arduino)
 [![Join the chat at https://gitter.im/googlesamples/firebase-arduino](https://badges.gitter.im/googlesamples/firebase-arduino.svg)](https://gitter.im/googlesamples/firebase-arduino?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Documentation Status](https://readthedocs.org/projects/firebase-arduino/badge/?version=latest)](http://firebase-arduino.readthedocs.io/en/latest/?badge=latest)
+
 
 This sample shows how to call [Firebase](https://www.firebase.com/) from the [ESP8266 Arduino core](https://github.com/esp8266/Arduino).
 

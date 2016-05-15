@@ -19,23 +19,81 @@
 
 #include "third-party/arduino-json-5.3/include/ArduinoJson.h"
 
+#ifndef FIREBASE_JSONBUFFER_SIZE
 #define FIREBASE_JSONBUFFER_SIZE 200
+#endif // FIREBASE_JSONBUFFER_SIZE
 
+/**
+ * Represents value stored in firebase, may be a singular value (leaf node) or
+ * a tree structure.
+ */
 class FirebaseObject {
  public:
+  /**
+   * Construct from json.
+   * \param data JSON formatted string.
+   */
   FirebaseObject(const String& data);
-  operator bool();
-  operator int();
-  operator float();
-  operator const String&();
-  operator const JsonObject&();
-  JsonObjectSubscript<const char*> operator[](const char* key);
-  JsonObjectSubscript<const String&> operator[](const String& key);
-  JsonVariant operator[](JsonObjectKey key) const;
+
+  /**
+   * Return the value as a boolean.
+   * \param optional path in the JSON object.
+   * \return result as a bool.
+   */
+  bool getBool(const String& path = "");
+
+  /**
+   * Return the value as an int.
+   * \param optional path in the JSON object.
+   * \return result as an integer.
+   */
+  int getInt(const String& path = "");
+
+  /**
+   * Return the value as a float.
+   * \param optional path in the JSON object.
+   * \return result as a float.
+   */
+  float getFloat(const String& path = "");
+
+  /**
+   * Return the value as a String.
+   * \param optional path in the JSON object.
+   * \return result as a String.
+   */
+  String getString(const String& path = "");
+
+  /**
+   * Return the value as a JsonVariant.
+   * \param optional path in the JSON object.
+   * \return result as a JsonVariant.
+   */
+  JsonVariant getJsonVariant(const String& path = "");
+
+
+  /**
+   *
+   * \return Whether there was an error decoding or accessing the JSON object.
+   */
+  bool success() const;
+
+  /**
+   *
+   * \return Whether there was an error decoding or accessing the JSON object.
+   */
+  bool failed() const;
+
+  /**
+   *
+   * \return Error message if failed() is true.
+   */
+  const String& error() const;
+
  private:
   String data_;
   StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE> buffer_;
-  JsonObject* json_;
+  JsonVariant json_;
+  String error_;
 };
 
 #endif // FIREBASE_OBJECT_H
