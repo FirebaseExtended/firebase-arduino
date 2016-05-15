@@ -41,7 +41,7 @@ int n = 0;
 
 void loop() {
   // set value
-  Firebase.set("number", 42.0);
+  Firebase.setFloat("number", 42.0);
   // handle error
   if (Firebase.failed()) {
       Serial.print("setting /number failed:");
@@ -51,7 +51,7 @@ void loop() {
   delay(1000);
   
   // update value
-  Firebase.set("number", 43.0);
+  Firebase.setFloat("number", 43.0);
   delay(1000);
 
   // get value 
@@ -64,14 +64,14 @@ void loop() {
   delay(1000);
 
   // set string value
-  Firebase.set("message", "hello world");
+  Firebase.setString("message", "hello world");
   delay(1000);
   // set bool value
-  Firebase.set("truth", false);
+  Firebase.setBool("truth", false);
   delay(1000);
 
   // append a new value to /logs
-  String name = Firebase.push("logs", n++);
+  String name = Firebase.pushInt("logs", n++);
   Serial.print("pushed: /logs/");
   Serial.println(name);
   delay(1000);
