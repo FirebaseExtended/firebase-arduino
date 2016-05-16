@@ -28,12 +28,9 @@
 
 void setup() {
   Serial.begin(9600);
-  if (password != "") {
-    WiFi.begin(ssid.c_str(), password.c_str());
-  } else {
-    WiFi.begin(ssid.c_str());
-  }
 
+  // connect to wifi.
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -42,8 +39,7 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-
-  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
+  
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 

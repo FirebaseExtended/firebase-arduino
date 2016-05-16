@@ -22,12 +22,21 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+// Set these to run example.
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
+
 #define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
 
 void setup() {
   Serial.begin(9600);
 
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
+  display.display();
+
+  // connect to wifi.
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -36,16 +45,6 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-}
-
-void setup() {
-  Serial.begin(9600);
-  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
-
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
-  display.display();
-
-  stream = fbase.stream("/bitcoin/last");  
   
   Firebase.begin("publicdata-cryptocurrency.firebaseio.com");
   Firebase.stream("/bitcoin/last");  
