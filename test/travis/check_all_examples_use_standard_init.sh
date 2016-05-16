@@ -1,6 +1,6 @@
 #!/bin/bash
 FBASE_SNIPPET=test/travis/firebase_init.cc.snip
-FBASE_NOWIFI_SNIPPET=test/travis/firebase_no_wifi_init.cc.snip
+FBASE_NOWIFI_SNIPPET=test/travis/no_firebase_init.cc.snip
 for example in `find examples/ -name *.ino`;
 do
   echo $example;

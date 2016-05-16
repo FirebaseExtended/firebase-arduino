@@ -1,24 +1,3 @@
 // Set these to run example.
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
-
-void ConnectWifi(const String& ssid, const String& password = "") {
-  if (password != "") {
-    WiFi.begin(ssid.c_str(), password.c_str());
-  } else {
-    WiFi.begin(ssid.c_str());
-  }
-
-  Serial.print("connecting");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
-  Serial.println();
-  Serial.print("connected: ");
-  Serial.println(WiFi.localIP());
-}
-
-void setup() {
-  Serial.begin(9600);
-  ConnectWifi(WIFI_SSID, WIFI_PASSWORD);
