@@ -16,11 +16,10 @@
 
 // FirebaseNeoPixel is a sample that demonstrates how
 // to set pixel data from Firebase.
-#include <Firebase.h>
+#include <FirebaseArduino.h>
 #include <ESP8266WiFi.h>
 
 #include <Adafruit_NeoPixel.h>
-#include "colors_ext.h"
 
 // Set these to run example.
 #define FIREBASE_HOST "example.firebaseio.com"
@@ -31,8 +30,8 @@
 const int PIN=13;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
 
-// TODO: Replace with your own credentials and keep these safe.
-Firebase fbase = Firebase(FIREBASE_HOST, FIREBASE_AUTH);
+const int pixelPin = 13;
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, pixelPin, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   Serial.begin(9600);
@@ -41,56 +40,35 @@ void setup() {
   strip.setBrightness(25); // 0 ... 255
   strip.show(); // Initialize all pixels to 'off'
 
-  // Not connected, set the LEDs red
-  colorWipe(&strip, 0xFF0000, 50);
-
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
-
-  int count = 0;
   while (WiFi.status() != WL_CONNECTED) {
-    // Draw rainbows while connecting
     Serial.print(".");
-    if (count < strip.numPixels()){
-       strip.setPixelColor(count++, Wheel(&strip, count * 8));
-       strip.show();
-    }
-    delay(20);
+    delay(500);
   }
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
-  // Connected, set the LEDs green
-  colorWipe(&strip, 0x00FF00, 50);
+  Firebase.begin("example.firebaseio.com", "secret_or_token");
 }
 
 
 void loop() {
   // Get all entries.
   // TODO: Replace with streaming
-  FirebaseGet get = fbase.get("/rgbdata");
-  if (get.error()) {
+  FirebaseObject pixels = Firebase.get("/rgbdata");
+  if (Firebase.failed()) {
       Serial.println("Firebase get failed");
-      Serial.println(get.error().message());
+      Serial.println(Firebase.error());
       return;
   }
 
-  // create an empty object
-  const JsonObject& pixelJSON = get.json();
-
-  if(pixelJSON.success()){
-    for (int i=0; i < strip.numPixels(); i++) {
-      String pixelAddress = "pixel" + String(i);
-      String pixelVal = pixelJSON[pixelAddress];
-      Serial.println(pixelVal);
-      strip.setPixelColor(i, pixelVal.toInt());
-    }
-    strip.show();
-  } else {
-    Serial.println("Parse fail.");
-    Serial.println(get.response());
+  for (int i = 0; i < strip.numPixels(); i++) {
+    int pixel = pixels.getInt("pixel" + i);
+    Serial.println(pixel);
+    strip.setPixelColor(i, pixel);
   }
+  strip.show();
 }
-
