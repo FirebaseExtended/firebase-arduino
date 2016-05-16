@@ -36,6 +36,10 @@
 #include <Firebase.h>
 #include <SerialTransceiver.h>
 
+// Set these to run example.
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
+
 SoftwareSerial data_serial(5 /*RX*/, 4/*TX*/);
 firebase::modem::SerialTransceiver transceiver;
 
@@ -43,7 +47,7 @@ void setup() {
   Serial.begin(9600);
 
   // connect to wifi.
-  WiFi.begin("SSID", "PASSWORD");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");

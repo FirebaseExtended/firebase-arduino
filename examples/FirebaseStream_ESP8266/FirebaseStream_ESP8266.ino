@@ -22,6 +22,10 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+// Set these to run example.
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
+
 #define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
 
@@ -32,7 +36,7 @@ void setup() {
   display.display();
 
   // connect to wifi.
-  WiFi.begin("SSID", "PASSWORD");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");

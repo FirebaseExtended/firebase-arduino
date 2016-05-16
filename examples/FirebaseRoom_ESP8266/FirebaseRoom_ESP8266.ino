@@ -20,6 +20,12 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
+// Set these to run example.
+#define FIREBASE_HOST "example.firebaseio.com"
+#define FIREBASE_AUTH "token_or_secret"
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
+
 const int grovePowerPin = 15;
 const int vibratorPin = 5;
 const int lightSensorPin = A0;
@@ -40,7 +46,7 @@ void setup() {
   pinMode(fanPin, OUTPUT);
 
   // connect to wifi.
-  WiFi.begin("SSID", "PASSWORD");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -50,7 +56,7 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
-  Firebase.begin("example.firebaseio.com", "secret_or_token");
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   Firebase.set("pushbutton", 0);
   Firebase.set("sunlight", 0);
   Firebase.set("redlight", 0);

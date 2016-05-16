@@ -22,11 +22,17 @@
 #include <Adafruit_NeoPixel.h>
 #include "colors_ext.h"
 
+// Set these to run example.
+#define FIREBASE_HOST "example.firebaseio.com"
+#define FIREBASE_AUTH "token_or_secret"
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
+
 const int PIN=13;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
 
 // TODO: Replace with your own credentials and keep these safe.
-Firebase fbase = Firebase("YOUR-PROJECT.firebaseio.com", "YOUR_AUTH_SECRET");
+Firebase fbase = Firebase(FIREBASE_HOST, FIREBASE_AUTH);
 
 void setup() {
   Serial.begin(9600);
@@ -39,7 +45,7 @@ void setup() {
   colorWipe(&strip, 0xFF0000, 50);
 
   // connect to wifi.
-  WiFi.begin("GoogleGuest", "");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
 
   int count = 0;
