@@ -23,12 +23,46 @@ void FirebaseArduino::begin(const String& host, const String& auth) {
   auth_ = auth;
 }
 
-String FirebaseArduino::FirebaseArduino::push(const String& path, const JsonVariant& value) {
+String FirebaseArduino::pushInt(const String& path, int value) {
+  return push(path, value);
+}
+
+String FirebaseArduino::pushFloat(const String& path, float value) {
+  return push(path, value);
+}
+
+String FirebaseArduino::pushBool(const String& path, bool value) {
+  return push(path, value);
+}
+
+String FirebaseArduino::pushString(const String& path, const String& value) {
+  JsonVariant json(value);
+  return push(path, json);
+}
+
+String FirebaseArduino::push(const String& path, const JsonVariant& value) {
   String buf;
   value.printTo(buf);
   auto push = FirebasePush(host_, auth_, path, buf, http_.get());
   error_ = push.error();
   return push.name();
+}
+
+void FirebaseArduino::setInt(const String& path, int value) {
+  set(path, value);
+}
+
+void FirebaseArduino::setFloat(const String& path, float value) {
+  set(path, value);
+}
+
+void FirebaseArduino::setBool(const String& path, bool value) {
+  set(path, value);
+}
+
+void FirebaseArduino::setString(const String& path, const String& value) {
+  JsonVariant json(value);
+  set(path, json);
 }
 
 void FirebaseArduino::set(const String& path, const JsonVariant& value) {

@@ -68,11 +68,11 @@ void loop() {
   int newButton = digitalRead(buttonPin);
   if (newButton != button) {
     button = newButton;
-    Firebase.set("pushbutton", button);
+    Firebase.setInt("pushbutton", button);
   }
   float newLight = analogRead(lightSensorPin);
   if (abs(newLight - light) > 100) {
     light = newLight;
-    Firebase.set("sunlight", light);
+    Firebase.setFloat("sunlight", light);
   }
 }
