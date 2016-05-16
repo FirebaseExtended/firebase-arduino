@@ -40,10 +40,6 @@ String FirebaseArduino::pushString(const String& path, const String& value) {
   return push(path, json);
 }
 
-String FirebaseArduino::pushString(const String& path, const char* value) {
-  return push(path, value);
-}
-
 String FirebaseArduino::push(const String& path, const JsonVariant& value) {
   String buf;
   value.printTo(buf);
@@ -67,10 +63,6 @@ void FirebaseArduino::setBool(const String& path, bool value) {
 void FirebaseArduino::setString(const String& path, const String& value) {
   JsonVariant json(value);
   set(path, json);
-}
-
-void FirebaseArduino::setString(const String& path, const char* value) {
-  set(path, value);
 }
 
 void FirebaseArduino::set(const String& path, const JsonVariant& value) {
