@@ -28,4 +28,4 @@ FirebaseDemo is a sample that shows basic usage of the `FirebaseArduino` API.
 ## Play
 
 1. Go to the Firebase console `Data` section
-1. Watch the data being modified as the sketch runs.
+1. Watch the data being modified as the sketch runs
