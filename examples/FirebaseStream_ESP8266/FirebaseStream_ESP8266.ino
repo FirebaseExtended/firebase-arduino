@@ -64,7 +64,7 @@ void loop() {
        Serial.print("data: ");
        Serial.println(event.getString("data"));
        String path = event.getString("path");
-       float data = event.getFloat("data");
+       String data = event.getString("data");
 
        display.clearDisplay();
        display.setTextSize(2);
