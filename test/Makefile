@@ -18,7 +18,8 @@ FIREBASE_DIR=..
 GTEST_DIR=googletest/googletest
 ARDUINOJSON_DIR=../src/third-party/arduino-json-5.3
 
-FIREBASE_SRCS=${FIREBASE_DIR}/src/FirebaseObject.cpp
+FIREBASE_SRCS=${FIREBASE_DIR}/src/FirebaseObject.cpp\
+	${FIREBASE_DIR}/src/FirebaseObject.h
 GTEST_SRCS=${GTEST_DIR}/src/gtest-all.cpp
 ARDUINOJSON_SRCS=${ARDUINOJSON_DIR}/src/JsonBuffer.cpp\
 	${ARDUINOJSON_DIR}/src/JsonObject.cpp\
@@ -39,7 +40,7 @@ SRCS=FirebaseArduino_test.cpp\
 
 OBJS=${SRCS:.cpp=.o}
 
-CXXFLAGS=-I../src -Igoogletest/googletest/include -Igoogletest/googletest -std=c++11
+CXXFLAGS=-I../src -Igoogletest/googletest/include -Igoogletest/googletest -std=c++11 -g
 LDFLAGS=-lpthread
 
 all: check

@@ -66,9 +66,9 @@ void loop() {
   }
 
   for (int i = 0; i < strip.numPixels(); i++) {
-    int pixel = pixels.getInt("pixel" + i);
-    Serial.println(pixel);
+    int pixel = pixels.getInt(String("pixel") + i);
     strip.setPixelColor(i, pixel);
   }
   strip.show();
+  delay(200);
 }
