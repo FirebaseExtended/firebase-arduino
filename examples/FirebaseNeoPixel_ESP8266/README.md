@@ -31,9 +31,12 @@ FirebaseNeoPixel is a sample that shows how to set pixel data from Firebase web 
 1. Copy the `Firebase Secret`
 1. Start Arduino
 1. Click `File > Examples > FirebaseArduino > FirebaseRoom_ESP8266`
-1. Replace `SSID` and `PASSWORD` with WiFi credentials
-1. Replace `example.firebaseio.com` with the `Firebase Hostname` from step `2.`
-1. Replace `secret_or_token` with `Firebase Secret` from step `5.`
+1. Replace `WIFI_SSID` and `WIFI_PASSWORD` with WiFi credentials
+1. Replace `FIREBASE_HOST` with the `Firebase Hostname` from step `2.`
+1. Replace `FIREBASE_AUTH` with `Firebase Secret` from step `5.`
+1. Select the board `Board > ESP8266 Modules > NodeMCU 1.0`
+1. Select the serial port  `Port > /dev/tty...`
+1. Select the upload speed `Upload Speed > 115200`
 1. Click `Sketch > Upload`
 1. Open `public/index.html` with a text editor
 1. Replace `example.firebaseio.com` with the `Firebase Hostname` from step `2.`
