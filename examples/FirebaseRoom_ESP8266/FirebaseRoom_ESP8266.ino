@@ -81,4 +81,5 @@ void loop() {
     light = newLight;
     Firebase.setFloat("sunlight", light);
   }
+  delay(200);
 }
