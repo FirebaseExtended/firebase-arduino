@@ -27,9 +27,6 @@
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
 
-const int PIN=13;
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, PIN, NEO_GRB + NEO_KHZ800);
-
 const int pixelPin = 13;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(32, pixelPin, NEO_GRB + NEO_KHZ800);
 
@@ -51,7 +48,7 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
-  Firebase.begin("example.firebaseio.com", "secret_or_token");
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
 
