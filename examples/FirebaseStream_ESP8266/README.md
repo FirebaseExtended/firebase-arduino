@@ -29,8 +29,11 @@ https://publicdata-cryptocurrency.firebaseio.com.
 ## Configuration
 
 1. Start Arduino
-1. Click `File > Examples > FirebaseArduino > FirebaseStream_ESP8266`
-1. Replace `SSID` and `PASSWORD` with WiFi credentials
+1. Open `File > Examples > FirebaseArduino > FirebaseStream_ESP8266`
+1. Replace `WIFI_SSID` and `WIFI_PASSWORD` with WiFi credentials
+1. Select the board `Board > ESP8266 Modules > NodeMCU 1.0`
+1. Select the serial port  `Port > /dev/tty...`
+1. Select the upload speed `Upload Speed > 115200`
 1. Click `Sketch > Upload`
 
 ## Play

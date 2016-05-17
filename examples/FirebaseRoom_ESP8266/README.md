@@ -30,10 +30,13 @@ sensor data to Firebase, and trigger actuators from Firebase.
 1. Click `Firebase Secrets > Show`
 1. Copy the `Firebase Secret`
 1. Start Arduino
-1. Click `File > Examples > FirebaseArduino > FirebaseRoom_ESP8266`
-1. Replace `SSID` and `PASSWORD` with WiFi credentials
-1. Replace `example.firebaseio.com` with the `Firebase Hostname` from step `2.`
-1. Replace `secret_or_token` with `Firebase Secret` from step `5.`
+1. Open `File > Examples > FirebaseArduino > FirebaseRoom_ESP8266`
+1. Replace `WIFI_SSID` and `WIFI_PASSWORD` with WiFi credentials
+1. Replace `FIREBASE_HOST` with the `Firebase Hostname` from step `2.`
+1. Replace `FIREBASE_AUTH` with `Firebase Secret` from step `5.`
+1. Select the board `Board > ESP8266 Modules > NodeMCU 1.0`
+1. Select the serial port  `Port > /dev/tty...`
+1. Select the upload speed `Upload Speed > 115200`
 1. Click `Sketch > Upload`
 
 ## Play
@@ -50,9 +53,10 @@ sensor data to Firebase, and trigger actuators from Firebase.
 ## Homeworks
 
 - Build a [Firebase web app](https://www.firebase.com/docs/web/) that interacts with the room.
+- Add Grove modules to modules interactions.
 - Connect other Grove modules to the room and submit new [PRs](https://github.com/googlesamples/firebase-arduino/pulls)
 - Reduce the number of Firebase API calls using `FirebaseObject` or `FirebaseStream`.
 - Watch or star the [GitHub repo repo](https://github.com/googlesamples/firebase-arduino)
-- Give [feedback](gitter.im/googlesamples/firebase-arduino)
+- Give [feedback](https://gitter.im/googlesamples/firebase-arduino)
 - Report [bugs](https://github.com/googlesamples/firebase-arduino/issues/new)
 - [Fork](https://github.com/googlesamples/firebase-arduino#fork-destination-box) and [contribute](https://github.com/googlesamples/firebase-arduino/blob/master/CONTRIBUTING.md)
