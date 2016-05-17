@@ -20,7 +20,7 @@
 #include "third-party/arduino-json-5.3/include/ArduinoJson.h"
 
 #ifndef FIREBASE_JSONBUFFER_SIZE
-#define FIREBASE_JSONBUFFER_SIZE 200
+#define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(32)
 #endif // FIREBASE_JSONBUFFER_SIZE
 
 /**

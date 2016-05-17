@@ -10,9 +10,9 @@ https://publicdata-cryptocurrency.firebaseio.com.
 
 1. Get a [Feather Huzzah](https://www.adafruit.com/product/2821)
 1. Get a [FeatherWing OLED](https://www.adafruit.com/products/2900)
-1. Solder female headers on the `Feather Huzzah`.
-1. Solder mail headers on the `FeatherWing OLED`.
-1. Stack the `FeatherWing OLED` on top of the `Feather Huzzah`.
+1. Solder female headers on the `Feather Huzzah`
+1. Solder mail headers on the `FeatherWing OLED`
+1. Stack the `FeatherWing OLED` on top of the `Feather Huzzah`
 
 ## Software setup
 
@@ -36,4 +36,4 @@ https://publicdata-cryptocurrency.firebaseio.com.
 ## Play
 
 1. Watch the screen be updated with the current bitcoin price.
-1. Watch the data being modified as the sketch run.
+1. Watch the data being modified as the sketch run
