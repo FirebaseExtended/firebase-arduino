@@ -14,7 +14,7 @@ sensor data to Firebase, and trigger actuators from Firebase.
 
 ## Hardware setup
 
-1. Get a [Wio Link](http://www.seeedstudio.com/wiki/Wio_Link)
+1. Get a [Wio Link](http://www.seeedstudio.com/depot/Wio-Link-p-2604.html) board
 1. Connect:
   - a [Grove - Vibration Motor](http://www.seeedstudio.com/wiki/Grove_-_Vibration_Motor) on `pin 5`
   - a [Grove - Light Sensor](http://www.seeedstudio.com/wiki/Grove_-_Light_Sensor) on `pin A0`
