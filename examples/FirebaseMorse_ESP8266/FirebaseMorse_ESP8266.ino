@@ -30,7 +30,7 @@
 // is 5 morse elements long so we would have a sparse array of 2^5=32. But
 // we need to add a leading 1 to ensure that .- and ..- are not the same value.
 // This gives us a size of 2^6=64.
-char morseToChar[64];
+char morseToChar[64] = {};
 morseToChar[B101] = 'a';
 morseToChar[B11000] = 'b';
 morseToChar[B11010] = 'c';
@@ -43,7 +43,29 @@ morseToChar[B100] = 'i';
 morseToChar[B1101] = 'k';
 morseToChar[B10100] = 'l';
 morseToChar[B111] = 'm';
-morseToChar[B1
+morseToChar[B110] = 'n';
+morseToChar[B1111] = 'o';
+morseToChar[B10110] = 'p';
+morseToChar[B11101] = 'q';
+morseToChar[B1010] = 'r';
+morseToChar[B1000] = 's';
+morseToChar[B11] = 't';
+morseToChar[B1001] = 'u';
+morseToChar[B10001] = 'v';
+morseToChar[B1011] = 'w';
+morseToChar[B11001] = 'x';
+morseToChar[B11011] = 'y';
+morseToChar[B11100] = 'z';
+morseToChar[B101111] = '1';
+morseToChar[B100111] = '2';
+morseToChar[B100011] = '3';
+morseToChar[B100001] = '4';
+morseToChar[B100000] = '5';
+morseToChar[B110000] = '6';
+morseToChar[B111000] = '7';
+morseToChar[B111100] = '8';
+morseToChar[B111110] = '9';
+morseToChar[B111111] = '0';
 
 const int oledResetPin = 3;
 Adafruit_SSD1306 display(oledResetPin);
