@@ -71,8 +71,7 @@ void loop() {
   }
   int upTime = millis() - upStarted;
   if (upTime > shortMillis*3) {
-    // A letter break is 3 * the length of a short (.). We give a lot of
-    // lee way for poor morse-coders.
+    // A letter break is 3 * the length of a short (.).
     if (currentLetter > morseToCharSize || morseToChar[currentLetter] == '\0') {
 	    Serial.println("Invalid morse char, ignoring");
     } else {
@@ -81,9 +80,7 @@ void loop() {
     Serial.println("Listening for new letter.");
     currentLetter = B1;
 
-    if (upTime > shortMillis * 5) {
-      // A word break is 7 * the length of a short(.). We are being generous and
-      // accepting anything over 5.
+    if (upTime > shortMillis * 7) {
       currentMessage += " ";
     }
   } // else the upTime < shortMillis we attribute to button bounce.
