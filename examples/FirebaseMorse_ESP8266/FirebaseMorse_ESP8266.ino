@@ -38,6 +38,9 @@ Adafruit_SSD1306 display(oledResetPin);
 
 const int morseButtonPin = 2;
 
+void updateDisplay(const String& message);
+void initializeMorseToChar();
+
 void setup() {
   initializeMorseToChar();
 
