@@ -30,42 +30,8 @@
 // is 5 morse elements long so we would have a sparse array of 2^5=32. But
 // we need to add a leading 1 to ensure that .- and ..- are not the same value.
 // This gives us a size of 2^6=64.
-char morseToChar[64] = {};
-morseToChar[B101] = 'a';
-morseToChar[B11000] = 'b';
-morseToChar[B11010] = 'c';
-morseToChar[B1100] = 'd';
-morseToChar[B10] = 'e';
-morseToChar[B10010] = 'f';
-morseToChar[B1110] = 'g';
-morseToChar[B10000] = 'h';
-morseToChar[B100] = 'i';
-morseToChar[B1101] = 'k';
-morseToChar[B10100] = 'l';
-morseToChar[B111] = 'm';
-morseToChar[B110] = 'n';
-morseToChar[B1111] = 'o';
-morseToChar[B10110] = 'p';
-morseToChar[B11101] = 'q';
-morseToChar[B1010] = 'r';
-morseToChar[B1000] = 's';
-morseToChar[B11] = 't';
-morseToChar[B1001] = 'u';
-morseToChar[B10001] = 'v';
-morseToChar[B1011] = 'w';
-morseToChar[B11001] = 'x';
-morseToChar[B11011] = 'y';
-morseToChar[B11100] = 'z';
-morseToChar[B101111] = '1';
-morseToChar[B100111] = '2';
-morseToChar[B100011] = '3';
-morseToChar[B100001] = '4';
-morseToChar[B100000] = '5';
-morseToChar[B110000] = '6';
-morseToChar[B111000] = '7';
-morseToChar[B111100] = '8';
-morseToChar[B111110] = '9';
-morseToChar[B111111] = '0';
+const int morseToCharSize = 64;
+char morseToChar[morseToCharSize] = {};
 
 const int oledResetPin = 3;
 Adafruit_SSD1306 display(oledResetPin);
@@ -73,6 +39,8 @@ Adafruit_SSD1306 display(oledResetPin);
 const int morseButtonPin = 2;
 
 void setup() {
+  initializeMorseToChar();
+
   Serial.begin(9600);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
@@ -86,29 +54,98 @@ void setup() {
     delay(500);
   }
   Serial.println();
+
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  
-  Firebase.begin("publicdata-cryptocurrency.firebaseio.com");
-  Firebase.stream("/bitcoin/last");  
 }
 
-const int longPressThresholdMillis = 1000;
+const int shortMillis = 500;
 
-bool morseButtonDownTime = 0;
 String currentMessage;
-String currentMorseLetter;
+int currentLetter;
 void loop() {
-  // ButtonDown.
-  if (morseButtonDownTime == 0 && digitalRead(morseButtonPin) == LOW) {
-    morseButtonDownTime = millis();
-
-  // ButtonUp.
-  } else if (morseButtonDownTime != 0 && digitalRead(morseButtonPin) == HIGH) {
-    const int millisDown = millis() - moreseButtonDownTime;
-    morseButtonDownTime = 0;
-
-    const bool longPress = millisDown >= longPressThreshold; 
-    currentMorseLetter += longPress ? "." : "_";
+  // Wait while button is up.
+  int upStarted = millis();
+  while (digitalRead(morseButtonPin) == HIGH) {
+  	delay(1);
   }
+  int upTime = millis() - upStarted;
+  if (upTime > shortMillis*3) {
+    // A letter break is 3 * the length of a short (.). We give a lot of
+    // lee way for poor morse-coders.
+    if (currentLetter > morseToCharSize || morseToChar[currentLetter] == '\0') {
+	    Serial.println("Invalid morse char, ignoring");
+    } else {
+      currentMessage += morseToChar[currentLetter];
+    }
+    Serial.println("Listening for new letter.");
+    currentLetter = B1;
+
+    if (upTime > shortMillis * 5) {
+      // A word break is 7 * the length of a short(.). We are being generous and
+      // accepting anything over 5.
+      currentMessage += " ";
+    }
+  } // else the upTime < shortMillis we attribute to button bounce.
+  Serial.println(currentMessage);
+  updateDisplay(currentMessage);
+  
+  int pressStarted = millis();
+  // Wait while button is down.
+  while (digitalRead(morseButtonPin) == LOW) {
+  	delay(1);
+  }
+  int pressTime = millis() - pressStarted;
+  if (pressTime > shortMillis) {
+    // Shift the binary representation left once then set last bit to 0 or 1.
+    // A long is 3 times a short
+    currentLetter = (currentLetter << 1) | (pressTime > shortMillis*3);
+  }
+}
+
+void updateDisplay(const String& message) {
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(0,0);
+  display.println(message);
+  display.display();
+}
+
+void initializeMorseToChar() {
+  morseToChar[B101] = 'a';
+  morseToChar[B11000] = 'b';
+  morseToChar[B11010] = 'c';
+  morseToChar[B1100] = 'd';
+  morseToChar[B10] = 'e';
+  morseToChar[B10010] = 'f';
+  morseToChar[B1110] = 'g';
+  morseToChar[B10000] = 'h';
+  morseToChar[B100] = 'i';
+  morseToChar[B1101] = 'k';
+  morseToChar[B10100] = 'l';
+  morseToChar[B111] = 'm';
+  morseToChar[B110] = 'n';
+  morseToChar[B1111] = 'o';
+  morseToChar[B10110] = 'p';
+  morseToChar[B11101] = 'q';
+  morseToChar[B1010] = 'r';
+  morseToChar[B1000] = 's';
+  morseToChar[B11] = 't';
+  morseToChar[B1001] = 'u';
+  morseToChar[B10001] = 'v';
+  morseToChar[B1011] = 'w';
+  morseToChar[B11001] = 'x';
+  morseToChar[B11011] = 'y';
+  morseToChar[B11100] = 'z';
+  morseToChar[B101111] = '1';
+  morseToChar[B100111] = '2';
+  morseToChar[B100011] = '3';
+  morseToChar[B100001] = '4';
+  morseToChar[B100000] = '5';
+  morseToChar[B110000] = '6';
+  morseToChar[B111000] = '7';
+  morseToChar[B111100] = '8';
+  morseToChar[B111110] = '9';
+  morseToChar[B111111] = '0';
 }
