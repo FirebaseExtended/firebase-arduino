@@ -14,9 +14,6 @@
 // limitations under the License.
 //
 
-// FirebaseStream_ESP8266 is a sample that stream bitcoin price from a
-// public Firebase and optionally display them on a OLED i2c screen.
-
 #include <FirebaseArduino.h>
 #include <ESP8266WiFi.h>
 #include <Adafruit_GFX.h>
@@ -38,7 +35,7 @@ Adafruit_SSD1306 display(oledResetPin);
 
 const int morseButtonPin = 2;
 
-void updateDisplay(const String& message);
+void updateDisplay(const String& message, const char& indicator);
 void initializeMorseToChar();
 
 void setup() {
@@ -63,6 +60,7 @@ void setup() {
 }
 
 const int shortMillis = 500;
+const int longMillis = shortMillis * 3;
 
 String currentMessage;
 int currentLetter;
@@ -70,6 +68,13 @@ void loop() {
   // Wait while button is up.
   int upStarted = millis();
   while (digitalRead(morseButtonPin) == HIGH) {
+    if (millis() - upStarted > longMillis) {      
+      updateDisplay(currentMessage, 'w');
+    } else if (millis() - upStarted > shortMillis) {
+      updateDisplay(currentMessage, 'l');    
+    } else {
+      updateDisplay(currentMessage, ' ');        
+    }
   	delay(1);
   }
   int upTime = millis() - upStarted;
@@ -83,34 +88,45 @@ void loop() {
     Serial.println("Listening for new letter.");
     currentLetter = B1;
 
+    // 7 * short timing is a new word.
     if (upTime > shortMillis * 7) {
       currentMessage += " ";
     }
   } // else the upTime < shortMillis we attribute to button bounce.
   Serial.println(currentMessage);
-  updateDisplay(currentMessage);
   
   int pressStarted = millis();
   // Wait while button is down.
   while (digitalRead(morseButtonPin) == LOW) {
+    if (millis() - pressStarted > longMillis) {      
+      updateDisplay(currentMessage, '-');
+    } else if (millis() - pressStarted > shortMillis) {
+      updateDisplay(currentMessage, '.');    
+    } else {
+      updateDisplay(currentMessage, ' ');        
+    }
   	delay(1);
   }
   int pressTime = millis() - pressStarted;
   if (pressTime > shortMillis) {
     // Shift the binary representation left once then set last bit to 0 or 1.
-    // A long is 3 times a short
-    currentLetter = (currentLetter << 1) | (pressTime > shortMillis*3);
+    currentLetter = (currentLetter << 1) | (pressTime > longMillis);
   }
 }
 
-void updateDisplay(const String& message) {
+void updateDisplay(const String& message, const char& indicator) {
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0,0);
   display.println(message);
+
+  display.setTextSize(1);
+  display.setCursor(display.width() - 10, display.height() - 10);
+  display.print(indicator); 
   display.display();
 }
+
 
 void initializeMorseToChar() {
   morseToChar[B101] = 'a';
