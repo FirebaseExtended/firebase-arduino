@@ -71,7 +71,7 @@ void loop() {
   while (digitalRead(morseButtonPin) == HIGH) {
     if (millis() - upStarted > longMillis) {      
       updateDisplay(currentMessage, 'w', currentLetter);
-    } else if (millis() - upStarted > shortMillis) {
+    } else if (millis() - upStarted > shortMillis*3) {
       updateDisplay(currentMessage, 'l', currentLetter);    
     } else {
       updateDisplay(currentMessage, ' ', currentLetter);        
