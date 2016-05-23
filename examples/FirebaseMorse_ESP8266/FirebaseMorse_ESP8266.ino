@@ -23,6 +23,9 @@
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
 
+const int shortMillis = 500;
+const int longMillis = shortMillis * 3;
+
 // We define morse . to be binary 0 and - to be binary 1. The longest letter
 // is 5 morse elements long so we would have a sparse array of 2^5=32. But
 // we need to add a leading 1 to ensure that .- and ..- are not the same value.
@@ -35,7 +38,7 @@ Adafruit_SSD1306 display(oledResetPin);
 
 const int morseButtonPin = 2;
 
-void updateDisplay(const String& message, const char& indicator);
+void updateDisplay(const String& message, const char& indicator, int code);
 void initializeMorseToChar();
 
 void setup() {
@@ -59,9 +62,6 @@ void setup() {
   Serial.println(WiFi.localIP());
 }
 
-const int shortMillis = 500;
-const int longMillis = shortMillis * 3;
-
 String currentMessage;
 int currentLetter;
 void loop() {
@@ -69,11 +69,11 @@ void loop() {
   int upStarted = millis();
   while (digitalRead(morseButtonPin) == HIGH) {
     if (millis() - upStarted > longMillis) {      
-      updateDisplay(currentMessage, 'w');
+      updateDisplay(currentMessage, 'w', currentLetter);
     } else if (millis() - upStarted > shortMillis) {
-      updateDisplay(currentMessage, 'l');    
+      updateDisplay(currentMessage, 'l', currentLetter);    
     } else {
-      updateDisplay(currentMessage, ' ');        
+      updateDisplay(currentMessage, ' ', currentLetter);        
     }
   	delay(1);
   }
@@ -99,11 +99,11 @@ void loop() {
   // Wait while button is down.
   while (digitalRead(morseButtonPin) == LOW) {
     if (millis() - pressStarted > longMillis) {      
-      updateDisplay(currentMessage, '-');
+      updateDisplay(currentMessage, '-', currentLetter);
     } else if (millis() - pressStarted > shortMillis) {
-      updateDisplay(currentMessage, '.');    
+      updateDisplay(currentMessage, '.', currentLetter);    
     } else {
-      updateDisplay(currentMessage, ' ');        
+      updateDisplay(currentMessage, ' ', currentLetter);        
     }
   	delay(1);
   }
@@ -114,7 +114,7 @@ void loop() {
   }
 }
 
-void updateDisplay(const String& message, const char& indicator) {
+void updateDisplay(const String& message, const char& indicator, int code) {
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(WHITE);
@@ -122,11 +122,16 @@ void updateDisplay(const String& message, const char& indicator) {
   display.println(message);
 
   display.setTextSize(1);
+  display.setCursor(0, display.height() - 10);
+  const int mask = 1;
+  while (code > 1) {
+    display.print((code&mask) ? '-' : '.');
+    code = code >> 1;
+  }
   display.setCursor(display.width() - 10, display.height() - 10);
   display.print(indicator); 
   display.display();
 }
-
 
 void initializeMorseToChar() {
   morseToChar[B101] = 'a';
