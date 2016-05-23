@@ -69,9 +69,9 @@ void loop() {
   // Wait while button is up.
   int upStarted = millis();
   while (digitalRead(morseButtonPin) == HIGH) {
-    if (millis() - upStarted > longMillis) {      
+    if (millis() - upStarted > shortMillis*7) {      
       updateDisplay(currentMessage, 'w', currentLetter);
-    } else if (millis() - upStarted > shortMillis*3) {
+    } else if (millis() - upStarted > longMillis) {
       updateDisplay(currentMessage, 'l', currentLetter);    
     } else {
       updateDisplay(currentMessage, ' ', currentLetter);        
@@ -79,7 +79,7 @@ void loop() {
   	delay(1);
   }
   int upTime = millis() - upStarted;
-  if (upTime > shortMillis*3) {
+  if (upTime > longMillis) {
     // A letter break is 3 * the length of a short (.).
     if (currentLetter > morseToCharSize || morseToChar[currentLetter] == '\0') {
 	    Serial.println("Invalid morse char, ignoring");
