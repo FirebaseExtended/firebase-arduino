@@ -23,6 +23,7 @@
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
 
+
 const int shortMillis = 500;
 const int longMillis = shortMillis * 3;
 
