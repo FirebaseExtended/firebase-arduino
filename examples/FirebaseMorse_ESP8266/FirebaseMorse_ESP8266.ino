@@ -49,7 +49,7 @@ void setup() {
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
   display.display();
-
+/*
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
@@ -61,6 +61,7 @@ void setup() {
 
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
+*/
 }
 
 String currentMessage;
