@@ -137,7 +137,7 @@ const JsonObject& FirebaseCall::json() {
   //TODO(edcoyne): This is not efficient, we should do something smarter with
   //the buffers.
   buffer_ = DynamicJsonBuffer();
-  return buffer_.parseObject(response());
+  return buffer_.parseObject(response().c_str());
 }
 
 // FirebaseGet
@@ -188,7 +188,7 @@ bool FirebaseStream::available() {
 FirebaseStream::Event FirebaseStream::read(std::string& event) {
   auto client = http_->getStreamPtr();
   Event type;
-  std::string typeStr = client->readStringUntil('\n').substring(7);
+  std::string typeStr = client->readStringUntil('\n').substring(7).c_str();
   if (typeStr == "put") {
     type = Event::PUT;
   } else if (typeStr == "patch") {
@@ -196,7 +196,7 @@ FirebaseStream::Event FirebaseStream::read(std::string& event) {
   } else {
     type = Event::UNKNOWN;
   }
-  event = client->readStringUntil('\n').substring(6);
+  event = client->readStringUntil('\n').substring(6).c_str();
   client->readStringUntil('\n'); // consume separator
   return type;
 }

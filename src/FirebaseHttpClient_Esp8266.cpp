@@ -1,3 +1,4 @@
+#include <sstream>
 
 #include "FirebaseHttpClient.h"
 
@@ -21,47 +22,49 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
     http_.setReuse(reuse);
   }
 
-  void begin(const String& url) override {
-    http_.begin(url, kFirebaseFingerprint);
+  void begin(const std::string& url) override {
+    http_.begin(url.c_str(), kFirebaseFingerprint);
   }
 
-  void begin(const String& host, const String& path) override {
-    http_.begin(host, kFirebasePort, path, true, kFirebaseFingerprint);
+  void begin(const std::string& host, const std::string& path) override {
+    http_.begin(host.c_str(), kFirebasePort, path.c_str(), true, kFirebaseFingerprint);
   }
 
   void end() override {
     http_.end();
   }
 
-  void addHeader(const String& name, const String& value) override {
-    http_.addHeader(name, value);
+  void addHeader(const std::string& name, const std::string& value) override {
+    http_.addHeader(name.c_str(), value.c_str());
   }
 
   void collectHeaders(const char* header_keys[], const int count) override {
     http_.collectHeaders(header_keys, count);
   }
 
-  String header(const String& name) override {
-    return http_.header(name.c_str());
+  std::string header(const std::string& name) override {
+    return http_.header(name.c_str()).c_str();
   }
 
-  int sendRequest(const String& method, const String& data) override {
+  int sendRequest(const std::string& method, const std::string& data) override {
     return http_.sendRequest(method.c_str(), (uint8_t*)data.c_str(), data.length());
   }
 
-  String getString() override {
-    return http_.getString();
+  std::string getString() override {
+    return http_.getString().c_str();
   }
 
   Stream* getStreamPtr() override {
     return http_.getStreamPtr();
   }
 
-  String errorToString(int error_code) override {
+  std::string errorToString(int error_code) override {
 #ifdef USE_ESP_ARDUINO_CORE_2_0_0
-    return  String(error_code);
+    std::ostringstream ss;
+    ss << error_code;
+    return ss.str();
 #else
-    return HTTPClient::errorToString(error_code);
+    return HTTPClient::errorToString(error_code).c_str();
 #endif
   }
 
@@ -72,4 +75,4 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
 FirebaseHttpClient* FirebaseHttpClient::create() {
   return new FirebaseHttpClientEsp8266();
 }
-
+ 

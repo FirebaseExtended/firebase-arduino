@@ -52,4 +52,4 @@ check: firebase-test
 	./firebase-test
 
 clean:
-	rm -f ${OBJS} firebase-test
+	echo rm -f ${OBJS} firebase-test

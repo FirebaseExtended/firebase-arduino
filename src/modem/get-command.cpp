@@ -13,7 +13,7 @@ bool GetCommand::execute(const String& command,
     return false;
   }
 
-  String path = in->readLine();
+  std::string path = in->readLine().c_str();
   std::unique_ptr<FirebaseGet> get(fbase().getPtr(path));
 
   if (get->error()) {

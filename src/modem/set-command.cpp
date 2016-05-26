@@ -14,11 +14,11 @@ bool SetCommand::execute(const String& command,
     return false;
   }
 
-  String path(in->readStringUntil(' '));
-  String data(in->readLine());
+  std::string path(in->readStringUntil(' ').c_str());
+  std::string data(in->readLine().c_str());
 
-  std::unique_ptr<FirebaseSet> set(fbase().setPtr(path.c_str(),
-                                                  EncodeForJson(data).c_str()));
+  std::unique_ptr<FirebaseSet> set(fbase().setPtr(path,
+                                                  EncodeForJson(data)));
 
   if (set->error()) {
     out->print("-FAIL ");

@@ -14,15 +14,15 @@ bool PushCommand::execute(const String& command,
     return false;
   }
 
-  String path(in->readStringUntil(' '));
-  String data(in->readLine());
+  std::string path(in->readStringUntil(' ').c_str());
+  std::string data(in->readLine().c_str());
 
   std::unique_ptr<FirebasePush> push(
       fbase().pushPtr(path, EncodeForJson(data)));
 
   if (push->error()) {
     out->print("-FAIL ");
-    out->println(push->error().message());
+    out->println(push->error().message().c_str());
     return false;
   } else {
     out->println("+OK");
