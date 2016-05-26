@@ -58,6 +58,12 @@ void loop() {
   
   // update value
   Firebase.setFloat("number", 43.0);
+  // handle error
+  if (Firebase.failed()) {
+      Serial.print("setting /number failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
   delay(1000);
 
   // get value 
@@ -71,13 +77,31 @@ void loop() {
 
   // set string value
   Firebase.setString("message", "hello world");
+  // handle error
+  if (Firebase.failed()) {
+      Serial.print("setting /message failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
   delay(1000);
+  
   // set bool value
   Firebase.setBool("truth", false);
+  if (Firebase.failed()) {
+      Serial.print("setting /truth failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
   delay(1000);
 
   // append a new value to /logs
   String name = Firebase.pushInt("logs", n++);
+  // handle error
+  if (Firebase.failed()) {
+      Serial.print("pushing /logs failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
   Serial.print("pushed: /logs/");
   Serial.println(name);
   delay(1000);
