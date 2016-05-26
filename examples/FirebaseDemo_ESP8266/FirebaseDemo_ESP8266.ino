@@ -87,6 +87,7 @@ void loop() {
   
   // set bool value
   Firebase.setBool("truth", false);
+  // handle error
   if (Firebase.failed()) {
       Serial.print("setting /truth failed:");
       Serial.println(Firebase.error());  
