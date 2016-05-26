@@ -18,8 +18,8 @@
 using std::unique_ptr;
 
 namespace {
-String makeFirebaseURL(const String& path, const String& auth) {
-  String url;
+std::string makeFirebaseURL(const std::string& path, const std::string& auth) {
+  std::string url;
   if (path[0] != '/') {
     url = "/";
   }
@@ -32,71 +32,71 @@ String makeFirebaseURL(const String& path, const String& auth) {
 
 }  // namespace
 
-Firebase::Firebase(const String& host, const String& auth) : host_(host), auth_(auth) {
+Firebase::Firebase(const std::string& host, const std::string& auth) : host_(host), auth_(auth) {
   http_.reset(FirebaseHttpClient::create());
   http_->setReuseConnection(true);
 }
 
-const String& Firebase::auth() const {
+const std::string& Firebase::auth() const {
   return auth_;
 }
 
-FirebaseGet Firebase::get(const String& path) {
+FirebaseGet Firebase::get(const std::string& path) {
   return FirebaseGet(host_, auth_, path, http_.get());
 }
 
-unique_ptr<FirebaseGet> Firebase::getPtr(const String& path) {
+unique_ptr<FirebaseGet> Firebase::getPtr(const std::string& path) {
   return unique_ptr<FirebaseGet>(new FirebaseGet(host_, auth_, path, http_.get()));
 }
 
-FirebaseSet Firebase::set(const String& path, const String& value) {
+FirebaseSet Firebase::set(const std::string& path, const std::string& value) {
   return FirebaseSet(host_, auth_, path, value, http_.get());
 }
 
-unique_ptr<FirebaseSet> Firebase::setPtr(const String& path,
-                                         const String& value) {
+unique_ptr<FirebaseSet> Firebase::setPtr(const std::string& path,
+                                         const std::string& value) {
   return unique_ptr<FirebaseSet>(
       new FirebaseSet(host_, auth_, path, value, http_.get()));
 }
 
-FirebasePush Firebase::push(const String& path, const String& value) {
+FirebasePush Firebase::push(const std::string& path, const std::string& value) {
   return FirebasePush(host_, auth_, path, value, http_.get());
 }
-unique_ptr<FirebasePush> Firebase::pushPtr(const String& path, const String& value) {
+unique_ptr<FirebasePush> Firebase::pushPtr(const std::string& path, const std::string& value) {
   return unique_ptr<FirebasePush>(
       new FirebasePush(host_, auth_, path, value, http_.get()));
 }
 
-FirebaseRemove Firebase::remove(const String& path) {
+FirebaseRemove Firebase::remove(const std::string& path) {
   return FirebaseRemove(host_, auth_, path, http_.get());
 }
 
-unique_ptr<FirebaseRemove> Firebase::removePtr(const String& path) {
+unique_ptr<FirebaseRemove> Firebase::removePtr(const std::string& path) {
   return unique_ptr<FirebaseRemove>(
       new FirebaseRemove(host_, auth_, path, http_.get()));
 }
 
-FirebaseStream Firebase::stream(const String& path) {
+FirebaseStream Firebase::stream(const std::string& path) {
   // TODO: create new client dedicated to stream.
   return FirebaseStream(host_, auth_, path, http_.get());
 }
 
-unique_ptr<FirebaseStream> Firebase::streamPtr(const String& path) {
+unique_ptr<FirebaseStream> Firebase::streamPtr(const std::string& path) {
   // TODO: create new client dedicated to stream.
   return unique_ptr<FirebaseStream>(
       new FirebaseStream(host_, auth_, path, http_.get()));
 }
 
 // FirebaseCall
-FirebaseCall::FirebaseCall(const String& host, const String& auth,
-                           const char* method, const String& path,
-                           const String& data, FirebaseHttpClient* http) : http_(http) {
-  String path_with_auth = makeFirebaseURL(path, auth);
+FirebaseCall::FirebaseCall(const std::string& host, const std::string& auth,
+                           const char* method, const std::string& path,
+                           const std::string& data, FirebaseHttpClient* http) : http_(http) {
+  std::string path_with_auth = makeFirebaseURL(path, auth);
   http_->setReuseConnection(true);
   http_->begin(host, path_with_auth);
 
   bool followRedirect = false;
-  if (String(method) == "STREAM") {
+  if (std::string(method) == "STREAM") {
     method = "GET";
     http_->addHeader("Accept", "text/event-stream");
     followRedirect = true;
@@ -112,18 +112,18 @@ FirebaseCall::FirebaseCall(const String& host, const String& auth,
   // TODO: Add a max redirect check
   if (followRedirect) {
     while (status == HttpStatus::TEMPORARY_REDIRECT) {
-      String location = http_->header("Location");
+      std::string location = http_->header("Location");
       http_->setReuseConnection(false);
       http_->end();
       http_->setReuseConnection(true);
       http_->begin(location);
-      status = http_->sendRequest("GET", String());
+      status = http_->sendRequest("GET", std::string());
     }
   }
 
   if (status != 200) {
     error_ = FirebaseError(status,
-                           String(method) + " " + path_with_auth +
+                           std::string(method) + " " + path_with_auth +
                               ": " + http_->errorToString(status));
   }
 
@@ -141,15 +141,15 @@ const JsonObject& FirebaseCall::json() {
 }
 
 // FirebaseGet
-FirebaseGet::FirebaseGet(const String& host, const String& auth,
-                         const String& path,
+FirebaseGet::FirebaseGet(const std::string& host, const std::string& auth,
+                         const std::string& path,
                          FirebaseHttpClient* http)
   : FirebaseCall(host, auth, "GET", path, "", http) {
 }
 
 // FirebaseSet
-FirebaseSet::FirebaseSet(const String& host, const String& auth,
-       const String& path, const String& value,
+FirebaseSet::FirebaseSet(const std::string& host, const std::string& auth,
+       const std::string& path, const std::string& value,
        FirebaseHttpClient* http)
   : FirebaseCall(host, auth, "PUT", path, value, http) {
   if (!error()) {
@@ -158,8 +158,8 @@ FirebaseSet::FirebaseSet(const String& host, const String& auth,
   }
 }
 // FirebasePush
-FirebasePush::FirebasePush(const String& host, const String& auth,
-                           const String& path, const String& value,
+FirebasePush::FirebasePush(const std::string& host, const std::string& auth,
+                           const std::string& path, const std::string& value,
                            FirebaseHttpClient* http)
   : FirebaseCall(host, auth, "POST", path, value, http) {
   if (!error()) {
@@ -168,15 +168,15 @@ FirebasePush::FirebasePush(const String& host, const String& auth,
 }
 
 // FirebasePush
-FirebaseRemove::FirebaseRemove(const String& host, const String& auth,
-                               const String& path,
+FirebaseRemove::FirebaseRemove(const std::string& host, const std::string& auth,
+                               const std::string& path,
                                FirebaseHttpClient* http)
   : FirebaseCall(host, auth, "DELETE", path, "", http) {
 }
 
 // FirebaseStream
-FirebaseStream::FirebaseStream(const String& host, const String& auth,
-                               const String& path,
+FirebaseStream::FirebaseStream(const std::string& host, const std::string& auth,
+                               const std::string& path,
                                FirebaseHttpClient* http)
   : FirebaseCall(host, auth, "STREAM", path, "", http) {
 }
@@ -185,10 +185,10 @@ bool FirebaseStream::available() {
   return http_->getStreamPtr()->available();
 }
 
-FirebaseStream::Event FirebaseStream::read(String& event) {
+FirebaseStream::Event FirebaseStream::read(std::string& event) {
   auto client = http_->getStreamPtr();
   Event type;
-  String typeStr = client->readStringUntil('\n').substring(7);
+  std::string typeStr = client->readStringUntil('\n').substring(7);
   if (typeStr == "put") {
     type = Event::PUT;
   } else if (typeStr == "patch") {

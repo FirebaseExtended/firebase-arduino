@@ -52,8 +52,8 @@ TEST_F(StreamCommandTest, streams) {
       .WillRepeatedly(Return(false));
 
   EXPECT_CALL(*stream_, read(_))
-      .WillOnce(Invoke([&value](String& json) {
-        json = value;
+      .WillOnce(Invoke([&value](std::string& json) {
+        json = value.c_str();
         return FirebaseStream::PUT;
       }));
 
@@ -84,7 +84,7 @@ TEST_F(StreamCommandTest, handlesError) {
   EXPECT_CALL(out_, print(String("-FAIL ")))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out_, println(error.message()))
+  EXPECT_CALL(out_, println(String(error.message().c_str())))
       .WillOnce(Return(1));
   ASSERT_FALSE(RunCommand(error));
 }
