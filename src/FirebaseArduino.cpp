@@ -61,7 +61,7 @@ void FirebaseArduino::setBool(const String& path, bool value) {
 }
 
 void FirebaseArduino::setString(const String& path, const String& value) {
-  JsonVariant json(value);
+  JsonVariant json(value.c_str());
   set(path, json);
 }
 

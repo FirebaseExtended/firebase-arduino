@@ -17,6 +17,10 @@
 #ifndef FIREBASE_ARDUINO_H
 #define FIREBASE_ARDUINO_H
 
+#include <string>
+// This is needed to compile std::string on esp8266.
+template class std::basic_string<char>;
+
 #include "Firebase.h"
 #include "FirebaseObject.h"
 

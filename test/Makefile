@@ -51,5 +51,6 @@ firebase-test: ${OBJS}
 check: firebase-test
 	./firebase-test
 
+#TODO: had to echo this because it picks up FirebaseObject.h as well and deletes it :(
 clean:
 	echo rm -f ${OBJS} firebase-test

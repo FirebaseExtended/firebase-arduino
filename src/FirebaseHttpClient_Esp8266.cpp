@@ -1,6 +1,7 @@
-#include <sstream>
 
 #include "FirebaseHttpClient.h"
+
+#include <stdio.h>
 
 // The ordering of these includes matters greatly.
 #include <WiFiClientSecure.h>
@@ -60,9 +61,9 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
 
   std::string errorToString(int error_code) override {
 #ifdef USE_ESP_ARDUINO_CORE_2_0_0
-    std::ostringstream ss;
-    ss << error_code;
-    return ss.str();
+    char buff[11];
+    itoa(error_code, buff, 10);
+    return buff;
 #else
     return HTTPClient::errorToString(error_code).c_str();
 #endif
