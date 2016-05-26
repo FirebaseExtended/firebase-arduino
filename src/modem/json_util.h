@@ -16,8 +16,8 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 
 // TODO(edcoyne): We should use a json library to escape.
 inline std::string EncodeForJson(std::string input) {
-  ReplaceAll(input, "\\", "\\\\");
-  ReplaceAll(input, "\"", "\\\"");
+  input = ReplaceAll(input, "\\", "\\\\");
+  input = ReplaceAll(input, "\"", "\\\"");
   return "\"" + input + "\"";
 }
 
