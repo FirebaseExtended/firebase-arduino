@@ -16,6 +16,9 @@
 
 #include "FirebaseArduino.h"
 
+// This is needed to compile std::string on esp8266.
+template class std::basic_string<char>;
+
 void FirebaseArduino::begin(const String& host, const String& auth) {
   http_.reset(FirebaseHttpClient::create());
   http_->setReuseConnection(true);
