@@ -20,6 +20,10 @@ class FirebaseHttpClientDummy : public FirebaseHttpClient {
   void end() override {
   }
 
+  bool connected() override {
+    return true;
+  }
+
   void addHeader(const String& UNUSED_ARG(name), const String& UNUSED_ARG(value)) override {
   }
 

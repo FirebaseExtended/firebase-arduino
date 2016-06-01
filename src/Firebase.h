@@ -74,14 +74,14 @@ class Firebase {
 class FirebaseError {
  public:
   FirebaseError() {}
-  FirebaseError(int code, const String& message) : code_(code), message_(message) {
-  }  
+  FirebaseError(int code, const String& message)
+      : code_(code), message_(message) {}
   operator bool() const { return code_ != 0; }
   int code() const { return code_; }
   const String& message() const { return message_; }
  private:  
-  const int code_ = 0;
-  const String message_ = "";
+  int code_ = 0;
+  String message_ = "";
 };
 
 class FirebaseCall {
