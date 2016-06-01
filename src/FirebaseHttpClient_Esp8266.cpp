@@ -33,6 +33,10 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
     http_.end();
   }
 
+  bool connected() override {
+    return http_.connected();
+  }
+
   void addHeader(const String& name, const String& value) override {
     http_.addHeader(name, value);
   }

@@ -80,8 +80,8 @@ class FirebaseError {
   int code() const { return code_; }
   const String& message() const { return message_; }
  private:  
-  int code_ = 0;
-  String message_ = "";
+  const int code_ = 0;
+  const String message_ = "";
 };
 
 class FirebaseCall {
