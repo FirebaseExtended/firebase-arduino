@@ -23,6 +23,7 @@ bool StreamCommand::execute(const String& command,
   }
 
   bool running = true;
+  DynamicJsonBuffer buffer;
   while(running) {
     if (stream->available()) {
       std::string json;
@@ -30,10 +31,11 @@ bool StreamCommand::execute(const String& command,
       out->print("+");
       out->print(FirebaseStream::EventToName(event).c_str());
       out->print(" ");
-      // TODO(edcoyne): add json parsing and get real path.
-      out->println("/dummy/path");
-      out->println(json.length());
-      out->println(json.c_str());
+      const auto& object = buffer.parseObject(json.c_str());
+      String data = object["data"];
+      out->println(object["path"].asString());
+      out->println(data.length());
+      out->println(data);
     } else if (in->available()) {
       String command = in->readLine();
       if (command == "END_STREAM") {
