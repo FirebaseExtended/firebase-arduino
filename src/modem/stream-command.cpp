@@ -13,26 +13,27 @@ bool StreamCommand::execute(const String& command,
     return false;
   }
 
-  String path = in->readLine();
+  std::string path = in->readLine().c_str();
   std::unique_ptr<FirebaseStream> stream(fbase().streamPtr(path));
 
   if (stream->error()) {
     out->print("-FAIL ");
-    out->println(stream->error().message());
+    out->println(stream->error().message().c_str());
     return false;
   }
 
   bool running = true;
   while(running) {
     if (stream->available()) {
-      String json;
+      std::string json;
       FirebaseStream::Event event = stream->read(json);
       out->print("+");
-      out->print(FirebaseStream::EventToName(event) + " ");
+      out->print(FirebaseStream::EventToName(event).c_str());
+      out->print(" ");
       // TODO(edcoyne): add json parsing and get real path.
       out->println("/dummy/path");
       out->println(json.length());
-      out->println(json);
+      out->println(json.c_str());
     } else if (in->available()) {
       String command = in->readLine();
       if (command == "END_STREAM") {

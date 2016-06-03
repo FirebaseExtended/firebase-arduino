@@ -14,15 +14,15 @@ bool SetCommand::execute(const String& command,
     return false;
   }
 
-  String path(in->readStringUntil(' '));
-  String data(in->readLine());
+  std::string path(in->readStringUntil(' ').c_str());
+  std::string data(in->readLine().c_str());
 
   std::unique_ptr<FirebaseSet> set(fbase().setPtr(path,
                                                   EncodeForJson(data)));
 
   if (set->error()) {
     out->print("-FAIL ");
-    out->println(set->error().message());
+    out->println(set->error().message().c_str());
     return false;
   } else {
     out->println("+OK");
