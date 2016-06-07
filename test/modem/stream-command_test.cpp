@@ -46,7 +46,7 @@ TEST_F(StreamCommandTest, streams) {
       .WillOnce(Return(path))
       .WillOnce(Return("END_STREAM"));
 
-  const String value("Test value");
+  const String value("{path: '/test/path' data: 'Test value'}");
   EXPECT_CALL(*stream_, available())
       .WillOnce(Return(true))
       .WillRepeatedly(Return(false));
