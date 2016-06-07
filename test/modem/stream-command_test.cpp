@@ -63,7 +63,7 @@ TEST_F(StreamCommandTest, streams) {
       .WillOnce(Return(1));
   EXPECT_CALL(out_, print(String(" ")))
       .WillOnce(Return(1));
-  EXPECT_CALL(out_, println(String("/dummy/path")))
+  EXPECT_CALL(out_, println(path))
       .WillOnce(Return(1));
 
   EXPECT_CALL(out_, println(value.length()))
