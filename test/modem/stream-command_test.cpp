@@ -46,7 +46,8 @@ TEST_F(StreamCommandTest, streams) {
       .WillOnce(Return(path))
       .WillOnce(Return("END_STREAM"));
 
-  const String value("Test value");
+  const String data = "Test Value";
+  const String value(String("{\"path\" : \"/test/path\", \"data\" : \"") + data + "\"}");
   EXPECT_CALL(*stream_, available())
       .WillOnce(Return(true))
       .WillRepeatedly(Return(false));
@@ -63,12 +64,12 @@ TEST_F(StreamCommandTest, streams) {
       .WillOnce(Return(1));
   EXPECT_CALL(out_, print(String(" ")))
       .WillOnce(Return(1));
-  EXPECT_CALL(out_, println(String("/dummy/path")))
+  EXPECT_CALL(out_, println(path))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out_, println(value.length()))
+  EXPECT_CALL(out_, println(data.length()))
       .WillOnce(Return(1));
-  EXPECT_CALL(out_, println(value))
+  EXPECT_CALL(out_, println(data))
       .WillOnce(Return(1));
 
   EXPECT_CALL(out_, println(String("+OK")))
