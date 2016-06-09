@@ -30,7 +30,6 @@
 // cat begin.txt > /dev/ttyUSB0
 // You should see +OK and you can now feed in the other example commmands.
 
-#include <SoftwareSerial.h>
 #include <ESP8266WiFi.h>
 
 #include <Firebase.h>
