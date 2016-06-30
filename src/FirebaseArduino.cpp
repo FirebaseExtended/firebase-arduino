@@ -133,6 +133,7 @@ void FirebaseArduino::stream(const String& path) {
 bool FirebaseArduino::available() {
   if (!http_->connected()) {
     error_ = FirebaseError(HTTP_CONNECTION_LOST, "Connection Lost");
+    return false;
   }
   return http_->getStreamPtr()->available();
 }
