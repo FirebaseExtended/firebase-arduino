@@ -17,6 +17,8 @@
 #ifndef FIREBASE_ARDUINO_H
 #define FIREBASE_ARDUINO_H
 
+#include <string>
+
 #include "Firebase.h"
 #include "FirebaseObject.h"
 
@@ -225,8 +227,8 @@ class FirebaseArduino {
    */
   const String& error();
  private:
-  String host_;
-  String auth_;
+  std::string host_;
+  std::string auth_;
   FirebaseError error_;
   std::unique_ptr<FirebaseHttpClient> http_;
 };
