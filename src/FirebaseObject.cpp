@@ -34,8 +34,8 @@ bool FirebaseObject::getBool(const String& path) {
 
 int FirebaseObject::getInt(const String& path) {
   JsonVariant variant = getJsonVariant(path);
-  if (!variant.is<int>()) {
-    error_ = "failed to convert to int";
+  if (!variant.is<int>() && !variant.is<float>()) {
+    error_ = "failed to convert to number";
     return 0;
   }
   return static_cast<int>(variant);
@@ -43,8 +43,8 @@ int FirebaseObject::getInt(const String& path) {
 
 float FirebaseObject::getFloat(const String& path) {
   JsonVariant variant = getJsonVariant(path);
-  if (!variant.is<float>()) {
-    error_ = "failed to convert to float";
+  if (!variant.is<float>() && !variant.is<int>()) {
+    error_ = "failed to convert to number";
     return 0;
   }
   return static_cast<float>(variant);
