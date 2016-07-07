@@ -26,19 +26,37 @@ TEST(FirebaseObjectTest, GetBool) {
 }
 
 TEST(FirebaseObjectTest, GetInt) {
-  FirebaseObject obj("42");
-  EXPECT_EQ(42, obj.getInt());
-  EXPECT_TRUE(obj.success());
-  EXPECT_FALSE(obj.failed());
-  EXPECT_EQ(obj.error(), "");
+  {
+    FirebaseObject obj("42");
+    EXPECT_EQ(42, obj.getInt());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+  {
+    FirebaseObject obj("42.0");
+    EXPECT_EQ(42, obj.getInt());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
 }
 
 TEST(FirebaseObjectTest, GetFloat) {
-  FirebaseObject obj("43.0");
-  EXPECT_EQ(43, obj.getFloat());
-  EXPECT_TRUE(obj.success());
-  EXPECT_FALSE(obj.failed());
-  EXPECT_EQ(obj.error(), "");
+  {
+    FirebaseObject obj("43.0");
+    EXPECT_EQ(43, obj.getFloat());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+  {
+    FirebaseObject obj("43");
+    EXPECT_EQ(43, obj.getFloat());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
 }
 
 TEST(FirebaseObjectTest, GetString) {
@@ -66,7 +84,7 @@ TEST(FirebaseObjectTest, GetIntFailure) {
   EXPECT_EQ(obj.getInt(), 0);
   EXPECT_FALSE(obj.success());
   EXPECT_TRUE(obj.failed());
-  EXPECT_EQ(obj.error(), "failed to convert to int");
+  EXPECT_EQ(obj.error(), "failed to convert to number");
 }
 
 TEST(FirebaseObjectTest, GetFloatFailure) {
@@ -74,7 +92,7 @@ TEST(FirebaseObjectTest, GetFloatFailure) {
   EXPECT_EQ(obj.getFloat(), 0);
   EXPECT_FALSE(obj.success());
   EXPECT_TRUE(obj.failed());
-  EXPECT_EQ(obj.error(), "failed to convert to float");
+  EXPECT_EQ(obj.error(), "failed to convert to number");
 }
 
 TEST(FirebaseObjectTest, GetBoolFailure) {
