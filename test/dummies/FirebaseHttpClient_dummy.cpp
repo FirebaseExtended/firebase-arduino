@@ -20,6 +20,9 @@ class FirebaseHttpClientDummy : public FirebaseHttpClient {
   void end() override {
   }
 
+  bool connected() override {
+    return true;
+
   void addHeader(const std::string& UNUSED_ARG(name), const std::string& UNUSED_ARG(value)) override {
   }
 

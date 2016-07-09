@@ -20,6 +20,8 @@ class FirebaseHttpClient {
 
   virtual void end() = 0;
 
+  virtual bool connected() = 0;
+
   virtual void addHeader(const std::string& name, const std::string& value) = 0;
   virtual void collectHeaders(const char* header_keys[],
                               const int header_key_count) = 0;

@@ -74,7 +74,7 @@ class Firebase {
 class FirebaseError {
  public:
   FirebaseError() {}
-  FirebaseError(int code, const std::string& message) : code_(code), message_(message) {
+ FirebaseError(int code, const std::string& message) : code_(code), message_(message) {
   }  
   operator bool() const { return code_ != 0; }
   int code() const { return code_; }

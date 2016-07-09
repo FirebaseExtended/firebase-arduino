@@ -35,7 +35,11 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
     http_.end();
   }
 
-  void addHeader(const std::string& name, const std::string& value) override {
+  bool connected() override {
+    return http_.connected();
+  }
+
+ void addHeader(const std::string& name, const std::string& value) override {
     http_.addHeader(name.c_str(), value.c_str());
   }
 

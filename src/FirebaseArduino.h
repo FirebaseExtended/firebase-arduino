@@ -31,6 +31,10 @@
  */
 class FirebaseArduino {
  public:
+  enum ERROR_CODES {
+    HTTP_CONNECTION_LOST = -5
+  };
+
   /**
    * Must be called first. This initialize the client with the given
    * firebase host and credentials.
