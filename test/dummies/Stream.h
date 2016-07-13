@@ -5,28 +5,35 @@
 
 class Stream {
  public:
-  int available() {
+  virtual int available() {
     return 0;
   }
-  String readStringUntil(const char term __attribute__((unused))) {
+
+  virtual String readStringUntil(const char term __attribute__((unused))) {
     return String();
   }
-  int println(const String&) {
+
+  virtual int println(const String&) {
     return 0;
   }
-  int println(const char*) {
+
+  virtual int println(const char*) {
     return 0;
   }
-  int println(int) {
+
+  virtual int println(int) {
     return 0;
   }
-  int print(const char*) {
+
+  virtual int print(const char*) {
     return 0;
   }
-  char peek() {
+
+  virtual char peek() {
     return '\0';
   }
-  char read() {
+
+  virtual char read() {
     return '\0';
   }
 };

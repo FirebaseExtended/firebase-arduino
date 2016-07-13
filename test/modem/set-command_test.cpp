@@ -1,6 +1,6 @@
 #include "Firebase.h"
 #include "gtest/gtest.h"
-#include "modem/commands.h"
+#include "modem/db/commands.h"
 #include "modem/json_util.h"
 #include "test/modem/mock-input-stream.h"
 #include "test/modem/mock-output-stream.h"
