@@ -3,16 +3,19 @@
 
 #include "modem/SerialProtocol.h"
 #include "modem/db/commands.h"
+#include "Firebase.h"
 
 namespace firebase {
 namespace modem {
 
 class DatabaseProtocol : public SerialProtocol {
  public:
-  const std::vector<std::string>& commands() const override;
-  void Execute(const std::string& command, InputStream* in, OutputStream* out) override;
+  const std::vector<String>& commands() const override;
+  void Execute(const String& command, InputStream* in, OutputStream* out) override;
  private:
   std::unique_ptr<Command> CreateCommand(const String& text, Firebase* fbase);
+
+  std::unique_ptr<Firebase> fbase_;
 };
 
 

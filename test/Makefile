@@ -18,8 +18,7 @@ FIREBASE_DIR=..
 GTEST_DIR=googletest/googletest
 ARDUINOJSON_DIR=../src/third-party/arduino-json-5.3
 
-FIREBASE_SRCS=${FIREBASE_DIR}/src/FirebaseObject.cpp\
-	${FIREBASE_DIR}/src/FirebaseObject.h
+FIREBASE_SRCS=${FIREBASE_DIR}/src/FirebaseObject.cpp
 GTEST_SRCS=${GTEST_DIR}/src/gtest-all.cpp
 ARDUINOJSON_SRCS=${ARDUINOJSON_DIR}/src/JsonBuffer.cpp\
 	${ARDUINOJSON_DIR}/src/JsonObject.cpp\
@@ -51,6 +50,5 @@ firebase-test: ${OBJS}
 check: firebase-test
 	./firebase-test
 
-#TODO: had to echo this because it picks up FirebaseObject.h as well and deletes it :(
 clean:
-	echo rm -f ${OBJS} firebase-test
+	rm -f ${OBJS} firebase-test

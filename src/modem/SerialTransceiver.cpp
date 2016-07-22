@@ -9,7 +9,7 @@ void SerialTransceiver::begin(Stream* serial) {
 }
 
 void SerialTransceiver::RegisterProtocol(std::unique_ptr<SerialProtocol> protocol) {
-  for (const std::string& command : protocol->commands()) {
+  for (const String& command : protocol->commands()) {
     command_to_protocol_.insert({command, protocol.get()});
   }
 

@@ -215,6 +215,7 @@ push-command_test : push-command.o push-command_test.o Firebase.o FirebaseHttpCl
 		arduino_mock_all.a arduino_json.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
+
 begin-command.o : $(SRC_ROOT)/modem/db/begin-command.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/begin-command.cpp
 
@@ -224,6 +225,7 @@ begin-command_test.o : $(TEST_DIR)/begin-command_test.cpp $(GMOCK_HEADERS)
 begin-command_test : begin-command.o begin-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
 		arduino_mock_all.a arduino_json.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
 
 stream-command.o : $(SRC_ROOT)/modem/db/stream-command.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/stream-command.cpp
@@ -235,6 +237,7 @@ stream-command_test : stream-command.o stream-command_test.o Firebase.o Firebase
 		arduino_mock_all.a arduino_json.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
+
 SerialTransceiver.o : $(SRC_ROOT)/modem/SerialTransceiver.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/SerialTransceiver.cpp
 
@@ -243,5 +246,4 @@ serial-transceiver_test.o : $(TEST_DIR)/serial-transceiver_test.cpp $(GMOCK_HEAD
 
 serial-transceiver_test : SerialTransceiver.o serial-transceiver_test.o gmock_main.a arduino_mock_all.a arduino_json.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
-
 

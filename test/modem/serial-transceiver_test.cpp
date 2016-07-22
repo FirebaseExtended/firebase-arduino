@@ -13,8 +13,8 @@ using ::testing::_;
 
 class MockSerialProtocol : public SerialProtocol {
  public:
-  MOCK_CONST_METHOD0(commands, const std::vector<std::string>&());
-  MOCK_METHOD3(Execute, void(const std::string&, InputStream*, OutputStream*));
+  MOCK_CONST_METHOD0(commands, const std::vector<String>&());
+  MOCK_METHOD3(Execute, void(const String&, InputStream*, OutputStream*));
 };
 
 class MockStream : public Stream {
@@ -26,8 +26,8 @@ class SerialTranscieverTest : public ::testing::Test {
 };
 
 TEST_F(SerialTranscieverTest, delegatesCommand) {
-  const std::string good_command = "GOOD";
-  const std::vector<std::string> commands{good_command};
+  const String good_command = "GOOD";
+  const std::vector<String> commands{good_command};
 
   MockStream serial;
   EXPECT_CALL(serial, readStringUntil(' '))
@@ -45,9 +45,9 @@ TEST_F(SerialTranscieverTest, delegatesCommand) {
 }
 
 TEST_F(SerialTranscieverTest, doesNotDelegateInvalidCommand) {
-  const std::string good_command = "GOOD";
-  const std::string bad_command = "BAD";
-  const std::vector<std::string> commands{good_command};
+  const String good_command = "GOOD";
+  const String bad_command = "BAD";
+  const std::vector<String> commands{good_command};
 
   MockStream serial;
   EXPECT_CALL(serial, readStringUntil(' '))

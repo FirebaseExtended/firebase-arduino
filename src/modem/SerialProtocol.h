@@ -1,7 +1,7 @@
 #ifndef MODEM_SERIAL_PROTOCOL_H
 #define MODEM_SERIAL_PROTOCOL_H
 
-#include <string>
+#include <WString.h>
 #include <vector>
 
 namespace firebase {
@@ -21,12 +21,12 @@ class SerialProtocol {
   /*
    * Returns all commands this protocol supports, commands are single words.
    */
-  virtual const std::vector<std::string>& commands() const = 0;
+  virtual const std::vector<String>& commands() const = 0;
 
   /*
    * Execute command, takes over the serial line until execution is done.
    */
-  virtual void Execute(const std::string& command, InputStream* in, OutputStream* out) = 0;
+  virtual void Execute(const String& command, InputStream* in, OutputStream* out) = 0;
 
 };
 
