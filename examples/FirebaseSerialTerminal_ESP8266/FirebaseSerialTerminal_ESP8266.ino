@@ -55,6 +55,7 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
 
+  transceiver.RegisterProtocol(new DatabaseProtocol());
   transceiver.begin(&Serial);
 }
 

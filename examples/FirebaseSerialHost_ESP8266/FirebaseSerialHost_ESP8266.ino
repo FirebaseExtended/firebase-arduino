@@ -55,6 +55,7 @@ void setup() {
     delay(5000);
   }
 
+  transceiver.RegisterProtocol(new DatabaseProtocol());
   transceiver.begin(&data_serial);
 }
 
