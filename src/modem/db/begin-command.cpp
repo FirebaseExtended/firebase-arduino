@@ -9,7 +9,7 @@ bool BeginCommand::execute(const String& command,
     return false;
   }
 
-  if (command != "BEGIN") {
+  if (command != "BEGIN_DB") {
     return false;
   }
 

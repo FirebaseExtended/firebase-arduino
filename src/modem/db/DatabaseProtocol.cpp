@@ -34,7 +34,7 @@ void DatabaseProtocol::Execute(const String& command_name, InputStream* in,
   std::unique_ptr<Command> command = CreateCommand(command_name, fbase_.get());
   if (!command) {
     in->drain();
-    out->println(String("-FAIL Invalid command '") + command_name + "'." );
+    out->println(String("-FAIL unhandled command '") + command_name + "'." );
     return;
   }
   
