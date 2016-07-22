@@ -26,7 +26,6 @@ class SerialTransceiver {
   std::unique_ptr<ArduinoInputStream> in_;
   std::unique_ptr<ArduinoOutputStream> out_;
   std::vector<std::unique_ptr<SerialProtocol>> protocols_;
-  std::map<String, SerialProtocol*> command_to_protocol_;
 };
 
 }  // modem

@@ -20,6 +20,7 @@ class SerialProtocol {
 
   /*
    * Returns all commands this protocol supports, commands are single words.
+   * Returned vector MUST be sorted.
    */
   virtual const std::vector<String>& commands() const = 0;
 

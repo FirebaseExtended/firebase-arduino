@@ -1,5 +1,7 @@
 #include "SerialTransceiver.h"
 
+#include <algorithm>
+
 namespace firebase {
 namespace modem {
 
@@ -9,10 +11,6 @@ void SerialTransceiver::begin(Stream* serial) {
 }
 
 void SerialTransceiver::RegisterProtocol(std::unique_ptr<SerialProtocol> protocol) {
-  for (const String& command : protocol->commands()) {
-    command_to_protocol_.insert({command, protocol.get()});
-  }
-
   protocols_.push_back(std::move(protocol));
 }
 
@@ -24,13 +22,21 @@ void SerialTransceiver::loop() {
     return;
   }
 
-  auto itr = command_to_protocol_.find(command_name);
-  if (itr == command_to_protocol_.end()) {
+  bool command_found = false;
+  for (auto& protocol : protocols_) {
+    const std::vector<String>& commands = protocol->commands();
+    if (std::binary_search(commands.begin(), commands.end(), command_name)) {
+      protocol->Execute(command_name, in_.get(), out_.get());
+      command_found = true;
+      break;
+    }
+  }
+
+  if (!command_found) {
     in_->drain();
     out_->println(String("-FAIL Invalid command '") + command_name + "'." );
     return;
   }
-  itr->second->Execute(command_name, in_.get(), out_.get());
 }
 
 
