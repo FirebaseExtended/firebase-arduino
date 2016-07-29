@@ -20,7 +20,6 @@
 #include <ESP8266WiFi.h>
 
 #include <FirebaseCloudMessaging.h>
-#include <FirebaseHttpClient.h>
 
 // Set these to run example.
 #define WIFI_SSID "SSID"
