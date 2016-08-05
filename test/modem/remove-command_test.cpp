@@ -3,7 +3,7 @@
 #include "test/modem/mock-input-stream.h"
 #include "test/mock-firebase.h"
 #include "Firebase.h"
-#include "modem/commands.h"
+#include "modem/db/commands.h"
 
 namespace firebase {
 namespace modem {

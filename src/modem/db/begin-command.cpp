@@ -1,4 +1,4 @@
-#include "modem/commands.h"
+#include "modem/db/commands.h"
 
 namespace firebase {
 namespace modem {
@@ -9,7 +9,7 @@ bool BeginCommand::execute(const String& command,
     return false;
   }
 
-  if (command != "BEGIN") {
+  if (command != "BEGIN_DB") {
     return false;
   }
 
