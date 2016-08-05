@@ -23,8 +23,9 @@
 #include <Arduino.h>
 #include <memory>
 #include "FirebaseHttpClient.h"
+#include "FirebaseError.h"
 // TODO(edcoyne): move this into our mock_arduino fork where we actually do the
-// override.
+// override.   
 #define ARDUINO_STRING_OVERRIDE
 #include "third-party/arduino-json-5.3/include/ArduinoJson.h"
 
@@ -69,19 +70,6 @@ class Firebase {
   std::unique_ptr<FirebaseHttpClient> http_;
   std::string host_;
   std::string auth_;
-};
-
-class FirebaseError {
- public:
-  FirebaseError() {}
-  FirebaseError(int code, const std::string& message) : code_(code), message_(message) {
-  }  
-  operator bool() const { return code_ != 0; }
-  int code() const { return code_; }
-  const std::string& message() const { return message_; }
- private:  
-  int code_ = 0;
-  std::string message_ = "";
 };
 
 class FirebaseCall {
