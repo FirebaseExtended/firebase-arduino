@@ -307,3 +307,16 @@ Data to delivery to client application. This is comprised of Key->Value pairs. T
 	>> ADD_DATA Temperature 3
 	>> 104
 	<< +OK
+
+## SEND_MESSAGE
+Send the message we have been preparing.
+##Usage
+	SEND_MESSAGE
+###Response
+	+OK - Message Sent.
+	-FAIL - Failed to send message, we still have the message prepared so you may retry.
+###Examples
+	>> SEND_MESSAGE
+	<< +OK
+	>> SEND_MESSAGE
+	<< -FAIL
