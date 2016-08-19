@@ -1,4 +1,4 @@
-#Protocol:
+#General Protocol:
 During the first use, or when the chiplet changes environments a “NETWORK” call is expected to initialize the wifi parameters.
 
 Every time a serial connection is established we will expect a “BEGIN” call after which any subsequent calls can be made, until the connection is closed. 
@@ -29,9 +29,11 @@ Only needs to be called when the chiplet is in a new environment and needs to co
 	<< +CONNECTED
 	>> NETWORK home-guest
 	<< -UNABLE_TO_CONNECT
+	
+#Database Protocol
 
-##BEGIN
-Must be called after creating a Serial connection, it can take either just a host for accessing public variables or you may also provide a secret for accessing protected variables in the database.
+##BEGIN_DB
+Called to start communicating with the Firebase database, it can take either just a host for accessing public variables or you may also provide a secret for accessing protected variables in the database.
 ###Usage
 	BEGIN %Host%
 	BEGIN %Host% %Secret%
@@ -186,3 +188,122 @@ Used to stop listening to events at a given path. This must be the same path pro
 	>>BEGIN_STREAM /user/aturing
 	>>END_STREAM /user/aturing
 	<<+OK
+
+# Messaging Protocol
+
+## BEGIN_MESSAGING 
+Called to start communicating with Firebase Cloud Messaging, it requires a server key.
+###Usage
+	BEGIN %Server_Key%
+###Response
+	+OK - Accepted initialization parameters
+###Examples
+	>> BEGIN https://samplechat.firebaseio-demo.com
+	<< +OK
+
+## MESSAGE_TO_USERS
+Called to start composing a message to users by registration id. You can specify as many as you wish separated by spaces on the same line. 
+##Usage
+	MESSAGE_TO_USERS %Registration_id% ...
+###Response
+	+OK - Ready to specify rest of message.
+###Examples
+	>> MESSAGE_TO_USERS fQCLfBOGdh0...9k0
+	<< +OK
+	>> MESSAGE_TO_USERS fQCLfBOGdh0...9k0 fQCLfBOGdh0...5j1
+	<< +OK
+
+## MESSAGE_TO_TOPIC
+Called to start composing a message to a topic. 
+##Usage
+	MESSAGE_TO_TOPIC %Topic_Name% ...
+###Response
+	+OK - Ready to specify rest of message.
+###Examples
+	>> MESSAGE_TO_TOPIC news
+	<< +OK
+	
+## COLLAPSE_KEY
+Sets a collapse key on the message. When the server recieves a message with a collapse key it will discard any pending messages it has with the same key. So the client will only see the most recent one when it checks in.
+##Usage
+	COLLAPSE_KEY %Collapse_Key% ...
+###Response
+	+OK - Ready to specify rest of message.
+###Examples
+	>> COLLAPSE_KEY LatestUpdate
+	<< +OK
+
+## HIGH_PRIORITY
+If set to true the user's device will wake up to receive the message. This is used when the message is high priority but a cost it paid in battery life for the user.
+##Usage
+	HIGH_PRIORITY True|False
+###Response
+	+OK - Ready to specify rest of message.
+###Examples
+	>> HIGH_PRIORITY TRUE
+	<< +OK
+	>> HIGH_PRIORITY false
+	<< +OK
+
+## DELAY_WHILE_IDLE
+If set to true the message will not be delivered until the user's device is active. This is used when the message can wait to be seen until the user is available.
+We are not case sensitive on True/False.
+##Usage
+	DELAY_WHILE_IDLE True|False
+###Response
+	+OK - Ready to specify rest of message.
+###Examples
+	>> HIGH_PRIORITY TRUE
+	<< +OK
+	>> HIGH_PRIORITY false
+	<< +OK
+	
+
+## TIME_TO_LIVE
+The message will expire after this amount of time in seconds. The default (and max value) is four weeks.
+##Usage
+	TIME_TO_LIVE [0,2419200]
+###Response
+	+OK - Ready to specify rest of message.
+	-ERROR_OUT_OF_RANGE - Value provided was not in range [0,2419200].
+###Examples
+	>> TIME_TO_LIVE 10
+	<< +OK
+	>> TIME_TO_LIVE -1
+	<< -ERROR_OUT_OF_RANGE
+	>> TIME_TO_LIVE 2500000
+	<< -ERROR_OUT_OF_RANGE
+
+## NOTIFICATION
+Notification to display to the user, is made up of a title and a body. The title is specified on the first line and the first line ends with a count of bytes in the body. We will then read the next %Body_Byte_Count% bytes (after the line break) and interpret them as the body. If there is no body specify 0 for the byte count.
+##Usage
+	NOTIFICATION %Title% %Body_Byte_Count%
+	%Body%
+###Response
+	+OK - Ready to specify rest of message.
+	-ERROR_INCORRECT_FORMAT - The message format was incorrect.
+###Examples
+	>> NOTIFICATION This is a test. 0
+	<< +OK
+	>> NOTIFICATION This is a test.
+	<< -ERROR_INCORRECT_FORMAT
+	>> NOTIFICATION This is a test with a body. 12
+	>> Hello World!
+	<< +OK
+
+## ADD_DATA
+Data to delivery to client application. This is comprised of Key->Value pairs. The Key is specified on the first line and the first line ends with a count of bytes in the value. We will then read the next %Value_Byte_Count% bytes (after the line break) and interpret them as the value. If there is no value specify 0 forthe byte count.
+##Usage
+	ADD_DATA %KEY% %VALUE_BYTE_COUNT%
+	%VALUE%
+###Response
+	+OK - Ready to specify rest of message.
+	-ERROR_INCORRECT_FORMAT - The message format was incorrect.
+###Examples
+	>> ADD_DATA Temperature_Ready 0
+	<< +OK
+	>> ADD_DATA Temperature_Ready
+	<< -ERROR_INCORRECT_FORMAT
+	>> ADD_DATA Temperature 3
+	>> 104
+	<< +OK
