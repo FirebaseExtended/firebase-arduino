@@ -1,3 +1,7 @@
+1. [General Protocol](#general-protocol)
+2. [Database Protocol](#database-protocol)
+3. [Messaging Protocol](#messaging-protocol)
+
 #General Protocol:
 During the first use, or when the chiplet changes environments a “NETWORK” call is expected to initialize the wifi parameters.
 
@@ -189,7 +193,7 @@ Used to stop listening to events at a given path. This must be the same path pro
 	>>END_STREAM /user/aturing
 	<<+OK
 
-# Messaging Protocol
+#Messaging Protocol
 
 ## BEGIN_MESSAGING 
 Called to start communicating with Firebase Cloud Messaging, it requires a server key.
