@@ -1,0 +1,346 @@
+(pcb "/home/afshar/src/firebase-arduino/hardware/firethings/ft1.2/raw.dsn"
+  (parser
+    (string_quote ")
+    (space_in_quoted_tokens on)
+    (host_cad "KiCad's Pcbnew")
+    (host_version "(2016-07-11 BZR 6975, Git 98ad509)-product")
+  )
+  (resolution um 10)
+  (unit um)
+  (structure
+    (layer F.Cu
+      (type signal)
+      (property
+        (index 0)
+      )
+    )
+    (layer B.Cu
+      (type signal)
+      (property
+        (index 1)
+      )
+    )
+    (boundary
+      (path pcb 0  179070 -99695  179070 -79375  182880 -75565  194310 -75565
+            201930 -75565  205740 -79375  205740 -99695  204470 -100965
+            180340 -100965  179070 -99695  179070 -99695)
+    )
+    (via "Via[0-1]_800:400_um")
+    (rule
+      (width 250)
+      (clearance 200.1)
+      (clearance 200.1 (type default_smd))
+      (clearance 50 (type smd_smd))
+    )
+  )
+  (placement
+    (component "firethings-mini"
+      (place U2 192405 -91440 front 0 (PN Firethings_Mini))
+    )
+    (component "afshar-kicad-libraries:ESP-12-SMD"
+      (place U1 199390 -84836 back 0 (PN "ESP-12"))
+    )
+    (component LEDs:LED_1206
+      (place D1 198755 -83820 front 180 (PN I))
+      (place D2 198755 -86360 front 180 (PN E))
+    )
+    (component Capacitors_SMD:C_1206
+      (place C1 199390 -89535 front 0 (PN C))
+      (place C2 199390 -92075 front 180 (PN C))
+    )
+    (component "TO_SOT_Packages_SMD:SOT-23-5"
+      (place U3 192405 -94615 front 90 (PN AP2112K))
+    )
+    (component Resistors_SMD:R_1206
+      (place R1 186055 -84455 front 0 (PN 10K))
+      (place R2 186055 -86995 front 0 (PN 10K))
+      (place R3 186055 -89535 front 0 (PN 10K))
+      (place R4 186055 -92075 front 180 (PN 10K))
+      (place R5 191770 -89535 front 0 (PN 10K))
+      (place R6 191770 -84455 front 180 (PN 100))
+      (place R7 191770 -86995 front 0 (PN 100))
+    )
+    (component "Buttons_Switches_SMD:SW_SPST_B3U-3000P-B"
+      (place SW1 187325 -99060 front 180 (PN RESET))
+      (place SW2 197485 -99060 front 180 (PN CONFIG))
+    )
+    (component "firethings-kicad-libs:firebase-logo"
+      (place G*** 185420 -78105 front 0 (PN LOGO))
+    )
+  )
+  (library
+    (image "firethings-mini"
+      (outline (path signal 150  -13335 -8255  -13335 12065))
+      (outline (path signal 150  -13335 -8255  -12065 -9525))
+      (outline (path signal 150  -12065 -9525  12065 -9525))
+      (outline (path signal 150  12065 -9525  13335 -8255))
+      (outline (path signal 150  13335 -8255  13335 12065))
+      (outline (path signal 150  13335 12065  9525 15875))
+      (outline (path signal 150  9525 15875  -9525 15875))
+      (outline (path signal 150  -9525 15875  -13335 12065))
+      (pin Round[A]Pad_1800_um 8 -11430 10160)
+      (pin Round[A]Pad_1800_um 7 -11430 7620)
+      (pin Round[A]Pad_1800_um 6 -11430 5080)
+      (pin Round[A]Pad_1800_um 5 -11430 2540)
+      (pin Round[A]Pad_1800_um 4 -11430 0)
+      (pin Round[A]Pad_1800_um 3 -11430 -2540)
+      (pin Round[A]Pad_1800_um 2 -11430 -5080)
+      (pin Round[A]Pad_1800_um 1 -11430 -7620)
+      (pin Round[A]Pad_1800_um 16 11430 -7620)
+      (pin Round[A]Pad_1800_um 15 11430 -5080)
+      (pin Round[A]Pad_1800_um 14 11430 -2540)
+      (pin Round[A]Pad_1800_um 13 11430 0)
+      (pin Round[A]Pad_1800_um 12 11430 2540)
+      (pin Round[A]Pad_1800_um 11 11430 5080)
+      (pin Round[A]Pad_1800_um 10 11430 7620)
+      (pin Round[A]Pad_1800_um 9 11430 10160)
+    )
+    (image "afshar-kicad-libraries:ESP-12-SMD"
+      (outline (path signal 50  -2250 500  -2250 8750))
+      (outline (path signal 50  -2250 8750  15250 8750))
+      (outline (path signal 50  15250 8750  16250 8750))
+      (outline (path signal 50  16250 8750  16250 -16000))
+      (outline (path signal 50  16250 -16000  -2250 -16000))
+      (outline (path signal 50  -2250 -16000  -2250 500))
+      (outline (path signal 152.4  -1016 8382  14986 8382))
+      (outline (path signal 152.4  14986 8382  14986 889))
+      (outline (path signal 152.4  -1016 8382  -1016 1016))
+      (outline (path signal 152.4  -1016 -14859  -1016 -15621))
+      (outline (path signal 152.4  -1016 -15621  14986 -15621))
+      (outline (path signal 152.4  14986 -15621  14986 -14859))
+      (outline (path signal 152.4  14992 8400  -1008 2600))
+      (outline (path signal 152.4  -1008 8400  14992 2600))
+      (outline (path signal 152.4  -1008 2600  14992 2600))
+      (outline (path signal 50  15000 8400  15000 -15600))
+      (outline (path signal 50  14992 -15600  -1008 -15600))
+      (outline (path signal 50  -1008 -15600  -1008 8400))
+      (outline (path signal 50  -1008 8400  14992 8400))
+      (pin "Round[T][-700,0]Pad_2500_um" 1 0 0)
+      (pin "Round[T][-700,0]Pad_2500_um" 2 0 -2000)
+      (pin "Round[T][-700,0]Pad_2500_um" 3 0 -4000)
+      (pin "Round[T][-700,0]Pad_2500_um" 4 0 -6000)
+      (pin "Round[T][-700,0]Pad_2500_um" 5 0 -8000)
+      (pin "Round[T][-700,0]Pad_2500_um" 6 0 -10000)
+      (pin "Round[T][-700,0]Pad_2500_um" 7 0 -12000)
+      (pin "Round[T][-700,0]Pad_2500_um" 8 0 -14000)
+      (pin Round[T][700,0]Pad_2500_um 9 14000 -14000)
+      (pin Round[T][600,0]Pad_2500_um 10 14000 -12000)
+      (pin Round[T][700,0]Pad_2500_um 11 14000 -10000)
+      (pin Round[T][700,0]Pad_2500_um 12 14000 -8000)
+      (pin Round[T][700,0]Pad_2500_um 13 14000 -6000)
+      (pin Round[T][700,0]Pad_2500_um 14 14000 -4000)
+      (pin Round[T][700,0]Pad_2500_um 15 14000 -2000)
+      (pin Round[T][700,0]Pad_2500_um 16 14000 0)
+    )
+    (image LEDs:LED_1206
+      (outline (path signal 150  -2150 -1050  1450 -1050))
+      (outline (path signal 150  -2150 1050  1450 1050))
+      (outline (path signal 150  -100 300  -100 -300))
+      (outline (path signal 150  -100 -300  -400 0))
+      (outline (path signal 150  -400 0  -200 200))
+      (outline (path signal 150  -200 200  -200 -50))
+      (outline (path signal 150  -200 -50  -250 0))
+      (outline (path signal 150  -500 500  -500 -500))
+      (outline (path signal 150  0 0  500 0))
+      (outline (path signal 150  -500 0  0 500))
+      (outline (path signal 150  0 500  0 -500))
+      (outline (path signal 150  0 -500  -500 0))
+      (outline (path signal 50  2500 1250  -2500 1250))
+      (outline (path signal 50  -2500 1250  -2500 -1250))
+      (outline (path signal 50  -2500 -1250  2500 -1250))
+      (outline (path signal 50  2500 -1250  2500 1250))
+      (pin Rect[T]Pad_1597.66x1800.86_um (rotate 180) 2 1419.86 0)
+      (pin Rect[T]Pad_1597.66x1800.86_um (rotate 180) 1 -1419.86 0)
+    )
+    (image Capacitors_SMD:C_1206
+      (outline (path signal 50  -2300 1150  2300 1150))
+      (outline (path signal 50  -2300 -1150  2300 -1150))
+      (outline (path signal 50  -2300 1150  -2300 -1150))
+      (outline (path signal 50  2300 1150  2300 -1150))
+      (outline (path signal 150  1000 1025  -1000 1025))
+      (outline (path signal 150  -1000 -1025  1000 -1025))
+      (pin Rect[T]Pad_1000x1600_um 1 -1500 0)
+      (pin Rect[T]Pad_1000x1600_um 2 1500 0)
+    )
+    (image "TO_SOT_Packages_SMD:SOT-23-5"
+      (outline (path signal 50  -1800 1600  1800 1600))
+      (outline (path signal 50  1800 1600  1800 -1600))
+      (outline (path signal 50  1800 -1600  -1800 -1600))
+      (outline (path signal 50  -1800 -1600  -1800 1600))
+      (outline (path signal 150  -200 1700  -204.894 1669.1  -219.098 1641.22  -241.221 1619.1
+            -269.098 1604.89  -300 1600  -330.902 1604.89  -358.779 1619.1
+            -380.902 1641.22  -395.106 1669.1  -400 1700  -395.106 1730.9
+            -380.902 1758.78  -358.779 1780.9  -330.902 1795.11  -300 1800
+            -269.098 1795.11  -241.221 1780.9  -219.098 1758.78  -204.894 1730.9))
+      (outline (path signal 150  250 1450  -250 1450))
+      (outline (path signal 150  250 -1450  250 1450))
+      (outline (path signal 150  -250 -1450  250 -1450))
+      (outline (path signal 150  -250 1450  -250 -1450))
+      (pin Rect[T]Pad_1060x650_um 1 -1100 950)
+      (pin Rect[T]Pad_1060x650_um 2 -1100 0)
+      (pin Rect[T]Pad_1060x650_um 3 -1100 -950)
+      (pin Rect[T]Pad_1060x650_um 4 1100 -950)
+      (pin Rect[T]Pad_1060x650_um 5 1100 950)
+    )
+    (image Resistors_SMD:R_1206
+      (outline (path signal 50  -2200 1200  2200 1200))
+      (outline (path signal 50  -2200 -1200  2200 -1200))
+      (outline (path signal 50  -2200 1200  -2200 -1200))
+      (outline (path signal 50  2200 1200  2200 -1200))
+      (outline (path signal 150  1000 -1075  -1000 -1075))
+      (outline (path signal 150  -1000 1075  1000 1075))
+      (pin Rect[T]Pad_900x1700_um 1 -1450 0)
+      (pin Rect[T]Pad_900x1700_um 2 1450 0)
+    )
+    (image "Buttons_Switches_SMD:SW_SPST_B3U-3000P-B"
+      (outline (path signal 50  -1250 1650  -1250 2350))
+      (outline (path signal 50  -1250 2350  1250 2350))
+      (outline (path signal 50  1250 2350  1250 1650))
+      (outline (path signal 50  1250 1650  2400 1650))
+      (outline (path signal 150  -500 2100  -1000 1720))
+      (outline (path signal 150  -1000 1720  -1000 1400))
+      (outline (path signal 150  -500 2100  500 2100))
+      (outline (path signal 150  500 2100  1000 1720))
+      (outline (path signal 150  1000 1720  1000 1400))
+      (outline (path signal 150  -850 1250  -850 1650))
+      (outline (path signal 150  -850 1650  -450 1950))
+      (outline (path signal 150  -450 1950  450 1950))
+      (outline (path signal 150  450 1950  850 1650))
+      (outline (path signal 150  850 1650  850 1250))
+      (outline (path signal 150  -1650 -1400  1650 -1400))
+      (outline (path signal 50  -2400 -1650  2400 -1650))
+      (outline (path signal 50  2400 -1650  2400 1650))
+      (outline (path signal 50  -1250 1650  -2400 1650))
+      (outline (path signal 50  -2400 1650  -2400 -1650))
+      (outline (path signal 150  -1650 -1100  -1650 -1400))
+      (outline (path signal 150  1650 -1400  1650 -1100))
+      (outline (path signal 150  -1650 1100  -1650 1400))
+      (outline (path signal 150  -1650 1400  1650 1400))
+      (outline (path signal 150  1650 1400  1650 1100))
+      (outline (path signal 150  -1500 1250  1500 1250))
+      (outline (path signal 150  1500 1250  1500 -1250))
+      (outline (path signal 150  1500 -1250  -1500 -1250))
+      (outline (path signal 150  -1500 -1250  -1500 1250))
+      (pin Rect[T]Pad_900x1700_um 1 -1700 0)
+      (pin Rect[T]Pad_900x1700_um 2 1700 0)
+      (keepout "" (circle F.Cu 800))
+      (keepout "" (circle B.Cu 800))
+    )
+    (image "firethings-kicad-libs:firebase-logo"
+    )
+    (padstack Round[A]Pad_1800_um
+      (shape (circle F.Cu 1800))
+      (shape (circle B.Cu 1800))
+      (attach off)
+    )
+    (padstack "Round[T][-700,0]Pad_2500_um"
+      (shape (circle F.Cu 2500 -700 0))
+      (attach off)
+    )
+    (padstack Round[T][600,0]Pad_2500_um
+      (shape (circle F.Cu 2500 600 0))
+      (attach off)
+    )
+    (padstack Round[T][700,0]Pad_2500_um
+      (shape (circle F.Cu 2500 700 0))
+      (attach off)
+    )
+    (padstack Rect[T]Pad_900x1700_um
+      (shape (rect F.Cu -450 -850 450 850))
+      (attach off)
+    )
+    (padstack Rect[T]Pad_1000x1600_um
+      (shape (rect F.Cu -500 -800 500 800))
+      (attach off)
+    )
+    (padstack Rect[T]Pad_1060x650_um
+      (shape (rect F.Cu -530 -325 530 325))
+      (attach off)
+    )
+    (padstack Rect[T]Pad_1597.66x1800.86_um
+      (shape (rect F.Cu -798.83 -900.43 798.83 900.43))
+      (attach off)
+    )
+    (padstack "Via[0-1]_800:400_um"
+      (shape (circle F.Cu 800))
+      (shape (circle B.Cu 800))
+      (attach off)
+    )
+  )
+  (network
+    (net /RST
+      (pins U2-9 U1-1 R1-1 SW1-1)
+    )
+    (net GND
+      (pins U2-2 U1-9 D1-1 D2-1 C1-2 C2-2 U3-2 R5-1 SW1-2 SW2-2)
+    )
+    (net /EN
+      (pins U1-3 R2-2)
+    )
+    (net /RX
+      (pins U2-7 U1-15)
+    )
+    (net /TX
+      (pins U2-8 U1-16)
+    )
+    (net /FLASH/0/D3
+      (pins U2-4 U1-12 R3-2)
+    )
+    (net /SS/15/D8
+      (pins U2-15 U1-10 R5-2)
+    )
+    (net /MISO/12/D6
+      (pins U2-13 U1-6 R7-2)
+    )
+    (net /MOSI/13/D7
+      (pins U2-14 U1-7)
+    )
+    (net /SCL/5/D1
+      (pins U2-6 U1-14)
+    )
+    (net /SDA/4/D2
+      (pins U2-5 U1-13)
+    )
+    (net /2/D4
+      (pins U2-3 U1-11 R4-2 SW2-1)
+    )
+    (net /SCK/14/D5
+      (pins U2-12 U1-5 R6-2)
+    )
+    (net /16/D0
+      (pins U2-11 U1-4)
+    )
+    (net /ADC/A0
+      (pins U2-10 U1-2)
+    )
+    (net +3V3
+      (pins U2-16 U1-8 C2-1 U3-5 R1-2 R2-1 R3-1 R4-1)
+    )
+    (net "Net-(D1-Pad2)"
+      (pins D1-2 R6-1)
+    )
+    (net "Net-(D2-Pad2)"
+      (pins D2-2 R7-1)
+    )
+    (net +5V
+      (pins U2-1 C1-1 U3-1 U3-3)
+    )
+    (net "Net-(U3-Pad4)"
+      (pins U3-4)
+    )
+    (class kicad_default "" +3V3 +5V /16/D0 /2/D4 /ADC/A0 /EN /FLASH/0/D3
+      /MISO/12/D6 /MOSI/13/D7 /RST /RX /SCK/14/D5 /SCL/5/D1 /SDA/4/D2 /SS/15/D8
+      /TX GND "Net-(D1-Pad2)" "Net-(D2-Pad2)" "Net-(SW3-Pad1)" "Net-(SW3-Pad2)"
+      "Net-(SW3-Pad3)" "Net-(U2-Pad1)" "Net-(U3-Pad4)"
+      (circuit
+        (use_via Via[0-1]_800:400_um)
+      )
+      (rule
+        (width 250)
+        (clearance 200.1)
+      )
+    )
+  )
+  (wiring
+  )
+)
