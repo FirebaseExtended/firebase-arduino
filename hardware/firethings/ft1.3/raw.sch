@@ -1,88 +1,6 @@
 EESchema Schematic File Version 2
-LIBS:ESP8266
-LIBS:firethings_mini
-LIBS:open-project
-LIBS:ws2812
-LIBS:74xgxx
-LIBS:74xx
-LIBS:ac-dc
-LIBS:actel
-LIBS:adc-dac
-LIBS:Altera
-LIBS:analog_devices
-LIBS:analog_switches
-LIBS:atmel
-LIBS:audio
-LIBS:battery_management
-LIBS:bbd
-LIBS:brooktre
-LIBS:cmos4000
-LIBS:cmos_ieee
-LIBS:conn
-LIBS:contrib
-LIBS:cypress
-LIBS:dc-dc
-LIBS:device
-LIBS:digital-audio
-LIBS:diode
-LIBS:display
-LIBS:dsp
-LIBS:elec-unifil
-LIBS:ESD_Protection
-LIBS:ftdi
-LIBS:gennum
-LIBS:graphic
-LIBS:hc11
-LIBS:intel
-LIBS:interface
-LIBS:ir
-LIBS:Lattice
-LIBS:linear
-LIBS:logo
-LIBS:maxim
-LIBS:memory
-LIBS:microchip
-LIBS:microchip_dspic33dsc
-LIBS:microchip_pic10mcu
-LIBS:microchip_pic12mcu
-LIBS:microchip_pic16mcu
-LIBS:microchip_pic18mcu
-LIBS:microchip_pic32mcu
-LIBS:microcontrollers
-LIBS:motor_drivers
-LIBS:motorola
-LIBS:msp430
-LIBS:nordicsemi
-LIBS:nxp_armmcu
-LIBS:onsemi
-LIBS:opto
-LIBS:Oscillators
-LIBS:philips
-LIBS:power
-LIBS:powerint
-LIBS:Power_Management
-LIBS:pspice
-LIBS:references
-LIBS:regul
-LIBS:relays
-LIBS:rfcom
-LIBS:sensors
-LIBS:silabs
-LIBS:siliconi
-LIBS:stm8
-LIBS:stm32
-LIBS:supertex
-LIBS:switches
-LIBS:texas
-LIBS:transf
-LIBS:transistors
-LIBS:ttl_ieee
-LIBS:valves
-LIBS:video
-LIBS:Worldsemi
-LIBS:Xicor
-LIBS:xilinx
-LIBS:Zilog
+LIBS:esp-12
+LIBS:firethings-mini
 LIBS:raw-cache
 EELAYER 25 0
 EELAYER END
@@ -200,7 +118,7 @@ U 1 1 57795B78
 P 3250 4050
 F 0 "U1" H 3250 5128 50  0000 C CNN
 F 1 "ESP-12" H 3250 5037 50  0000 C CNN
-F 2 "afshar-kicad-libraries:ESP-12-SMD" H 3250 4050 50  0001 C CNN
+F 2 "firethings-kicad-libs:esp-12-smd" H 3250 4050 50  0001 C CNN
 F 3 "" H 3250 4050 50  0001 C CNN
 	1    3250 4050
 	1    0    0    -1  
@@ -317,17 +235,6 @@ F 1 "GND" H 3400 2480 30  0001 C CNN
 F 2 "" H 3400 2550 60  0001 C CNN
 F 3 "" H 3400 2550 60  0001 C CNN
 	1    3400 2550
-	1    0    0    -1  
-$EndComp
-$Comp
-L +3.3V #PWR07
-U 1 1 577AD764
-P 5800 2100
-F 0 "#PWR07" H 5800 2060 30  0001 C CNN
-F 1 "+3.3V" H 5809 2238 30  0000 C CNN
-F 2 "" H 5800 2100 60  0001 C CNN
-F 3 "" H 5800 2100 60  0001 C CNN
-	1    5800 2100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -562,6 +469,17 @@ F 1 "+5V" H 4365 2173 50  0000 C CNN
 F 2 "" H 4350 2000 50  0000 C CNN
 F 3 "" H 4350 2000 50  0000 C CNN
 	1    4350 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR07
+U 1 1 577AD764
+P 5800 2100
+F 0 "#PWR07" H 5800 2060 30  0001 C CNN
+F 1 "+3.3V" H 5809 2238 30  0000 C CNN
+F 2 "" H 5800 2100 60  0001 C CNN
+F 3 "" H 5800 2100 60  0001 C CNN
+	1    5800 2100
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

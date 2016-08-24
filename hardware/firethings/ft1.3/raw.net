@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/afshar/src/firebase-arduino/hardware/firethings/ft1.3/raw.sch)
-    (date "Sat 13 Aug 2016 05:24:11 PM PDT")
+    (date "Wed 24 Aug 2016 11:59:05 AM PDT")
     (tool "Eeschema (2016-07-11 BZR 6975, Git 98ad509)-product")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -47,7 +47,7 @@
       (tstamp 57795AC2))
     (comp (ref U1)
       (value ESP-12)
-      (footprint afshar-kicad-libraries:ESP-12-SMD)
+      (footprint firethings-kicad-libs:esp-12-smd)
       (libsource (lib ESP8266) (part ESP-12))
       (sheetpath (names /) (tstamps /))
       (tstamp 57795B78))
@@ -230,14 +230,14 @@
         (pin (num 1) (name 1) (type input))
         (pin (num 2) (name 2) (type input)))))
   (libraries
+    (library (logical firethings_mini)
+      (uri /home/afshar/src/kicad_libs/aliafshar/afshar-kicad-libraries/firethings_mini.lib))
     (library (logical ESP8266)
       (uri /home/afshar/src/kicad_libs/kicad-ESP8266/ESP8266.lib))
     (library (logical device)
       (uri /home/afshar/src/kicad_libs/kicad-library/library/device.lib))
     (library (logical regul)
-      (uri /home/afshar/src/kicad_libs/kicad-library/library/regul.lib))
-    (library (logical firethings_mini)
-      (uri /home/afshar/src/kicad_libs/aliafshar/afshar-kicad-libraries/firethings_mini.lib)))
+      (uri /home/afshar/src/kicad_libs/kicad-library/library/regul.lib)))
   (nets
     (net (code 1) (name GND)
       (node (ref U3) (pin 2))
