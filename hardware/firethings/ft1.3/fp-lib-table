@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name firethings-kicad-libs)(type KiCad)(uri ${KIPRJMOD}/../firethings-kicad-libs)(options "")(descr ""))
+)
