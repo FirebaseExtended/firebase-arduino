@@ -202,11 +202,17 @@ Called to start communicating with Firebase Cloud Messaging, it requires a serve
 	BEGIN_MSG %Server_Key% %Argument% %Argument% ...
 ###Response
 	+OK - Accepted initialization parameters
+	-ERROR_MISSING_SERVER_KEY
+	-ERROR_PARSING_ARGUMENTS
 ###Examples
 	>> BEGIN_MSG AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ
 	<< +OK
 	>> BEGIN_MSG AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ topic=iot_updates high_priority=true time_to_live=3600
 	<< +OK
+	>> BEGIN_MSG 
+	<< +ERROR_MISSING_SERVER_KEY
+	>> BEGIN_MSG AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ topic = iot_updates
+	<< +ERROR_PARSING_ARGUMENTS // Can't have spaces in arguments.
 
 ## MSG
 Called to start composing a message. It is followed by a list of named arguments, all of these arguments may be listed on BEGIN_MSG as well to set them as defaults for the session. Even if they are listed on BEGIN_MSG they can be overriden when calling MSG.
@@ -258,6 +264,7 @@ time_to_live=500
 	+OK - Ready to specify rest of message.
 	-ERROR_MISSING_TARGET - You didn't specify either registration_ids or topic.
 	-ERROR_PARSING_ARGUMENTS - There was a syntax error in your arguments.
+	-ERROR_INVALID_ARGUMENT - You specified an argument we don't support.
 ###Examples
 	>> MSG
 	<< +OK // Only works if you specified a default registration_ids or topic on BEGIN_MSG.
@@ -267,6 +274,8 @@ time_to_live=500
 	<< +OK
 	>> MSG registration_ids=fQCLfBOGdh0...9k0, fQCLfBOGdh0...5j1 delay_while_idle=true
 	<< +ERROR_PARSING_ARGUMENTS // There is a space in the list of registration ids.
+	>> MSG some_random_thing=true
+	<< +ERROR_INVALID_ARGUMENT // some_random_thing is not a valid argument.
 
 ## NOTIFICATION
 Notification to display to the user, is made up of a title and a body. The title is specified on the first line and the first line ends with a count of bytes in the body. We will then read the next %Body_Byte_Count% bytes (after the line break) and interpret them as the body. If there is no body specify 0 for the byte count.
@@ -286,7 +295,7 @@ Notification to display to the user, is made up of a title and a body. The title
 	<< +OK
 
 ## ADD_DATA
-Data to delivery to client application. This is comprised of Key->Value pairs. The Key is specified on the first line and the first line ends with a count of bytes in the value. We will then read the next %Value_Byte_Count% bytes (after the line break) and interpret them as the value. If there is no value specify 0 forthe byte count.
+Data to deliver to client application. This is comprised of Key->Value pairs. The Key is specified on the first line and the first line ends with a count of bytes in the value. We will then read the next %Value_Byte_Count% bytes (after the line break) and interpret them as the value. If there is no value specify 0 forthe byte count.
 ##Usage
 	ADD_DATA %KEY% %VALUE_BYTE_COUNT%
 	%VALUE%
