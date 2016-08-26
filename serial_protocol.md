@@ -205,78 +205,49 @@ Called to start communicating with Firebase Cloud Messaging, it requires a serve
 	>> BEGIN_MSG AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ
 	<< +OK
 
-## MSG_USERS
-Called to start composing a message to users by registration id. You can specify as many as you wish separated by spaces on the same line. 
-##Usage
-	MSG_USERS %Registration_id% ...
-###Response
-	+OK - Ready to specify rest of message.
-###Examples
-	>> MSG_USERS fQCLfBOGdh0...9k0
-	<< +OK
-	>> MSG_USERS fQCLfBOGdh0...9k0 fQCLfBOGdh0...5j1
-	<< +OK
+## MSG
+Called to start composing a message. It is followed by a list of named arguments, all of these arguments may be listed on BEGIN_MSG as well to set them as defaults for the session. Even if they are listed on BEGIN_MSG they can be overriden when calling MSG.
 
-## MSG_TOPIC
-Called to start composing a message to a topic. 
-##Usage
-	MSG_TOPIC %Topic_Name% ...
-###Response
-	+OK - Ready to specify rest of message.
-###Examples
-	>> MSG_TOPIC news
-	<< +OK
-	
-## COLLAPSE_KEY
+Named arguments are specified by " %name%=%value% " where neither names nor values will have spaces in them.
+
+### Arguments
+#### registration_ids
+This is a comma separated list of device registrations you wish to send the message to. The list can have between 1 and 100 ids in it so you can send to a single device this way too.
+##### Examples
+registration_ids=fQCLfBOGdh0...9k0,fQCLfBOGdh0...5j1
+
+#### registration_ids
+This is a comma separated list of device registrations you wish to send the message to. The list can have between 1 and 100 ids in it so you can send to a single device this way too.
+##### Examples
+registration_ids=fQCLfBOGdh0...9k0,fQCLfBOGdh0...5j1
+
+#### topic
+This is the name of a topic you wish to send the message to.
+##### Examples
+topic=news
+
+#### collapse_key
 Sets a collapse key on the message. When the server recieves a message with a collapse key it will discard any pending messages it has with the same key. So the client will only see the most recent one when it checks in.
-##Usage
-	COLLAPSE_KEY %Collapse_Key% ...
-###Response
-	+OK - Ready to specify rest of message.
-###Examples
-	>> COLLAPSE_KEY LatestUpdate
-	<< +OK
+##### Examples
+collapse_key=LatestUpdate
 
-## HIGH_PRIORITY
-If set to true the user's device will wake up to receive the message. This is used when the message is high priority but a cost it paid in battery life for the user.
-##Usage
-	HIGH_PRIORITY True|False
-###Response
-	+OK - Ready to specify rest of message.
-###Examples
-	>> HIGH_PRIORITY TRUE
-	<< +OK
-	>> HIGH_PRIORITY false
-	<< +OK
+#### high_priority
+Can be "true" or "false". If set to true the user's device will wake up to receive the message. This is used when the message is high priority but a cost it paid in battery life for the user.
 
-## DELAY_WHILE_IDLE
-If set to true the message will not be delivered until the user's device is active. This is used when the message can wait to be seen until the user is available.
-We are not case sensitive on True/False.
-##Usage
-	DELAY_WHILE_IDLE True|False
-###Response
-	+OK - Ready to specify rest of message.
-###Examples
-	>> HIGH_PRIORITY TRUE
-	<< +OK
-	>> HIGH_PRIORITY false
-	<< +OK
+##### Examples
+high_priority=true
+
+#### delay_while_idle
+Can be "true" or "false". If set to true the message will not be delivered until the user's device is active. This is used when the message can wait to be seen until the user is available.
+
+##### Examples
+delay_while_idle=false
 	
+#### time_to_live
+The message will expire after this amount of time in seconds. The default (and max value) is four weeks. Can be between 0 and 2,419,200.
 
-## TIME_TO_LIVE
-The message will expire after this amount of time in seconds. The default (and max value) is four weeks.
-##Usage
-	TIME_TO_LIVE [0,2419200]
-###Response
-	+OK - Ready to specify rest of message.
-	-ERROR_OUT_OF_RANGE - Value provided was not in range [0,2419200].
-###Examples
-	>> TIME_TO_LIVE 10
-	<< +OK
-	>> TIME_TO_LIVE -1
-	<< -ERROR_OUT_OF_RANGE
-	>> TIME_TO_LIVE 2500000
-	<< -ERROR_OUT_OF_RANGE
+##### Examples
+time_to_live=500
 
 ## NOTIFICATION
 Notification to display to the user, is made up of a title and a body. The title is specified on the first line and the first line ends with a count of bytes in the body. We will then read the next %Body_Byte_Count% bytes (after the line break) and interpret them as the body. If there is no body specify 0 for the byte count.
