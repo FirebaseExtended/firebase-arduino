@@ -278,13 +278,14 @@ time_to_live=500
 	<< +ERROR_INVALID_ARGUMENT // some_random_thing is not a valid argument.
 
 ## NOTIFICATION
-Notification to display to the user, is made up of a title and a body. The title is specified on the first line and the first line ends with a count of bytes in the body. We will then read the next %Body_Byte_Count% bytes (after the line break) and interpret them as the body. If there is no body specify 0 for the byte count.
+Notification to display to the user, is made up of a title and a body. The title is specified on the first line and the first line ends with a count of bytes in the body. We will then read the next %Body_Byte_Count% bytes (after the line break) and interpret them as the body. If there is no body specify 0 for the byte count. The count must be the last thing on the line, it cannot end in whitespace.
 ##Usage
 	NOTIFICATION %Title% %Body_Byte_Count%
 	%Body%
 ###Response
 	+OK - Ready to specify rest of message.
 	-ERROR_INCORRECT_FORMAT - The message format was incorrect.
+	-ERROR_NOT_ENOUGH_DATA_FOR_BODY - We did not receive the specified amount of data for the body.
 ###Examples
 	>> NOTIFICATION This is a test. 0
 	<< +OK
@@ -293,15 +294,20 @@ Notification to display to the user, is made up of a title and a body. The title
 	>> NOTIFICATION This is a test with a body. 12
 	>> Hello World!
 	<< +OK
+	>> NOTIFICATION This is a test with a body. 12
+	>> Hello Worl
+	<< -ERROR_NOT_ENOUGH_DATA_FOR_BODY
 
 ## ADD_DATA
-Data to deliver to client application. This is comprised of Key->Value pairs. The Key is specified on the first line and the first line ends with a count of bytes in the value. We will then read the next %Value_Byte_Count% bytes (after the line break) and interpret them as the value. If there is no value specify 0 forthe byte count.
+Data to deliver to client application. This is comprised of Key->Value pairs. The Key is specified on the first line and the first line ends with a count of bytes in the value. We will then read the next %Value_Byte_Count% bytes (after the line break) and interpret them as the value. If there is no value specify 0 forthe byte count. The count must be the last thing on the line, it cannot end in whitespace.
+
 ##Usage
 	ADD_DATA %KEY% %VALUE_BYTE_COUNT%
 	%VALUE%
 ###Response
 	+OK - Ready to specify rest of message.
 	-ERROR_INCORRECT_FORMAT - The message format was incorrect.
+	-ERROR_NOT_ENOUGH_DATA_FOR_BODY - We did not receive the specified amount of data for the body.
 ###Examples
 	>> ADD_DATA Temperature_Ready 0
 	<< +OK
@@ -310,6 +316,9 @@ Data to deliver to client application. This is comprised of Key->Value pairs. Th
 	>> ADD_DATA Temperature 3
 	>> 104
 	<< +OK
+	>> ADD_DATA Temperature 3
+	>> 10
+	<< -ERROR_NOT_ENOUGH_DATA_FOR_BODY
 
 ## SEND_MSG
 Send the message we have been preparing.
