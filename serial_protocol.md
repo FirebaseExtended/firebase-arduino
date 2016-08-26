@@ -195,36 +195,36 @@ Used to stop listening to events at a given path. This must be the same path pro
 
 #Messaging Protocol
 
-## BEGIN_MESSAGING 
+## BEGIN_MSG 
 Called to start communicating with Firebase Cloud Messaging, it requires a server key.
 ###Usage
-	BEGIN_MESSAGING %Server_Key%
+	BEGIN_MSG %Server_Key%
 ###Response
 	+OK - Accepted initialization parameters
 ###Examples
-	>> BEGIN_MESSAGING AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ
+	>> BEGIN_MSG AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ
 	<< +OK
 
-## MESSAGE_TO_USERS
+## MSG_USERS
 Called to start composing a message to users by registration id. You can specify as many as you wish separated by spaces on the same line. 
 ##Usage
-	MESSAGE_TO_USERS %Registration_id% ...
+	MSG_USERS %Registration_id% ...
 ###Response
 	+OK - Ready to specify rest of message.
 ###Examples
-	>> MESSAGE_TO_USERS fQCLfBOGdh0...9k0
+	>> MSG_USERS fQCLfBOGdh0...9k0
 	<< +OK
-	>> MESSAGE_TO_USERS fQCLfBOGdh0...9k0 fQCLfBOGdh0...5j1
+	>> MSG_USERS fQCLfBOGdh0...9k0 fQCLfBOGdh0...5j1
 	<< +OK
 
-## MESSAGE_TO_TOPIC
+## MSG_TOPIC
 Called to start composing a message to a topic. 
 ##Usage
-	MESSAGE_TO_TOPIC %Topic_Name% ...
+	MSG_TOPIC %Topic_Name% ...
 ###Response
 	+OK - Ready to specify rest of message.
 ###Examples
-	>> MESSAGE_TO_TOPIC news
+	>> MSG_TOPIC news
 	<< +OK
 	
 ## COLLAPSE_KEY
@@ -312,15 +312,15 @@ Data to delivery to client application. This is comprised of Key->Value pairs. T
 	>> 104
 	<< +OK
 
-## SEND_MESSAGE
+## SEND_MSG
 Send the message we have been preparing.
 ##Usage
-	SEND_MESSAGE
+	SEND_MSG
 ###Response
 	+OK - Message Sent.
 	-FAIL - Failed to send message, we still have the message prepared so you may retry.
 ###Examples
-	>> SEND_MESSAGE
+	>> SEND_MSG
 	<< +OK
-	>> SEND_MESSAGE
+	>> SEND_MSG
 	<< -FAIL
