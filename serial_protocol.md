@@ -196,13 +196,16 @@ Used to stop listening to events at a given path. This must be the same path pro
 #Messaging Protocol
 
 ## BEGIN_MSG 
-Called to start communicating with Firebase Cloud Messaging, it requires a server key.
+Called to start communicating with Firebase Cloud Messaging, it requires a server key. You can also optionally supply any of the arguments listed on the MSG command to make them the defaults for this session. If you set them as defaults you don't need to specify them when calling MSG.
+
 ###Usage
-	BEGIN_MSG %Server_Key%
+	BEGIN_MSG %Server_Key% %Argument% %Argument% ...
 ###Response
 	+OK - Accepted initialization parameters
 ###Examples
 	>> BEGIN_MSG AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ
+	<< +OK
+	>> BEGIN_MSG AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ topic=iot_updates high_priority=true time_to_live=3600
 	<< +OK
 
 ## MSG
@@ -248,6 +251,22 @@ The message will expire after this amount of time in seconds. The default (and m
 
 ##### Examples
 time_to_live=500
+
+##Usage
+	MSG %Argument% %Argument% ...
+###Response
+	+OK - Ready to specify rest of message.
+	-ERROR_MISSING_TARGET - You didn't specify either registration_ids or topic.
+	-ERROR_PARSING_ARGUMENTS - There was a syntax error in your arguments.
+###Examples
+	>> MSG
+	<< +OK // Only works if you specified a default registration_ids or topic on BEGIN_MSG.
+	>> MSG 
+	<< +ERROR_MISSING_TARGET // If you didn't specify a default registration_ids or topic on BEGIN_MSG.
+	>> MSG registration_ids=fQCLfBOGdh0...9k0,fQCLfBOGdh0...5j1 delay_while_idle=true
+	<< +OK
+	>> MSG registration_ids=fQCLfBOGdh0...9k0, fQCLfBOGdh0...5j1 delay_while_idle=true
+	<< +ERROR_PARSING_ARGUMENTS // There is a space in the list of registration ids.
 
 ## NOTIFICATION
 Notification to display to the user, is made up of a title and a body. The title is specified on the first line and the first line ends with a count of bytes in the body. We will then read the next %Body_Byte_Count% bytes (after the line break) and interpret them as the body. If there is no body specify 0 for the byte count.
