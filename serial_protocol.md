@@ -39,14 +39,14 @@ Only needs to be called when the chiplet is in a new environment and needs to co
 ##BEGIN_DB
 Called to start communicating with the Firebase database, it can take either just a host for accessing public variables or you may also provide a secret for accessing protected variables in the database.
 ###Usage
-	BEGIN %Host%
-	BEGIN %Host% %Secret%
+	BEGIN_DB %Host%
+	BEGIN_DB %Host% %Secret%
 ###Response
 	+OK - Accepted initialization parameters
 ###Examples
-	>> BEGIN https://samplechat.firebaseio-demo.com
+	>> BEGIN_DB https://samplechat.firebaseio-demo.com
 	<< +OK
-	>> BEGIN https://samplechat.firebaseio-demo.com nnz...sdf
+	>> BEGIN_DB https://samplechat.firebaseio-demo.com nnz...sdf
 	<< +OK
 ##GET
 Fetches the value at %PATH% and returns it on the serial line. If %PATH% points to a leaf node you will get the raw value back, if it points to an internal node you will get a JSON string with all children.
@@ -198,11 +198,11 @@ Used to stop listening to events at a given path. This must be the same path pro
 ## BEGIN_MESSAGING 
 Called to start communicating with Firebase Cloud Messaging, it requires a server key.
 ###Usage
-	BEGIN %Server_Key%
+	BEGIN_MESSAGING %Server_Key%
 ###Response
 	+OK - Accepted initialization parameters
 ###Examples
-	>> BEGIN https://samplechat.firebaseio-demo.com
+	>> BEGIN_MESSAGING AIzaSyCk4GtbBa-XMQbc5TyT5oe1KnH71M-2lAZ
 	<< +OK
 
 ## MESSAGE_TO_USERS
