@@ -26,7 +26,8 @@
 #include <vector>
 #include "FirebaseHttpClient.h"
 #include "FirebaseError.h"
-#include "third-party/arduino-json-5.3/include/ArduinoJson.h"
+#define ARDUINOJSON_USE_ARDUINO_STRING 1
+#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
 
 // Defines the actual message to the client, for more detail on
 // options and settings see:
