@@ -40,6 +40,11 @@ class Transcriber {
   void ProcessInitialUpdate(const FirebaseObject& update);
   void ProcessIncrementalUpdate(const FirebaseObject& update);
 
+  // Wrapper around Firebase::Set that stops the stream before setting,
+  // Currently we have memory issues if we try to have two simultanious
+  // SSL connections.
+  void SetValue(const std::string& path, const std::string& value);
+
   std::unique_ptr<Firebase> fbase_;
   std::unique_ptr<FirebaseStream> stream_;
 
@@ -50,6 +55,8 @@ class Transcriber {
   int pin_digital_in_;
   int pin_analog_out_;
   int pin_analog_in_;
+
+  std::string path_;
 };
 
 };  // thing

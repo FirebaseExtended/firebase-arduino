@@ -19,13 +19,20 @@ void Transcriber::UpdateConfig(const Config& config) {
 }
 
 void Transcriber::Init(const Config& config) {
+  path_ = config.path;
   pin_digital_out_ = config.pin_digital_out;
   pin_digital_in_ = config.pin_digital_in;
   pin_analog_out_ = config.pin_analog_out;
   pin_analog_in_ = config.pin_analog_in;
 
   fbase_.reset(new Firebase(config.host, config.auth));
-  stream_ = fbase_->streamPtr(config.path);
+  stream_ = fbase_->streamPtr(path_);
+}
+
+void Transcriber::SetValue(const std::string& path, const std::string& value) {
+  stream_.reset(nullptr);
+  fbase_->set(path, value);
+  stream_ = fbase_->streamPtr(path_);
 }
 
 void Transcriber::Loop() {
@@ -47,15 +54,13 @@ void Transcriber::Loop() {
   // Send values to cloud
   int digital_in = digitalRead(pin_digital_in_);
   if (digital_in != digital_in_) {
-Serial.println(String(digital_in).c_str());
-    FirebaseSet set = fbase_->set(kSubPathDigitalIn, String(digital_in).c_str());
+    SetValue(kSubPathDigitalIn, String(digital_in).c_str());
     digital_in_ = digital_in;
   }
 
   float analog_in = analogRead(pin_analog_in_);
   if (analog_in != analog_in_) {
-Serial.println(String(analog_in).c_str());
-    FirebaseSet set = fbase_->set(kSubPathAnalogIn, String(analog_in).c_str());
+    SetValue(kSubPathAnalogIn, String(analog_in).c_str());
     analog_in_ = analog_in;
   }
 }
