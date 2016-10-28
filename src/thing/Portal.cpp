@@ -70,9 +70,7 @@ void Portal::Start() {
   });
 
   server_.on("/config", [&] () {
-    // TODO(edcoyne): all this static size sucks and will bite us
-    // in the ass, we should go dynamic here.
-    StaticJsonBuffer<256> jsonBuffer;
+    DynamicJsonBuffer jsonBuffer;
     if (server_.method() == HTTP_GET) {
       JsonObject& root = jsonBuffer.createObject();
       root["host"] = config_.host.c_str();
@@ -81,8 +79,8 @@ void Portal::Start() {
       root["wifi_ssid"] = config_.wifi_ssid.c_str();
       root["wifi_key"] = config_.wifi_key.c_str();
 
-      char buffer[256];
-      root.printTo(buffer, sizeof(buffer));
+      String buffer;
+      root.printTo(buffer);
       server_.send(200, "application/json", buffer);
     } else if (server_.method() == HTTP_POST) {
       if (!server_.hasArg("config")) {
@@ -108,7 +106,7 @@ void Portal::Loop() {
 }
 
 void Portal::NotifyOnUpdate(std::function<void(const Config& config)> callback) {
-  callback_(callback);
+  callback_ = callback;
 }
 
 };
