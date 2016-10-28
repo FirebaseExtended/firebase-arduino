@@ -1,3 +1,6 @@
+#ifndef THING_CONFIG_H
+#define THING_CONFIG_H
+
 namespace thing {
 
 struct Config {
@@ -14,4 +17,6 @@ struct Config {
   int pin_analog_out;
 };
 
-}
+}  // namespace thing
+
+#endif  // THING_CONFIG_H
