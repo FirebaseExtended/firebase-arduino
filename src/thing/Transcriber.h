@@ -23,7 +23,6 @@
 #include <vector>
 #include "Firebase.h"
 #include "FirebaseObject.h"
-#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
 #include "thing/Config.h"
 
 namespace thing {
