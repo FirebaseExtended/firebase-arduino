@@ -54,15 +54,13 @@ void Transcriber::Loop() {
   // Send values to cloud
   int digital_in = digitalRead(pin_digital_in_);
   if (digital_in != digital_in_) {
-    SetValue(std::string(path_) + kSubPathDigitalIn,
-             String(digital_in).c_str());
+    SetValue(path_ + kSubPathDigitalIn, String(digital_in).c_str());
     digital_in_ = digital_in;
   }
 
   float analog_in = analogRead(pin_analog_in_);
   if (analog_in != analog_in_) {
-    SetValue(std::string(path_) + kSubPathAnalogIn,
-             String(analog_in).c_str());
+    SetValue(path_ + kSubPathAnalogIn, String(analog_in).c_str());
     analog_in_ = analog_in;
   }
 }
