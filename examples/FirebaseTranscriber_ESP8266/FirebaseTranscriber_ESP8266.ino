@@ -38,10 +38,10 @@ thing::Config config = {
   FIREBASE_PATH,
   WIFI_SSID,
   WIFI_PASSWORD,
-  DIGITAL_OUT,
   DIGITAL_IN,
-  ANALOG_OUT,
-  ANALOG_IN};
+  DIGITAL_OUT,
+  ANALOG_IN,
+  ANALOG_OUT};
 
 void setup() {
   Serial.begin(9600);
