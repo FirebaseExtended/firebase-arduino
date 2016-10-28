@@ -21,10 +21,10 @@
 #include <Transcriber.h>
 
 // Set these to run example.
-#define FIREBASE_HOST ""
-#define FIREBASE_AUTH ""
-#define WIFI_SSID ""
-#define WIFI_PASSWORD ""
+#define FIREBASE_HOST "example.firebaseio.com"
+#define FIREBASE_AUTH "token_or_secret"
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
 
 #define FIREBASE_PATH "/fthing"
 #define DIGITAL_IN D1
