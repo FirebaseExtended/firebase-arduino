@@ -50,7 +50,7 @@ TEST_F(BeginCommandTest, hostOnly) {
   ExpectOutput("+OK");
 
   BeginCommand command;
-  ASSERT_TRUE(command.execute("BEGIN", &in_, &out_));
+  ASSERT_TRUE(command.execute("BEGIN_DB", &in_, &out_));
 
   std::unique_ptr<Firebase> firebase(command.firebase());
   EXPECT_EQ("", firebase->auth());
@@ -64,7 +64,7 @@ TEST_F(BeginCommandTest, hostAndAuth) {
   ExpectOutput("+OK");
 
   BeginCommand command;
-  ASSERT_TRUE(command.execute("BEGIN", &in_, &out_));
+  ASSERT_TRUE(command.execute("BEGIN_DB", &in_, &out_));
 
   std::unique_ptr<Firebase> firebase(command.firebase());
   EXPECT_EQ(auth, firebase->auth());
@@ -75,7 +75,7 @@ TEST_F(BeginCommandTest, neitherHostNorAuth) {
   ExpectOutputStartsWith("-FAIL");
 
   BeginCommand command;
-  ASSERT_FALSE(command.execute("BEGIN", &in_, &out_));
+  ASSERT_FALSE(command.execute("BEGIN_DB", &in_, &out_));
 
   std::unique_ptr<Firebase> firebase(command.firebase());
   EXPECT_FALSE(firebase);
