@@ -17,7 +17,8 @@
 #ifndef FIREBASE_OBJECT_H
 #define FIREBASE_OBJECT_H
 
-#include "third-party/arduino-json-5.3/include/ArduinoJson.h"
+#define ARDUINOJSON_USE_ARDUINO_STRING 1
+#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
 
 #ifndef FIREBASE_JSONBUFFER_SIZE
 #define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(32)
