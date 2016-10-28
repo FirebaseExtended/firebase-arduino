@@ -22,11 +22,11 @@
 
 // Set these to run example.
 #define FIREBASE_HOST ""
-#define FIREBASE_PATH "/fthing"
 #define FIREBASE_AUTH ""
 #define WIFI_SSID ""
 #define WIFI_PASSWORD ""
 
+#define FIREBASE_PATH "/fthing"
 #define DIGITAL_IN D1
 #define DIGITAL_OUT BUILTIN_LED
 #define ANALOG_IN A0
