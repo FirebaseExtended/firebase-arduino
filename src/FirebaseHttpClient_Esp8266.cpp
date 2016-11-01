@@ -28,7 +28,7 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
   }
 
   void begin(const std::string& host, const std::string& path) override {
-    http_.begin(host.c_str(), kFirebasePort, path.c_str(), true, kFirebaseFingerprint);
+    http_.begin(host.c_str(), kFirebasePort, path.c_str(), kFirebaseFingerprint);
   }
 
   void end() override {
