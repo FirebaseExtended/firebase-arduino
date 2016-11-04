@@ -41,35 +41,35 @@ class FirebaseObject {
    * \param optional path in the JSON object.
    * \return result as a bool.
    */
-  bool getBool(const String& path = "");
+  bool getBool(const String& path = "") const;
 
   /**
    * Return the value as an int.
    * \param optional path in the JSON object.
    * \return result as an integer.
    */
-  int getInt(const String& path = "");
+  int getInt(const String& path = "") const;
 
   /**
    * Return the value as a float.
    * \param optional path in the JSON object.
    * \return result as a float.
    */
-  float getFloat(const String& path = "");
+  float getFloat(const String& path = "") const;
 
   /**
    * Return the value as a String.
    * \param optional path in the JSON object.
    * \return result as a String.
    */
-  String getString(const String& path = "");
+  String getString(const String& path = "") const;
 
   /**
    * Return the value as a JsonVariant.
    * \param optional path in the JSON object.
    * \return result as a JsonVariant.
    */
-  JsonVariant getJsonVariant(const String& path = "");
+  JsonVariant getJsonVariant(const String& path = "") const;
 
 
   /**
@@ -94,7 +94,7 @@ class FirebaseObject {
   String data_;
   StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE> buffer_;
   JsonVariant json_;
-  String error_;
+  mutable String error_;
 };
 
 #endif // FIREBASE_OBJECT_H

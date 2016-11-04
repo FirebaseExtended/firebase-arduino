@@ -133,6 +133,12 @@ FirebaseCall::FirebaseCall(const std::string& host, const std::string& auth,
   }
 }
 
+FirebaseCall::~FirebaseCall() {
+  if (http_) {
+    http_->end();
+  }
+}
+
 const JsonObject& FirebaseCall::json() {
   //TODO(edcoyne): This is not efficient, we should do something smarter with
   //the buffers.
@@ -157,6 +163,7 @@ FirebaseSet::FirebaseSet(const std::string& host, const std::string& auth,
     json_ = response();
   }
 }
+
 // FirebasePush
 FirebasePush::FirebasePush(const std::string& host, const std::string& auth,
                            const std::string& path, const std::string& value,

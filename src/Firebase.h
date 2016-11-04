@@ -77,7 +77,7 @@ class FirebaseCall {
                const char* method, const std::string& path,
                const std::string& data = "",
                FirebaseHttpClient* http = NULL);
-  virtual ~FirebaseCall() {}
+  virtual ~FirebaseCall();
 
   virtual const FirebaseError& error() const {
     return error_;

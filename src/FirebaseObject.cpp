@@ -25,7 +25,7 @@ FirebaseObject::FirebaseObject(const char* data) : data_{data} {
   // See: https://github.com/bblanchon/ArduinoJson/issues/279
 }
 
-bool FirebaseObject::getBool(const String& path) {
+bool FirebaseObject::getBool(const String& path) const {
   JsonVariant variant = getJsonVariant(path);
   if (!variant.is<bool>()) {
     error_ = "failed to convert to bool";
@@ -34,7 +34,7 @@ bool FirebaseObject::getBool(const String& path) {
   return static_cast<bool>(variant);
 }
 
-int FirebaseObject::getInt(const String& path) {
+int FirebaseObject::getInt(const String& path) const {
   JsonVariant variant = getJsonVariant(path);
   if (!variant.is<int>() && !variant.is<float>()) {
     error_ = "failed to convert to number";
@@ -43,7 +43,7 @@ int FirebaseObject::getInt(const String& path) {
   return static_cast<int>(variant);
 }
 
-float FirebaseObject::getFloat(const String& path) {
+float FirebaseObject::getFloat(const String& path) const {
   JsonVariant variant = getJsonVariant(path);
   if (!variant.is<float>() && !variant.is<int>()) {
     error_ = "failed to convert to number";
@@ -52,7 +52,7 @@ float FirebaseObject::getFloat(const String& path) {
   return static_cast<float>(variant);
 }
 
-String FirebaseObject::getString(const String& path) {
+String FirebaseObject::getString(const String& path) const {
   JsonVariant variant = getJsonVariant(path);
   if (!variant.is<const char *>()) {
     error_ = "failed to convert to string";
@@ -61,7 +61,7 @@ String FirebaseObject::getString(const String& path) {
   return static_cast<const char*>(variant);
 }
 
-JsonVariant FirebaseObject::getJsonVariant(const String& path) {
+JsonVariant FirebaseObject::getJsonVariant(const String& path) const {
   String key(path);
   char* start = &key[0];
   char* end = start + key.length();
