@@ -20,6 +20,7 @@ void Transcriber::UpdateConfig(const Config& config) {
 
 void Transcriber::Init(const Config& config) {
   path_ = config.path;
+  analog_activation_threshold_ = config.analog_activation_threshold;
   pin_digital_out_ = config.pin_digital_out;
   pin_digital_in_ = config.pin_digital_in;
   pin_analog_out_ = config.pin_analog_out;
@@ -52,16 +53,16 @@ void Transcriber::Loop() {
   }
 
   // Send values to cloud
-  int digital_in = digitalRead(pin_digital_in_);
-  if (digital_in != digital_in_) {
-    SetValue(path_ + kSubPathDigitalIn, String(digital_in).c_str());
-    digital_in_ = digital_in;
+  int new_digital_in = digitalRead(pin_digital_in_);
+  if (new_digital_in != digital_in_) {
+    SetValue(path_ + kSubPathDigitalIn, String(new_digital_in).c_str());
+    digital_in_ = new_digital_in;
   }
 
-  float analog_in = analogRead(pin_analog_in_);
-  if (analog_in != analog_in_) {
-    SetValue(path_ + kSubPathAnalogIn, String(analog_in).c_str());
-    analog_in_ = analog_in;
+  float new_analog_in = analogRead(pin_analog_in_);
+  if (abs(new_analog_in - analog_in_) > analog_activation_threshold_) {
+    SetValue(path_ + kSubPathAnalogIn, String(new_analog_in).c_str());
+    analog_in_ = new_analog_in;
   }
 }
 

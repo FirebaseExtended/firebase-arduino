@@ -48,6 +48,7 @@ class Transcriber {
   std::unique_ptr<FirebaseStream> stream_;
 
   int digital_in_ = 0;
+  float analog_activation_threshold_ = 0.0f;
   float analog_in_ = 0.0f;
 
   int pin_digital_out_;
