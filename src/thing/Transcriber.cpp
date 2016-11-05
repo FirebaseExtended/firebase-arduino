@@ -1,5 +1,5 @@
-
 #include "thing/Transcriber.h"
+#include <ESP8266WiFi.h>
 
 namespace thing {
 namespace {
@@ -37,6 +37,10 @@ void Transcriber::SetValue(const std::string& path, const std::string& value) {
 }
 
 void Transcriber::Loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    return;
+  }
+
   // Read incoming data
   if (stream_->available()) {
     std::string event_str;
