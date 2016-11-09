@@ -1,0 +1,15 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ESP-07v2
+D ESP8266, ESP-07v2 module, 16 pin, 2mm, ceramic antenna
+K MODULE  ESP8266  ESP-8266
+F http://l0l.org.uk/2014/12/esp8266-modules-hardware-guide-gotta-catch-em-all/
+$ENDCMP
+#
+$CMP ESP-12
+D ESP8622 ESP-12 module, 16 pins, 2mm, PCB antenna
+K MODULE ESP8266 ESP-8266
+F http://l0l.org.uk/2014/12/esp8266-modules-hardware-guide-gotta-catch-em-all/
+$ENDCMP
+#
+#End Doc Library

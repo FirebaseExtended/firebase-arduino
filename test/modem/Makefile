@@ -50,7 +50,8 @@ CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
 TESTS = get-command_test set-command_test remove-command_test \
-	push-command_test begin-command_test stream-command_test
+	push-command_test begin-command_test stream-command_test \
+	serial-transceiver_test
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -76,7 +77,7 @@ test : $(TESTS)
 	for t in $(TESTS); do ./$$t; done;
 
 clean :
-	rm -f $(TESTS) gmock.a gmock_main.a arduino_mock_all.a arduino_json.a *.o
+	rm -f $(TESTS) gmock.a gmock_main.a arduino_mock_all.a *.o
 
 # Builds gmock.a and gmock_main.a.  These libraries contain both
 # Google Mock and Google Test.  A test should link with either gmock.a
@@ -122,45 +123,6 @@ ArduinoMockAll.o : $(ARDUINO_MOCK_SRCS_)
 arduino_mock_all.a : ArduinoMockAll.o
 	$(AR) $(ARFLAGS) $@ $^
 
-# Builds ArduinoJson
-ARDUINO_JSON_SRC_ = ../../src/third-party/arduino-json-5.2/src
-JsonObject.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/JsonObject.cpp
-
-JsonBuffer.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/JsonBuffer.cpp
-
-JsonVariant.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/JsonVariant.cpp
-
-JsonArray.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/JsonArray.cpp
-
-JsonParser.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/Internals/JsonParser.cpp
-
-Comments.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/Internals/Comments.cpp
-
-List.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/Internals/List.cpp
-
-Encoding.o : $(ARDUINO_JSON_SRC_)
-	$(CXX) $(CPPFLAGS) -I$(ARDUINO_JSON_SRC_) $(CXXFLAGS) -c \
-		$(ARDUINO_JSON_SRC_)/Internals/Encoding.cpp
-
-arduino_json.a : JsonObject.o JsonBuffer.o JsonVariant.o JsonArray.o \
-	JsonParser.o Comments.o List.o Encoding.o
-	$(AR) $(ARFLAGS) $@ $^
-
-
 # Builds shared objects.
 
 Firebase.o : $(SRC_ROOT)/Firebase.cpp
@@ -171,66 +133,78 @@ FirebaseHttpClient_dummy.o : $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dum
 
 # Builds tests.
 
-get-command.o : $(SRC_ROOT)/modem/get-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/get-command.cpp
+get-command.o : $(SRC_ROOT)/modem/db/get-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/get-command.cpp
 
 get-command_test.o : $(TEST_DIR)/get-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/get-command_test.cpp
 
 get-command_test : get-command_test.o Firebase.o FirebaseHttpClient_dummy.o get-command.o gmock_main.a \
-		arduino_mock_all.a arduino_json.a
+		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 
-set-command.o : $(SRC_ROOT)/modem/set-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/set-command.cpp
+set-command.o : $(SRC_ROOT)/modem/db/set-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/set-command.cpp
 
 set-command_test.o : $(TEST_DIR)/set-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/set-command_test.cpp
 
 set-command_test : set-command.o set-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
-		arduino_mock_all.a arduino_json.a
+		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 
-remove-command.o : $(SRC_ROOT)/modem/remove-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/remove-command.cpp
+remove-command.o : $(SRC_ROOT)/modem/db/remove-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/remove-command.cpp
 
 remove-command_test.o : $(TEST_DIR)/remove-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/remove-command_test.cpp
 
 remove-command_test : remove-command.o remove-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
-		arduino_mock_all.a arduino_json.a
+		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 
-push-command.o : $(SRC_ROOT)/modem/push-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/push-command.cpp
+push-command.o : $(SRC_ROOT)/modem/db/push-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/push-command.cpp
 
 push-command_test.o : $(TEST_DIR)/push-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/push-command_test.cpp
 
 push-command_test : push-command.o push-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
-		arduino_mock_all.a arduino_json.a
+		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-begin-command.o : $(SRC_ROOT)/modem/begin-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/begin-command.cpp
+
+begin-command.o : $(SRC_ROOT)/modem/db/begin-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/begin-command.cpp
 
 begin-command_test.o : $(TEST_DIR)/begin-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/begin-command_test.cpp
 
 begin-command_test : begin-command.o begin-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
-		arduino_mock_all.a arduino_json.a
+		arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-stream-command.o : $(SRC_ROOT)/modem/stream-command.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/stream-command.cpp
+
+stream-command.o : $(SRC_ROOT)/modem/db/stream-command.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/db/stream-command.cpp
 
 stream-command_test.o : $(TEST_DIR)/stream-command_test.cpp $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/stream-command_test.cpp
 
 stream-command_test : stream-command.o stream-command_test.o Firebase.o FirebaseHttpClient_dummy.o gmock_main.a \
-		arduino_mock_all.a arduino_json.a
+		arduino_mock_all.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+
+SerialTransceiver.o : $(SRC_ROOT)/modem/SerialTransceiver.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/modem/SerialTransceiver.cpp
+
+serial-transceiver_test.o : $(TEST_DIR)/serial-transceiver_test.cpp $(GMOCK_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/serial-transceiver_test.cpp
+
+serial-transceiver_test : SerialTransceiver.o serial-transceiver_test.o gmock_main.a arduino_mock_all.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 

@@ -1,6 +1,6 @@
 #include "Firebase.h"
 #include "gtest/gtest.h"
-#include "modem/commands.h"
+#include "modem/db/commands.h"
 #include "test/modem/mock-input-stream.h"
 #include "test/modem/mock-output-stream.h"
 #include "test/mock-firebase.h"
@@ -46,27 +46,30 @@ TEST_F(StreamCommandTest, streams) {
       .WillOnce(Return(path))
       .WillOnce(Return("END_STREAM"));
 
-  const String value("Test value");
+  const String data = "Test Value";
+  const String value(String("{\"path\" : \"/test/path\", \"data\" : \"") + data + "\"}");
   EXPECT_CALL(*stream_, available())
       .WillOnce(Return(true))
       .WillRepeatedly(Return(false));
 
   EXPECT_CALL(*stream_, read(_))
-      .WillOnce(Invoke([&value](String& json) {
-        json = value;
+      .WillOnce(Invoke([&value](std::string& json) {
+        json = value.c_str();
         return FirebaseStream::PUT;
       }));
 
   EXPECT_CALL(out_, print(String("+")))
       .WillOnce(Return(1));
-  EXPECT_CALL(out_, print(String("PUT ")))
+  EXPECT_CALL(out_, print(String("PUT")))
       .WillOnce(Return(1));
-  EXPECT_CALL(out_, println(String("/dummy/path")))
+  EXPECT_CALL(out_, print(String(" ")))
+      .WillOnce(Return(1));
+  EXPECT_CALL(out_, println(path))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out_, println(value.length()))
+  EXPECT_CALL(out_, println(data.length()))
       .WillOnce(Return(1));
-  EXPECT_CALL(out_, println(value))
+  EXPECT_CALL(out_, println(data))
       .WillOnce(Return(1));
 
   EXPECT_CALL(out_, println(String("+OK")))
@@ -84,7 +87,7 @@ TEST_F(StreamCommandTest, handlesError) {
   EXPECT_CALL(out_, print(String("-FAIL ")))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out_, println(error.message()))
+  EXPECT_CALL(out_, println(String(error.message().c_str())))
       .WillOnce(Return(1));
   ASSERT_FALSE(RunCommand(error));
 }

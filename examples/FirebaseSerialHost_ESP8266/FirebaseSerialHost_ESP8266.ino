@@ -18,23 +18,19 @@
 // A sample that will start our serial transciever listening on a software
 // port and allow debug over the main serial port.
 //
-// A suggested setup for testing this example would be a USB to TTL cable
-// with the green wire connected to pin 5 and the white wire connected to
-// pin 4 (on the huzzah feather esp8266).
-// First edit begin.txt and put in your host and secret.
-// Then run the following commands to setup the serial port in linux:
-// stty -F /dev/ttyUSB0 9600 raw -echo -echoe -echok
-// Then on one console do:
-// cat /dev/ttyUSB0 &
-// This console will now read all responses from the modem. Then do:
-// cat begin.txt > /dev/ttyUSB0
-// You should see +OK and you can now feed in the other example commmands.
+// A suggested setup for testing this example would be to connect a board 
+// with integrated usb and open a serial monitor to see debug messages. 
+// Then connect another board on pin4 and pin5 to communicate over serial.
 
 #include <SoftwareSerial.h>
 #include <ESP8266WiFi.h>
 
 #include <Firebase.h>
 #include <SerialTransceiver.h>
+
+// Set these to run example.
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
 
 SoftwareSerial data_serial(5 /*RX*/, 4/*TX*/);
 firebase::modem::SerialTransceiver transceiver;
@@ -43,7 +39,7 @@ void setup() {
   Serial.begin(9600);
 
   // connect to wifi.
-  WiFi.begin("SSID", "PASSWORD");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -59,6 +55,7 @@ void setup() {
     delay(5000);
   }
 
+  transceiver.RegisterProtocol(new DatabaseProtocol());
   transceiver.begin(&data_serial);
 }
 

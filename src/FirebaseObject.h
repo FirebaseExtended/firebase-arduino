@@ -17,25 +17,84 @@
 #ifndef FIREBASE_OBJECT_H
 #define FIREBASE_OBJECT_H
 
-#include "third-party/arduino-json-5.2/include/ArduinoJson.h"
+#define ARDUINOJSON_USE_ARDUINO_STRING 1
+#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
 
-#define FIREBASE_JSONBUFFER_SIZE 200
+#ifndef FIREBASE_JSONBUFFER_SIZE
+#define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(32)
+#endif // FIREBASE_JSONBUFFER_SIZE
 
+/**
+ * Represents value stored in firebase, may be a singular value (leaf node) or
+ * a tree structure.
+ */
 class FirebaseObject {
  public:
-  FirebaseObject(const String& data);
-  operator bool();
-  operator int();
-  operator float();
-  operator const String&();
-  operator const JsonObject&();
-  JsonObjectSubscript<const char*> operator[](const char* key);
-  JsonObjectSubscript<const String&> operator[](const String& key);
-  JsonVariant operator[](JsonObjectKey key) const;
+  /**
+   * Construct from json.
+   * \param data JSON formatted string.
+   */
+  FirebaseObject(const char* data);
+
+  /**
+   * Return the value as a boolean.
+   * \param optional path in the JSON object.
+   * \return result as a bool.
+   */
+  bool getBool(const String& path = "");
+
+  /**
+   * Return the value as an int.
+   * \param optional path in the JSON object.
+   * \return result as an integer.
+   */
+  int getInt(const String& path = "");
+
+  /**
+   * Return the value as a float.
+   * \param optional path in the JSON object.
+   * \return result as a float.
+   */
+  float getFloat(const String& path = "");
+
+  /**
+   * Return the value as a String.
+   * \param optional path in the JSON object.
+   * \return result as a String.
+   */
+  String getString(const String& path = "");
+
+  /**
+   * Return the value as a JsonVariant.
+   * \param optional path in the JSON object.
+   * \return result as a JsonVariant.
+   */
+  JsonVariant getJsonVariant(const String& path = "");
+
+
+  /**
+   *
+   * \return Whether there was an error decoding or accessing the JSON object.
+   */
+  bool success() const;
+
+  /**
+   *
+   * \return Whether there was an error decoding or accessing the JSON object.
+   */
+  bool failed() const;
+
+  /**
+   *
+   * \return Error message if failed() is true.
+   */
+  const String& error() const;
+
  private:
   String data_;
   StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE> buffer_;
-  JsonObject* json_;
+  JsonVariant json_;
+  String error_;
 };
 
 #endif // FIREBASE_OBJECT_H

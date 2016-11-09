@@ -11,30 +11,30 @@ class FirebaseHttpClientDummy : public FirebaseHttpClient {
   void setReuseConnection(bool UNUSED_ARG(reuse)) override {
   }
 
-  void begin(const String& UNUSED_ARG(url)) override {
+  void begin(const std::string& UNUSED_ARG(url)) override {
   }
 
-  void begin(const String& UNUSED_ARG(host), const String& UNUSED_ARG(path)) override {
+  void begin(const std::string& UNUSED_ARG(host), const std::string& UNUSED_ARG(path)) override {
   }
 
   void end() override {
   }
 
-  void addHeader(const String& UNUSED_ARG(name), const String& UNUSED_ARG(value)) override {
+  void addHeader(const std::string& UNUSED_ARG(name), const std::string& UNUSED_ARG(value)) override {
   }
 
   void collectHeaders(const char* UNUSED_ARG(header_keys[]), const int UNUSED_ARG(count)) override {
   }
 
-  String header(const String& UNUSED_ARG(name)) override {
+  std::string header(const std::string& UNUSED_ARG(name)) override {
     return "";
   }
 
-  int sendRequest(const String& UNUSED_ARG(method), const String& UNUSED_ARG(data)) override {
+  int sendRequest(const std::string& UNUSED_ARG(method), const std::string& UNUSED_ARG(data)) override {
     return 0;
   }
 
-  String getString() override {
+  std::string getString() override {
     return "";
   }
 
@@ -42,8 +42,8 @@ class FirebaseHttpClientDummy : public FirebaseHttpClient {
     return nullptr;
   }
 
-  String errorToString(int UNUSED_ARG(error_code)) override {
-     return String();
+  std::string errorToString(int UNUSED_ARG(error_code)) override {
+     return std::string();
   }
 };
 

@@ -1,13 +1,17 @@
 #include "SerialTransceiver.h"
 
+#include <algorithm>
+
 namespace firebase {
 namespace modem {
 
 void SerialTransceiver::begin(Stream* serial) {
-  std::unique_ptr<Firebase> fbase;
-
   in_.reset(new ArduinoInputStream(serial));
   out_.reset(new ArduinoOutputStream(serial));
+}
+
+void SerialTransceiver::RegisterProtocol(std::unique_ptr<SerialProtocol> protocol) {
+  protocols_.push_back(std::move(protocol));
 }
 
 void SerialTransceiver::loop() {
@@ -18,44 +22,23 @@ void SerialTransceiver::loop() {
     return;
   }
 
-  if (command_name == "BEGIN") {
-    BeginCommand command;
-    if (command.execute(command_name, in_.get(), out_.get())) {
-      fbase_ = std::move(command.firebase());
+  bool command_found = false;
+  for (auto& protocol : protocols_) {
+    const std::vector<String>& commands = protocol->commands();
+    if (std::binary_search(commands.begin(), commands.end(), command_name)) {
+      protocol->Execute(command_name, in_.get(), out_.get());
+      command_found = true;
+      break;
     }
-    return;
-  } else if (!fbase_) {
-    in_->drain();
-    out_->println("-FAIL Must call BEGIN before anything else.");
-    return;
   }
 
-  std::unique_ptr<Command> command = CreateCommand(command_name, fbase_.get());
-  if (!command) {
+  if (!command_found) {
     in_->drain();
     out_->println(String("-FAIL Invalid command '") + command_name + "'." );
     return;
   }
-
-  command->execute(command_name, in_.get(), out_.get());
 }
 
-std::unique_ptr<Command> SerialTransceiver::CreateCommand(const String& text,
-                                                          Firebase* fbase) {
-  std::unique_ptr<Command> command;
-  if (text == "GET") {
-    command.reset(new GetCommand(fbase));
-  } else if (text == "SET") {
-    command.reset(new SetCommand(fbase));
-  } else if (text == "PUSH") {
-    command.reset(new PushCommand(fbase));
-  } else if (text == "REMOVE") {
-    command.reset(new RemoveCommand(fbase));
-  } else if (text == "BEGIN_STREAM") {
-    command.reset(new StreamCommand(fbase));
-  }
-  return command;
-}
 
 }  // modem
 }  // firebase

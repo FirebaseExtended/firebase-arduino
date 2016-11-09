@@ -17,24 +17,98 @@
 #include "FirebaseObject.h"
 #include "gtest/gtest.h"
 
-TEST(FirebaseObjectTest, JsonLiteral) {
-  EXPECT_EQ(bool(FirebaseObject("true")), true);
-  EXPECT_EQ(bool(FirebaseObject("false")), false);
-  EXPECT_EQ(int(FirebaseObject("42")), 42);
-  EXPECT_EQ(float(FirebaseObject("43.0")), 43.0);
-  EXPECT_EQ(String(FirebaseObject("\"foo\"")), "foo");
+TEST(FirebaseObjectTest, GetBool) {
+  FirebaseObject obj("true");
+  EXPECT_EQ(true, obj.getBool());
+  EXPECT_TRUE(obj.success());
+  EXPECT_FALSE(obj.failed());
+  EXPECT_EQ(obj.error(), "");
 }
 
-TEST(FirebaseObjectTest, JsonObject) {
+TEST(FirebaseObjectTest, GetInt) {
   {
-    const JsonObject& obj = FirebaseObject("{\"foo\":\"bar\"}");
-    String foo = obj["foo"];
-    EXPECT_EQ(foo, "bar");
+    FirebaseObject obj("42");
+    EXPECT_EQ(42, obj.getInt());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
   }
   {
-    String foo = FirebaseObject("{\"foo\":\"bar\"}")["foo"];
-    EXPECT_EQ(foo, "bar");
+    FirebaseObject obj("42.0");
+    EXPECT_EQ(42, obj.getInt());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
   }
+}
+
+TEST(FirebaseObjectTest, GetFloat) {
+  {
+    FirebaseObject obj("43.0");
+    EXPECT_EQ(43, obj.getFloat());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+  {
+    FirebaseObject obj("43");
+    EXPECT_EQ(43, obj.getFloat());
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+}
+
+TEST(FirebaseObjectTest, GetString) {
+  FirebaseObject obj("\"foo\"");
+  EXPECT_EQ("foo", obj.getString());
+  EXPECT_TRUE(obj.success());
+  EXPECT_FALSE(obj.failed());
+  EXPECT_EQ(obj.error(), "");
+}
+
+TEST(FirebaseObjectTest, GetObject) {
+  {
+    FirebaseObject obj("{\"foo\":\"bar\"}");
+    EXPECT_EQ(obj.getString("/foo"), "bar");
+    EXPECT_EQ(obj.getString("foo"), "bar");
+  }
+  {
+    FirebaseObject obj("{\"foo\": {\"bar\": \"hop\"}}");
+    EXPECT_EQ(obj.getString("/foo/bar"), "hop");
+  }
+}
+
+TEST(FirebaseObjectTest, GetIntFailure) {
+  FirebaseObject obj("{\"foo\":\"bar\"}");
+  EXPECT_EQ(obj.getInt(), 0);
+  EXPECT_FALSE(obj.success());
+  EXPECT_TRUE(obj.failed());
+  EXPECT_EQ(obj.error(), "failed to convert to number");
+}
+
+TEST(FirebaseObjectTest, GetFloatFailure) {
+  FirebaseObject obj("{\"foo\":\"bar\"}");
+  EXPECT_EQ(obj.getFloat(), 0);
+  EXPECT_FALSE(obj.success());
+  EXPECT_TRUE(obj.failed());
+  EXPECT_EQ(obj.error(), "failed to convert to number");
+}
+
+TEST(FirebaseObjectTest, GetBoolFailure) {
+  FirebaseObject obj("{\"foo\":\"bar\"}");
+  EXPECT_EQ(obj.getBool(), 0);
+  EXPECT_FALSE(obj.success());
+  EXPECT_TRUE(obj.failed());
+  EXPECT_EQ(obj.error(), "failed to convert to bool");
+}
+
+TEST(FirebaseObjectTest, GetStringFailure) {
+  FirebaseObject obj("{\"foo\":\"bar\"}");
+  EXPECT_EQ(obj.getString(), "");
+  EXPECT_FALSE(obj.success());
+  EXPECT_TRUE(obj.failed());
+  EXPECT_EQ(obj.error(), "failed to convert to string");
 }
 
 int main(int argc, char **argv) {

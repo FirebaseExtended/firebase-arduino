@@ -1,25 +1,24 @@
-# firebase-arduino
+# FirebaseArduino
 
+[![Build Status](https://travis-ci.org/googlesamples/firebase-arduino.svg?branch=master)](https://travis-ci.org/googlesamples/firebase-arduino)
 [![Join the chat at https://gitter.im/googlesamples/firebase-arduino](https://badges.gitter.im/googlesamples/firebase-arduino.svg)](https://gitter.im/googlesamples/firebase-arduino?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Documentation Status](https://readthedocs.org/projects/firebase-arduino/badge/?version=latest)](http://firebase-arduino.readthedocs.io/en/latest/?badge=latest)
 
-This sample shows how to call [Firebase](https://www.firebase.com/) from the [ESP8266 Arduino core](https://github.com/esp8266/Arduino).
+This repo contains a collection of samples and an Arduino library that show how to call the [Firebase](https://www.firebase.com/) API from the [ESP8266 Arduino core](https://github.com/esp8266/Arduino).
 
-## Requirements
+The Arduino library is [under heavy development](https://github.com/googlesamples/firebase-arduino/issues), **experimental**, **unversioned** and its API is **not stable**.
 
-- 1 [ESP8266 Arduino board](https://www.adafruit.com/products/2821).
-- [Arduino 1.6.7](https://www.arduino.cc/en/Main/Software)
-- [ESP8266 Arduino board definition](https://github.com/esp8266/Arduino#installing-with-boards-manager)
+## Samples
 
-## Setup
+- [FirebaseDemo](https://github.com/googlesamples/firebase-arduino/tree/master/examples/FirebaseDemo_ESP8266) - shows the FirebaseArduino API methods.
+- [FirebaseRoom](https://github.com/googlesamples/firebase-arduino/tree/master/examples/FirebaseRoom_ESP8266) - shows how to push sensor data and trigger actuator from Firebase.
+- [FirebaseStream](https://github.com/googlesamples/firebase-arduino/tree/master/examples/FirebaseStream_ESP8266) - shows the FirebaseArduino streaming API.
+- [FirebaseNeoPixel](https://github.com/googlesamples/firebase-arduino/tree/master/examples/FirebaseNeoPixel_ESP8266) - shows how to control an array of LEDs from a Firebase web app. 
 
-- Clone the repo in your Arduino libraries directory.
-- open the `FirebasePush_ESP8266` example.
-- Replace `SSID` `PASSWORD` `example.firebaseio.com` `secret_or_token` `child_node` placeholders.
+## Documentation
 
-## Run
+- [FirebaseArduino API Reference](http://firebase-arduino.readthedocs.io/)
 
-- Open firebase dashboard.
-- Power up the arduino board.
-- Notice the new entry.
+## Disclaimer
 
 *This is not an official Google product*.

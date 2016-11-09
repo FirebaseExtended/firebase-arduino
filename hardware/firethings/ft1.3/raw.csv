@@ -1,0 +1,8 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"U2";"firethings_mini";1;"Firethings_Mini";;;
+2;"R1,R2,R3,R4,R5";"R_1206_HandSoldering";5;"10K";;;
+3;"G***";"firebase-logo";1;"LOGO";;;
+4;"U1";"ESP-12-SMD";1;"ESP-12";;;
+5;"U3";"LED_WS2812B-PLCC4";1;"INFO";;;
+6;"SW1";"SW_SPST_EVQP7A";1;"RESET";;;
+7;"SW2";"SW_SPST_EVQP7A";1;"CTRL";;;

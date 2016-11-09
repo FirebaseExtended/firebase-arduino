@@ -17,16 +17,17 @@
 // FirebaseStream_ESP8266 is a sample that stream bitcoin price from a
 // public Firebase and optionally display them on a OLED i2c screen.
 
-#include <Firebase.h>
+#include <FirebaseArduino.h>
 #include <ESP8266WiFi.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+// Set these to run example.
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
+
 #define OLED_RESET 3
 Adafruit_SSD1306 display(OLED_RESET);
-
-Firebase fbase("publicdata-cryptocurrency.firebaseio.com");
-FirebaseStream stream;
 
 void setup() {
   Serial.begin(9600);
@@ -35,7 +36,7 @@ void setup() {
   display.display();
 
   // connect to wifi.
-  WiFi.begin("SSID", "PASSWORD");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -44,30 +45,31 @@ void setup() {
   Serial.println();
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
-  stream = fbase.stream("/bitcoin/last");  
+  
+  Firebase.begin("publicdata-cryptocurrency.firebaseio.com");
+  Firebase.stream("/bitcoin/last");  
 }
 
 
 void loop() {
-  if (stream.error()) {
+  if (Firebase.failed()) {
     Serial.println("streaming error");
-    Serial.println(stream.error().message());
+    Serial.println(Firebase.error());
   }
   
-  if (stream.available()) {
-     String event;
-     auto type = stream.read(event);
+  if (Firebase.available()) {
+     FirebaseObject event = Firebase.readEvent();
+     String eventType = event.getString("type");
+     eventType.toLowerCase();
+     
      Serial.print("event: ");
-     Serial.println(type);
-     if (type == FirebaseStream::Event::PUT) {
-       StaticJsonBuffer<200> buf;
+     Serial.println(eventType);
+     if (eventType == "put") {
        Serial.print("data: ");
-       Serial.println(event);
-       JsonObject& json = buf.parseObject((char*)event.c_str());
-       String path = json["path"];
-       float data = json["data"];
+       Serial.println(event.getString("data"));
+       String path = event.getString("path");
+       String data = event.getString("data");
 
-       // TODO(proppy): parse JSON object.
        display.clearDisplay();
        display.setTextSize(2);
        display.setTextColor(WHITE);
