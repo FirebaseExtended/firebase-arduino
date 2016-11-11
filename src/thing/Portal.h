@@ -14,10 +14,13 @@ class Portal {
   void Loop();
   void NotifyOnUpdate(std::function<void(const Config& config)> cb);
 
+  void SetDebugHandler(std::function<void(const char* message)> handler);
+
  private:
   Config config_;
   ESP8266WebServer server_;
   std::function<void(const Config& config)> callback_;
+  std::function<void(const char* message)> debug_;
 
 };
 
