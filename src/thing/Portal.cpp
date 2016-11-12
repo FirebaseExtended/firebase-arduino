@@ -9,7 +9,7 @@ Portal::Portal(const Config& config)
       debug_([](const char*){}) {}
 
 void Portal::SetDebugHandler(std::function<void(const char* message)> handler) {
-  debug_ = handler;
+  debug_ = std::move(handler);
 }
 
 void Portal::Start() {
@@ -150,6 +150,8 @@ void Portal::Start() {
       entry["ssid"] = WiFi.SSID(i);
       entry["rssi"] = WiFi.RSSI(i);
     }
+    // Free station info from memory.
+    WiFi.scanDelete();
 
     String buffer;
     data.printTo(buffer);
