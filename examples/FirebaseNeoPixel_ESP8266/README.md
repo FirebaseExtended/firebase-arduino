@@ -54,7 +54,7 @@ firebase deploy
 
 ## Play
 
-1. Go to the firebase hosting URL: `firebase-name.firebaseapp.com`.
+1. Go to the firebase hosting URL: `yourproject.firebaseapp.com`.
 1. Initialize the pixel data by copying / pasting example pixel data from the page and clicking **Update**.
 1. Use the color picker and paint the NeoPixel table.
 1. Watch the NeoPixel being updated to the matching color.
