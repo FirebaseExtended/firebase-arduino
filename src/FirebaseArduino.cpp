@@ -39,7 +39,7 @@ String FirebaseArduino::pushBool(const String& path, bool value) {
 }
 
 String FirebaseArduino::pushString(const String& path, const String& value) {
-  JsonVariant json(value);
+  JsonVariant json(value.c_str());
   return push(path, json);
 }
 
