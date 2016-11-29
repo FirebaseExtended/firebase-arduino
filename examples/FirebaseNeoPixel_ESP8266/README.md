@@ -40,8 +40,8 @@ FirebaseNeoPixel is a sample that shows how to set pixel data from a Firebase we
 1. Select the upload speed `Upload Speed > 115200`
 1. Click `Sketch > Upload`
 1. Open `public/index.html` with a text editor
-1. Replace `yourproject.firebaseio.com` with the `Firebase Hostname` used for configuring the Arduino project.
-1. Replace `yourproject.firebaseapp.com` with the `Firebase Domain` from hosting tab of the Firebase Console.
+1. Replace `example.firebaseio.com` with the `Firebase Hostname` used for configuring the Arduino project.
+1. Replace `example.firebaseapp.com` with the `Firebase Domain` from hosting tab of the Firebase Console.
 1. Replace `secret_or_token` with the `Firebase Secret` used to configure the Arduino project.
 1. Deploy the `public` directory to Firebase hosting
 ```
@@ -54,7 +54,7 @@ firebase deploy
 
 ## Play
 
-1. Go to the firebase hosting URL: `yourproject.firebaseapp.com`.
+1. Go to the firebase hosting URL: `example.firebaseapp.com`.
 1. Initialize the pixel data by copying / pasting example pixel data from the page and clicking **Update**.
 1. Use the color picker and paint the NeoPixel table.
 1. Watch the NeoPixel being updated to the matching color.
