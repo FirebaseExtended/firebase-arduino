@@ -1,6 +1,6 @@
 # FirebaseNeoPixel
 
-FirebaseNeoPixel is a sample that shows how to set pixel data from Firebase web app.
+FirebaseNeoPixel is a sample that shows how to set pixel data from a Firebase web app.
 
 ## Hardware setup
 
@@ -25,23 +25,24 @@ FirebaseNeoPixel is a sample that shows how to set pixel data from Firebase web 
 ## Configuration
 
 1. Start Arduino
-1. Open `File > Examples > FirebaseArduino > FirebaseRoom_ESP8266`
-1. In `FirebaseRoom_ESP8266`: Replace `WIFI_SSID` and `WIFI_PASSWORD` with WiFi credentials
+1. Open `File > Examples > FirebaseArduino > FirebaseNeoPixel_ESP8266`
+1. In `FirebaseNeoPixel_ESP8266`: Replace `WIFI_SSID` and `WIFI_PASSWORD` with WiFi credentials
 1. Go to https://firebase.google.com/console/ and create a new Firebase Project
 1. Go to `Database`
 1. Copy the `Database hostname` (Database URL without `https://` and trailing `/`)
-1. In `FirebaseRoom_ESP8266`: replace `FIREBASE_HOST` with the `Database Hostname`
+1. In `FirebaseNeoPixel_ESP8266`: replace `FIREBASE_HOST` with the `Database Hostname`
 1. Go to  `⚙ > Project Settings > Database > Database secrets`
 1. Click `Firebase Secrets > Show`
 1. Copy the `Database Secret`
-1. In `FirebaseRoom_ESP8266`:  Replace `FIREBASE_AUTH` with `Database Secret`
+1. In `FirebaseNeoPixel_ESP8266`:  Replace `FIREBASE_AUTH` with `Database Secret`
 1. Select the board `Board > ESP8266 Modules > NodeMCU 1.0`
 1. Select the serial port  `Port > /dev/tty...`
 1. Select the upload speed `Upload Speed > 115200`
 1. Click `Sketch > Upload`
 1. Open `public/index.html` with a text editor
-1. Replace `example.firebaseio.com` with the `Firebase Hostname` from step `2.`
-1. Replace `secret_or_token` with `Firebase Secret` from step `5.`
+1. Replace `example.firebaseio.com` with the `Firebase Hostname` used for configuring the Arduino project.
+1. Replace `example.firebaseapp.com` with the `Firebase Domain` from hosting tab of the Firebase Console.
+1. Replace `secret_or_token` with the `Firebase Secret` used to configure the Arduino project.
 1. Deploy the `public` directory to Firebase hosting
 ```
 npm install -g firebase-tools bower
@@ -53,6 +54,7 @@ firebase deploy
 
 ## Play
 
-1. Go to the firebase hosting URL: `firebase-name.firebaseapp.com`
-1. Use the color picker and paint the NeoPixel table
-1. Watch the NeoPixel being updated to the matching color
+1. Go to the firebase hosting URL: `example.firebaseapp.com`.
+1. Initialize the pixel data by copying / pasting example pixel data from the page and clicking **Update**.
+1. Use the color picker and paint the NeoPixel table.
+1. Watch the NeoPixel being updated to the matching color.

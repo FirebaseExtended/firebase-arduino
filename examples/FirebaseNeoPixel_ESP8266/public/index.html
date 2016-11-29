@@ -16,15 +16,16 @@
 -->
 <html>
 <head>
-  <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="./bower_components/polymer-color-picker/polymer-color-picker.html">
 </head>
 <script>
-  // TODO: Needs security.
-  var firebaseUrl = 'https://example.firebaseio.com';
-  var firebaseSecret = secret_or_token;
+  // NOTICE: Retrieve these values from the Firebase console to run the sample.
+  var firebaseDb = 'example.firebaseio.com';
+  var firebaseAuthDomain = 'example.firebaseapp.com';
+  var firebaseApiKey = 'token_or_secret';
 </script>
 <body>
 <h2>Paint Demo</h3>
@@ -113,32 +114,31 @@ Proppy
 }
 </pre>
 
-  <script>
-    // Firebase reference and authentication stored globally.
-    // TODO: Encapsualte into objects, move to separate JS file
-    var pixelData = new Firebase(firebaseUrl);
-    pixelData.authWithCustomToken(firebaseSecret, function(error, result){
-      if (error) {
-        console.log("Authentication Failed!", error);
-      } else {
-        console.log("Authenticated successfully with payload:", result.auth);
-        console.log("Auth expires at:", new Date(result.expires * 1000));
-        refreshData();
-      } });
+<script>
+    // Initialize Firebase
+    var config = {
+      apiKey: firebaseApiKey,
+      authDomain: firebaseAuthDomain,
+      databaseURL: "https://" + firebaseDb,
+      storageBucket: '', // not used
+      messagingSenderId: '', // not used
+    };
+    firebase.initializeApp(config);
+    var pixelData = firebase.database();
 
     /**
      * Explicitly refreshes data from Firebase.
      * TODO: replace with streaming function that listens for events / updates.
      */
     function refreshData() {
-        pixelData.once("value", function(snapshot) {
+        pixelData.ref('/rgbdata/').once("value", function(snapshot) {
           console.log(snapshot.val());
-          document.getElementById('pixelData').value = JSON.stringify(snapshot.val()['rgbdata'], 2);
+          document.getElementById('pixelData').value = JSON.stringify(snapshot.val(), 2);
 
           for (var i=0; i < 32; i++){
             var qString = 'pixel' + i;
-            if (snapshot.val()['rgbdata'][qString]){
-              var hexString = parseInt(snapshot.val()['rgbdata'][qString]).toString(16);
+            if (snapshot.val()[qString]){
+              var hexString = parseInt(snapshot.val()[qString]).toString(16);
               var zeroPrepend = 6 - hexString.length;
               for (var j=0; j < zeroPrepend; j++){
                 hexString = '0' + hexString;
@@ -161,7 +161,7 @@ Proppy
      * the Firebase database. Note that this is best for debugging.
      */
     function pushData() {
-      pixelData.set({'rgbdata': JSON.parse(document.getElementById('pixelData').value)});
+      pixelData.ref('/rgbdata/').set(JSON.parse(document.getElementById('pixelData').value));
       refreshData();
     }
 
@@ -199,7 +199,7 @@ Proppy
      */
     function updatePixel(pixelId){
       var path = 'rgbdata/' + pixelId;
-      var pixelRef = pixelData.child(path);
+      var pixelRef = pixelData.ref(path);
       var colorHex =
           rgb2hex(document.getElementById(pixelId).style.backgroundColor)
           .split('#')[1];
