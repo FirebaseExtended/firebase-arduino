@@ -19,6 +19,8 @@ Config kDefaultConfig = {
   D0, // config mode button
 };
 
+const char kStorageFilename[] = "fthing.cfg";
+
 }  // namespace
 
 FireThing::FireThing() : debug_([](const char*) {}) {}
@@ -79,11 +81,11 @@ bool FireThing::ReadConfigFromStorage(Config* config) {
     return false;
   }
 
-  if (!SPIFFS.exists("fthing.cfg")) {
+  if (!SPIFFS.exists(kStorageFilename)) {
     debug_("Config not found, using default.");
     *config = kDefaultConfig;
   } else {
-    File cfg = SPIFFS.open("fthing.cfg", "r");
+    File cfg = SPIFFS.open(kStorageFilename, "r");
     if (!cfg) {
       debug_("Failed to open config for read");
       SPIFFS.end();
@@ -103,7 +105,7 @@ bool FireThing::WriteConfigToStorage(const Config& config) {
     return false;
   }
 
-  File cfg = SPIFFS.open("fthing.cfg", "w");
+  File cfg = SPIFFS.open(kStorageFilename, "w");
   if (!cfg) {
     debug_("Failed to open config for write");
     SPIFFS.end();
