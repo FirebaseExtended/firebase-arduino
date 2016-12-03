@@ -23,6 +23,9 @@
 #include <ESP8266WiFi.h>
 #include <Thing.h>
 
+// No config variables.
+// Everything is handled through portal.
+
 thing::FireThing fire_thing;
 
 void setup() {
