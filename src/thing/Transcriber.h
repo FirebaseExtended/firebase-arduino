@@ -29,9 +29,12 @@ namespace thing {
 
 class Transcriber {
  public:
-  Transcriber(const Config& config);
+  Transcriber();
+  void Setup(const Config& config);
   void UpdateConfig(const Config& config);
   void Loop();
+
+  void SetDebugHandler(std::function<void(const char* message)> handler);
 
  private:
   void Init(const Config& config);
@@ -57,6 +60,9 @@ class Transcriber {
   int pin_analog_in_;
 
   std::string path_;
+
+  bool connected_ = false;
+  std::function<void(const char* message)> debug_;
 };
 
 };  // thing

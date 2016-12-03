@@ -8,9 +8,9 @@ namespace thing {
 
 class Portal {
  public:
-  Portal(const Config& config);
+  Portal();
 
-  void Start();
+  void Start(const Config& config);
   void Loop();
   void NotifyOnUpdate(std::function<void(const Config& config)> cb);
 

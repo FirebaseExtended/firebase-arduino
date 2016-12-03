@@ -10,7 +10,9 @@ namespace {
 }  // namespace
 
 
-Transcriber::Transcriber(const Config& config) {
+Transcriber::Transcriber() : debug_([](const char*) {}) {}
+
+void Transcriber::Setup(const Config& config) {
   Init(config);
 }
 
@@ -21,13 +23,12 @@ void Transcriber::UpdateConfig(const Config& config) {
 void Transcriber::Init(const Config& config) {
   path_ = config.path;
   analog_activation_threshold_ = config.analog_activation_threshold;
-  pin_digital_out_ = config.pin_digital_out;
-  pin_digital_in_ = config.pin_digital_in;
-  pin_analog_out_ = config.pin_analog_out;
-  pin_analog_in_ = config.pin_analog_in;
+  pin_digital_out_ = config.pins.digital_out;
+  pin_digital_in_ = config.pins.digital_in;
+  pin_analog_out_ = config.pins.analog_out;
+  pin_analog_in_ = config.pins.analog_in;
 
   fbase_.reset(new Firebase(config.host, config.auth));
-  stream_ = fbase_->streamPtr(path_);
 }
 
 void Transcriber::SetValue(const std::string& path, const std::string& value) {
@@ -38,7 +39,15 @@ void Transcriber::SetValue(const std::string& path, const std::string& value) {
 
 void Transcriber::Loop() {
   if (WiFi.status() != WL_CONNECTED) {
+    connected_ = false;
     return;
+  }
+
+  // If first time connecting start stream.
+  if (!connected_) {
+    debug_("Transcriber connected.");
+    stream_ = fbase_->streamPtr(path_);
+    connected_ = true;
   }
 
   // Read incoming data
@@ -96,6 +105,10 @@ void Transcriber::ProcessIncrementalUpdate(const FirebaseObject& update) {
       analogWrite(pin_analog_out_, analog_out);
     }
   }
+}
+
+void Transcriber::SetDebugHandler(std::function<void(const char* message)> debug) {
+  debug_ = debug;
 }
 
 }  // thing
