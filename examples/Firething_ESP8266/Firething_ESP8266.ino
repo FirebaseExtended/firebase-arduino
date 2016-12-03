@@ -38,10 +38,6 @@ void setup() {
 void loop() {
   fire_thing.Loop();
 
-  if (i++ % 10) {
-   Serial.print(".");
-  }else {
-    Serial.println(".");
-  }
-  delay(100);
+  Serial.println(".");
+  delay(250);
 }
