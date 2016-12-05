@@ -26,7 +26,7 @@ void Config::SerializeToJson(Stream* output, std::function<void(int size)> handl
   root.printTo(*output);
 }
 
-void Config::ReadFromJson(const char* string) {
+void Config::ReadFromJson(char* string) {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(string);
   host = root["host"].asString();

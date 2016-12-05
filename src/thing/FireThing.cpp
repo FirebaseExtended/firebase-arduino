@@ -91,7 +91,9 @@ bool FireThing::ReadConfigFromStorage(Config* config) {
       SPIFFS.end();
       return false;
     }
-    config->ReadFromJson(cfg.readString().c_str());
+    char buffer[cfg.size()];
+    cfg.readBytes(buffer, cfg.size());
+    config->ReadFromJson(buffer);
     debug_("Config read from disk.");
   }
 

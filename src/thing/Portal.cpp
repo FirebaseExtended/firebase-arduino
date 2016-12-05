@@ -125,8 +125,16 @@ void Portal::Start(const Config& config) {
         debug_("Config updated called without param.");
         return;
       }
-      String config = server_.arg("config");
-      config_.ReadFromJson(config.c_str());
+
+      char* buffer;
+      { // Scoped to free String memory.
+        String config = server_.arg("config");
+        buffer = (char*)malloc(config.length+1());
+        memcpy(buffer, config.c_str(), config.length()+1);
+      }
+      config_.ReadFromJson(buffer);
+      free(buffer);
+
       callback_(config_);
       server_.send(200, "text/plain", "");
       debug_("config updated.");

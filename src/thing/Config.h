@@ -31,7 +31,9 @@ struct Config {
   Pins pins;
 
   void SerializeToJson(Stream* output, std::function<void(int size)> handle_size) const;
-  void ReadFromJson(const char* string);
+
+  // We need a mutable char array here, otherwise a copy will be made.
+  void ReadFromJson(char* string);
 };
 
 }  // namespace thing
