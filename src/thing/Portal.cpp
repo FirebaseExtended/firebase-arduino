@@ -129,7 +129,7 @@ void Portal::Start(const Config& config) {
       char* buffer;
       { // Scoped to free String memory.
         String config = server_.arg("config");
-        buffer = (char*)malloc(config.length+1());
+        buffer = (char*)malloc(config.length()+1);
         memcpy(buffer, config.c_str(), config.length()+1);
       }
       config_.ReadFromJson(buffer);
