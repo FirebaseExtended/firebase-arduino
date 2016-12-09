@@ -3,16 +3,16 @@
 
 namespace thing {
 
-Portal::Portal(const Config& config)
-    : config_(config),
-      callback_([](const Config&){}),
+Portal::Portal()
+    : callback_([](const Config&){}),
       debug_([](const char*){}) {}
 
 void Portal::SetDebugHandler(std::function<void(const char* message)> handler) {
   debug_ = std::move(handler);
 }
 
-void Portal::Start() {
+void Portal::Start(const Config& config) {
+  config_ = config;
   server_.on("/", [&] () {
     static const PROGMEM char page[] = R"(
       <head>
@@ -109,32 +109,32 @@ void Portal::Start() {
   });
 
   server_.on("/config", [&] () {
-    DynamicJsonBuffer jsonBuffer;
     if (server_.method() == HTTP_GET) {
-      JsonObject& root = jsonBuffer.createObject();
-      root["host"] = config_.host.c_str();
-      root["auth"] = config_.auth.c_str();
-      root["path"] = config_.path.c_str();
-      root["wifi_ssid"] = config_.wifi_ssid.c_str();
-      root["wifi_key"] = config_.wifi_key.c_str();
+      auto client = server_.client();
+      config_.SerializeToJson(&client,
+                              [this](int size) {
+                                server_.setContentLength(size);
+                                server_.send(200, "application/json");
+                              });
 
-      String buffer;
-      root.printTo(buffer);
-      server_.send(200, "application/json", buffer);
       debug_("config retrieved");
     } else if (server_.method() == HTTP_POST) {
+      DynamicJsonBuffer jsonBuffer;
       if (!server_.hasArg("config")) {
         server_.send(500, "text/plain", "Missing config.\r\n");
         debug_("Config updated called without param.");
         return;
       }
-      String config = server_.arg("config");
-      JsonObject& root = jsonBuffer.parseObject(config.c_str());
-      config_.host = root["host"].asString();
-      config_.auth = root["auth"].asString();
-      config_.path = root["path"].asString();
-      config_.wifi_ssid = root["wifi_ssid"].asString();
-      config_.wifi_key = root["wifi_key"].asString();
+
+      char* buffer;
+      { // Scoped to free String memory.
+        String config = server_.arg("config");
+        buffer = (char*)malloc(config.length()+1);
+        memcpy(buffer, config.c_str(), config.length()+1);
+      }
+      config_.ReadFromJson(buffer);
+      free(buffer);
+
       callback_(config_);
       server_.send(200, "text/plain", "");
       debug_("config updated.");
