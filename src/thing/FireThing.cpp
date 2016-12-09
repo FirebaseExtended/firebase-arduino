@@ -93,7 +93,7 @@ bool FireThing::ReadConfigFromStorage(Config* config) {
     }
     char buffer[cfg.size()];
     cfg.readBytes(buffer, cfg.size());
-    config->ReadFromJson(buffer);
+    *config = ConfigJsonSerializer::Deserialize(buffer);
     debug_("Config read from disk.");
   }
 
@@ -113,7 +113,8 @@ bool FireThing::WriteConfigToStorage(const Config& config) {
     SPIFFS.end();
     return false;
   }
-  config.SerializeToJson(&cfg, [](int){});
+  ConfigJsonSerializer serializer(config);
+  serializer.SerializeTo(&cfg);
 
   SPIFFS.end();
   return true;
