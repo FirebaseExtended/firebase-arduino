@@ -35,13 +35,18 @@ struct Config {
 class ConfigJsonSerializer {
  public:
   ConfigJsonSerializer(const Config& config);
-  int content_length() const;
-  void SerializeTo(Stream* output);
 
   // We need a mutable char array here, otherwise a copy will be made.
-  static Config Deserialize(char* string);
+  ConfigJsonSerializer(char* config);
+
+  int content_length() const;
+  void SerializeTo(Stream* output);
+  void DeserializeTo(Config* config);
+
  private:
-  DynamicJsonBuffer json_;
+  JsonObject& root() {return *root_;}
+
+  DynamicJsonBuffer buffer_;
   JsonObject* root_;
 };
 

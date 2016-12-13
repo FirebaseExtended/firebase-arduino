@@ -132,8 +132,11 @@ void Portal::Start(const Config& config) {
         buffer = (char*)malloc(config.length()+1);
         memcpy(buffer, config.c_str(), config.length()+1);
       }
-      config_ = ConfigJsonSerializer::Deserialize(buffer);
-      free(buffer);
+      { // Scoped because serializer is invalid after free().
+        ConfigJsonSerializer serializer(buffer);
+        serializer.DeserializeTo(&config_);
+        free(buffer);
+      }
 
       callback_(config_);
       server_.send(200, "text/plain", "");

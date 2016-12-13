@@ -19,6 +19,9 @@ class FireThing {
 
   void SetDebugHandler(std::function<void(const char* message)> debug);
 
+  // Called to delete the currently stored config from the filesystem.
+  bool DeleteStoredConfig();
+
  private:
   bool ReadConfigFromStorage(Config* config);
   bool WriteConfigToStorage(const Config& config);
