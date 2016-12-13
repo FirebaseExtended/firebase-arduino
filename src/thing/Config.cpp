@@ -33,7 +33,8 @@ int ConfigJsonSerializer::content_length() const {
 
 void ConfigJsonSerializer::SerializeTo(Stream* output) {
   // TODO: We "should" be able to have the root_ print directly to the stream
-  // however it currently closes the connection half way through.
+  // however it currently closes the connection half way through. Fixing this
+  // would save ~250B of memory during serialization.
   String buffer;
   root_->printTo(buffer);
   output->print(buffer);
