@@ -12,11 +12,14 @@ Config kDefaultConfig = {
   "",  // wifi ssid
   "",  // wifi key
   0.1,  // analog activation threshold
+  2, // wifi connect attempts
+  {
   D1,  // digital in
   BUILTIN_LED,  // digital out
   A0,  // analog in
   D1, // analog out
   D0, // config mode button
+  }
 };
 
 const char kStorageFilename[] = "fthing.cfg";
@@ -32,8 +35,7 @@ bool FireThing::Setup() {
     return false;
   }
   SetPinModes(config);
-
-  if (digitalRead(config.pins.config_mode_button) || !ConnectToWiFi(config)) {
+  if (digitalRead(config.pins.config_mode_button) == HIGH || !ConnectToWiFi(config)) {
     wifi_.StartAP();
   }
 
@@ -54,9 +56,20 @@ void FireThing::Loop() {
   transcriber_.Loop();
 }
 
+bool FireThing::DeleteStoredConfig() {
+  if (!SPIFFS.begin()) {
+    debug_("Failed to mount FS.");
+    return false;
+  }
+  bool success = SPIFFS.remove(kStorageFilename);
+  SPIFFS.end();
+  return success;
+}
+
 bool FireThing::ConnectToWiFi(const Config& config) {
   debug_("Connecting to wifi:");
   debug_(config.wifi_ssid.c_str());
+  // TODO we should probably not print the key to serial.
   debug_(config.wifi_key.c_str());
   if (wifi_.Connect(config.wifi_ssid, config.wifi_key)) {
     debug_("Connected");
@@ -93,7 +106,8 @@ bool FireThing::ReadConfigFromStorage(Config* config) {
     }
     char buffer[cfg.size()];
     cfg.readBytes(buffer, cfg.size());
-    config->ReadFromJson(buffer);
+    ConfigJsonSerializer serializer(buffer);
+    serializer.DeserializeTo(config);
     debug_("Config read from disk.");
   }
 
@@ -113,7 +127,8 @@ bool FireThing::WriteConfigToStorage(const Config& config) {
     SPIFFS.end();
     return false;
   }
-  config.SerializeToJson(&cfg, [](int){});
+  ConfigJsonSerializer serializer(config);
+  serializer.SerializeTo(&cfg);
 
   SPIFFS.end();
   return true;

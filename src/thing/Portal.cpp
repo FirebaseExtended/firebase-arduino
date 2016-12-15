@@ -111,11 +111,11 @@ void Portal::Start(const Config& config) {
   server_.on("/config", [&] () {
     if (server_.method() == HTTP_GET) {
       auto client = server_.client();
-      config_.SerializeToJson(&client,
-                              [this](int size) {
-                                server_.setContentLength(size);
-                                server_.send(200, "application/json");
-                              });
+
+      ConfigJsonSerializer serializer(config_);
+      server_.setContentLength(serializer.content_length());
+      server_.send(200, "application/json");
+      serializer.SerializeTo(&client);
 
       debug_("config retrieved");
     } else if (server_.method() == HTTP_POST) {
@@ -132,8 +132,11 @@ void Portal::Start(const Config& config) {
         buffer = (char*)malloc(config.length()+1);
         memcpy(buffer, config.c_str(), config.length()+1);
       }
-      config_.ReadFromJson(buffer);
-      free(buffer);
+      { // Scoped because serializer is invalid after free().
+        ConfigJsonSerializer serializer(buffer);
+        serializer.DeserializeTo(&config_);
+        free(buffer);
+      }
 
       callback_(config_);
       server_.send(200, "text/plain", "");

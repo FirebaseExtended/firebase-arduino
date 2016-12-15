@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include <string>
 #include <functional>
+#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
 
 namespace thing {
 
@@ -29,11 +30,24 @@ struct Config {
   int wifi_connect_attempts;
 
   Pins pins;
+};
 
-  void SerializeToJson(Stream* output, std::function<void(int size)> handle_size) const;
+class ConfigJsonSerializer {
+ public:
+  ConfigJsonSerializer(const Config& config);
 
   // We need a mutable char array here, otherwise a copy will be made.
-  void ReadFromJson(char* string);
+  ConfigJsonSerializer(char* config);
+
+  int content_length() const;
+  void SerializeTo(Stream* output);
+  void DeserializeTo(Config* config);
+
+ private:
+  JsonObject& root() {return *root_;}
+
+  DynamicJsonBuffer buffer_;
+  JsonObject* root_;
 };
 
 }  // namespace thing
