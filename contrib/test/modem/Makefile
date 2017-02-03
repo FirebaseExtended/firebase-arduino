@@ -30,8 +30,10 @@ ARDUINO_MOCK_DIR = ../arduino-mock/
 # Where to find user code.
 TEST_DIR = .
 
-PROJECT_ROOT = ../../
+FIREBASE_ROOT = ../../..
+PROJECT_ROOT = ../..
 SRC_ROOT = $(PROJECT_ROOT)/src
+FIREBASE_SRC_ROOT = $(FIREBASE_ROOT)/src
 
 # Flags passed to the preprocessor.
 # Set Google Test and Google Mock's header directories as system
@@ -42,6 +44,7 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include \
 		-I$(ARDUINO_MOCK_DIR)/include/ \
 		-I$(PROJECT_ROOT)/test/dummies \
 		-I$(PROJECT_ROOT)/src \
+		-I$(FIREBASE_ROOT)/src \
 		-I$(PROJECT_ROOT)
 
 # Flags passed to the C++ compiler.
@@ -125,8 +128,8 @@ arduino_mock_all.a : ArduinoMockAll.o
 
 # Builds shared objects.
 
-Firebase.o : $(SRC_ROOT)/Firebase.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRC_ROOT)/Firebase.cpp
+Firebase.o : $(FIREBASE_SRC_ROOT)/Firebase.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(FIREBASE_SRC_ROOT)/Firebase.cpp
 
 FirebaseHttpClient_dummy.o : $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
