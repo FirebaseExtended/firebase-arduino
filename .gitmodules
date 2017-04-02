@@ -1,6 +1,116 @@
-[submodule "contrib/test/googletest"]
-	path = contrib/test/googletest
-	url = https://github.com/google/googletest.git
-[submodule "contrib/test/arduino-mock"]
-	path = contrib/test/arduino-mock
-	url = https://github.com/ed7coyne/arduino-mock.git
+'''
+  -  <?php
+  -(&+)
+  -  install node.js
+  -  npm
+  -  command:"npm install -g firebase-tools",
+  -  Specify the Firebase project id with "-P<project_id> flag
+  -  init = create a "firebase.json" config. "Admin."
+  -  Initialize the SDK: with this code snipper:
+  -  var admin = require("firebase-admin");
+  -  var serviceAccount = require("path/to/serviceAccountKey.json");
+  -  admin.initializeApp({Firebase-Realtime-Database-Opertion-Types})
+  -  credential: admin.credential.cert(serviceAccount)
+  -  database URL: "https://<DATABASE_NAME>.firebaseio.com
+  -  });
+  -  Retrieving Data | Firebase
+  -  "https://firebase.google.com/docs/database/rest/retieve-data
+  -  "GET requests to it's URL by "Firebase-Realtime-Database "Rules" and it is supported by all request types..
+  -  Licensed under Creative Commons Attribution 3.0 
+  - Licensed Code samples
+  -  Sets the "database page" size
+  -  void, SetTranslationSuccessfull()
+  -  void, setVersion(int version)  
+  - Sets the database
+  -  SQLiteDatabase | Android Developers
+  -  https://developer.android.com/.../database/sqlite/SQLiteDatabase.html
+  -  Add Firebase to your iOS Project | Firebase
+  - " https://firebase.google.com/docs/ios/setup"
+  -  pod'Firebase/AdMob',
+  -  AdMob.pod'Firebase/Messaging.CloudMessaging/Notification',
+  -  pod'Firebase/Database', 'Realtime Database',
+  -  pod'Firebase/Invites/..'GOOGLE DATA TABLE'
+  -  "https://developer.android.com/things/training/.../firebase-db.html",
+  -  Syncronize with Firebase |Android Things
+  -  Namespace: database | Firebase
+  -  ,"https://firebase.google.com/docs/retrieve/admin/.../admin.database",
+  -  Firebase Authentication(Firebase
+  -  https://firebase.google.com/docs/authenticat/SDK/to/Firebase-Realtime-Database),
+  -  "Page", "Firebase Realtime Database Opertion Types | Firebase
+  -  "Firebase-Realtime-Database | Firebase
+  -  Firebase Database REST API User
+  -  Authentication | Firebase
+  -  https://firebase.google.com/docs/retrieve/rest/database/user-auth
+  -  An Instance of "Database Reference":
+  -  Read and Write Data on Android | Firebase
+  -  https://firebase.google.com/docs/database/android/read-and-write
+  -  Release Notes | Firebase
+  - https://firebase.google.com/support/releases Changelog SDK
+  -  GitHUB - Google/leveldb:LevelDB is a test key-value
+  -  string library
+  -  https://github.com/gradle/leveldb
+  -  Git rebase page the "Fill'
+  - iOS bundle ID
+  -  "com.Firebase-Realtime-Database-Operation-Types.ios
+  -  <key>PLIST_VERSION</key>
+  -  <string>1</string>
+  -  <key>Bundle_ID</key>
+  -  <string> com.Firebase-Realtime-Database-Operation-Types.ios</string>
+  -  <key>PROJECT_ID</key>
+  -  <string>fir-realtime-database-ba6a0.appspot.com</string>
+  -  <key>IS_ADS_ENABLED</key>
+  -  </true>
+  -  <key>IS_ANALYICS_ENABLER</key>
+  -  <false/>
+  -  <key>IS_APIINVITE_ENABLED</key>
+  -  <false/>
+  -  <key>IS_GCM_ENABLED</key>
+  -  <true>
+  -  <key>GOOGLE_APP_ID</key>
+  -  <string>1:862330019516:ios:6d43fc7bf4704991</strinf>
+  -  <key>DATABASE_URL</key>
+  -  <stribf>https://firebase-realtime-database-bq6a0.firebaseio.com/</string>
+  -  </dict>
+  -  </plist>
+  
+  -  # import Firebase moduleto your "UIApplicationDelegate" subclasses:
+  -  In Swift:   import Firebase
+  -  In objective-C:  @import Firebase  
+  -  config. "firApp" share into your "Applications.application:didFinishLaunchingWithOptions: method:
+  -  in objective-C:  // Use Firebase library to configure APIs [FirApp configure]
+  -  in Swift:  // Use Firebase library to configure APIs  "FirApp.configure()"
+  - 
+  
+  "https://
+  -  
+  -  
+
+*  [submodule "node.js/test/googletest"]
+*  	path = node.js/test/googletest
+*  	url = https://github.com/google/googletest.git
+*  [submodule "node.js/test/-g/firebase-tools"]
+*    <?php
+*    -  //**
+ *   
+*  	path = "node.js",
+*  	url = https://github.com/0072016/firebase-tools.git
+
+
+
+
+
+
+//  @0072016
+//  https://firebase.google.com
+// https://developer.android.com
+//  foo.gradle@gmail.com
+//  "2017-04-02T08:46:13Z -0700"
+// ?>
+
+*/
+
+
+
+
+
+
