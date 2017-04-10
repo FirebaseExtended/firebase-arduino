@@ -15,12 +15,44 @@
 #define USE_ESP_ARDUINO_CORE_2_0_0
 #endif
 
+// Firebase now returns `Connection: close` after REST streaming redirection.
+//
+// Override the built-in ESP8266HTTPClient to *not* close the
+// connection if forceReuse it set to `true`.
+class ForceReuseHTTPClient : public HTTPClient {
+public:
+  void end() {
+    if(connected()) {
+        if(_tcp->available() > 0) {
+            DEBUG_HTTPCLIENT("[HTTP-Client][end] still data in buffer (%d), clean up.\n", _tcp->available());
+            while(_tcp->available() > 0) {
+                _tcp->read();
+            }
+        }
+        if(_reuse && (_canReuse || _forceReuse)) {
+            DEBUG_HTTPCLIENT("[HTTP-Client][end] tcp keep open for reuse\n");
+        } else {
+            DEBUG_HTTPCLIENT("[HTTP-Client][end] tcp stop\n");
+            _tcp->stop();
+        }
+    } else {
+        DEBUG_HTTPCLIENT("[HTTP-Client][end] tcp is closed\n");
+    }    
+  }
+  void forceReuse(bool forceReuse) {
+    _forceReuse = forceReuse;
+  }
+protected:
+  bool _forceReuse = false;
+};
+
 class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
  public:
   FirebaseHttpClientEsp8266() {}
 
-  void setReuseConnection(bool reuse) override {
+  void setReuseConnection(bool reuse) override {    
     http_.setReuse(reuse);
+    http_.forceReuse(reuse);
   }
 
   void begin(const std::string& url) override {
@@ -64,7 +96,7 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
   }
 
  private:
-  HTTPClient http_;
+  ForceReuseHTTPClient http_;
 };
 
 FirebaseHttpClient* FirebaseHttpClient::create() {
