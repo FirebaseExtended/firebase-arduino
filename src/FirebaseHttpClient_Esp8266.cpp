@@ -50,7 +50,7 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
  public:
   FirebaseHttpClientEsp8266() {}
 
-  void setReuseConnection(bool reuse) override {    
+  void setReuseConnection(bool reuse) override {
     http_.setReuse(reuse);
     http_.forceReuse(reuse);
   }
