@@ -25,7 +25,7 @@ std::string makeFirebaseURL(const std::string& path, const std::string& auth) {
   }
   url += path + ".json";
   if (auth.length() > 0) {
-    url += "?auth=" + auth;
+    url += "?api_key=" + auth;    
   }
   return url;
 }
@@ -174,7 +174,7 @@ FirebasePush::FirebasePush(const std::string& host, const std::string& auth,
   }
 }
 
-// FirebasePush
+// FirebaseRemove
 FirebaseRemove::FirebaseRemove(const std::string& host, const std::string& auth,
                                const std::string& path,
                                FirebaseHttpClient* http)
