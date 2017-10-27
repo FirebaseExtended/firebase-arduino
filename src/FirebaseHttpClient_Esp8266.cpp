@@ -22,22 +22,10 @@
 class ForceReuseHTTPClient : public HTTPClient {
 public:
   void end() {
-    if(connected()) {
-        if(_tcp->available() > 0) {
-            DEBUG_HTTPCLIENT("[HTTP-Client][end] still data in buffer (%d), clean up.\n", _tcp->available());
-            while(_tcp->available() > 0) {
-                _tcp->read();
-            }
-        }
-        if(_reuse && (_canReuse || _forceReuse)) {
-            DEBUG_HTTPCLIENT("[HTTP-Client][end] tcp keep open for reuse\n");
-        } else {
-            DEBUG_HTTPCLIENT("[HTTP-Client][end] tcp stop\n");
-            _tcp->stop();
-        }
-    } else {
-        DEBUG_HTTPCLIENT("[HTTP-Client][end] tcp is closed\n");
-    }    
+    if (_forceReuse) {
+      _canReuse = true;
+    }
+    HTTPClient::end();
   }
   void forceReuse(bool forceReuse) {
     _forceReuse = forceReuse;
