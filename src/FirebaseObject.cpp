@@ -54,11 +54,16 @@ float FirebaseObject::getFloat(const String& path) const {
 
 String FirebaseObject::getString(const String& path) const {
   JsonVariant variant = getJsonVariant(path);
-  if (!variant.is<const char *>()) {
+  if (!variant.is<const char *>() || isNullString(path)) {
     error_ = "failed to convert to string";
     return "";
   }
   return static_cast<const char*>(variant);
+}
+
+bool FirebaseObject::isNullString(const String& path) const {
+  JsonVariant variant = getJsonVariant(path);
+  return variant.is<const char *>() && variant.asString() == NULL;
 }
 
 JsonVariant FirebaseObject::getJsonVariant(const String& path) const {

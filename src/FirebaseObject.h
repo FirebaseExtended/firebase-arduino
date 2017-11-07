@@ -44,6 +44,14 @@ class FirebaseObject {
   bool getBool(const String& path = "") const;
 
   /**
+   * Returns true if specified path is NULL string.
+   * Useful to detect tree deletions.
+   * \param optional path in the JSON object.
+   * \return result as a bool.
+   */
+  bool isNullString(const String& path = "") const;
+
+  /**
    * Return the value as an int.
    * \param optional path in the JSON object.
    * \return result as an integer.
