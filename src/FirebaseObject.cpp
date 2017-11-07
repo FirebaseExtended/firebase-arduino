@@ -19,7 +19,8 @@
 // We need to make a copy of data here, even though it may be large.
 // It will need to be long lived.
 FirebaseObject::FirebaseObject(const char* data) : data_{data} {
-  json_ = buffer_.parse(&data_[0]);
+  buffer_.reset(new StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE>);
+  json_ = buffer_.get()->parse(&data_[0]);
   // TODO(proppy): find a way to check decoding error, tricky because
   // ArduinoJson doesn't surface error for variant parsing.
   // See: https://github.com/bblanchon/ArduinoJson/issues/279
@@ -83,7 +84,7 @@ JsonVariant FirebaseObject::getJsonVariant(const String& path) const {
     // make `start` a C string.
     *p = 0;
     // return json variant at `start`.
-    json = json.asObject().get(start);
+    json = json.asObject().get<JsonVariant>(start);
     // advance to next path element.
     start = p + 1;
   }

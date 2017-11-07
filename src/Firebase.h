@@ -22,10 +22,11 @@
 
 #include <Arduino.h>
 #include <memory>
+#include <ArduinoJson.h>
+
 #include "FirebaseHttpClient.h"
 #include "FirebaseError.h"
-#define ARDUINOJSON_USE_ARDUINO_STRING 1
-#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
+#include "FirebaseObject.h"
 
 class FirebaseGet;
 class FirebaseSet;
@@ -42,30 +43,24 @@ class Firebase {
 
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const std::string& path);
-  virtual std::unique_ptr<FirebaseGet> getPtr(const std::string& path);
-
   // Set json encoded `value` at `path`.
   FirebaseSet set(const std::string& path, const std::string& json);
-  virtual std::unique_ptr<FirebaseSet> setPtr(const std::string& path, const std::string& json);
 
   // Add new json encoded `value` to list at `path`.
   FirebasePush push(const std::string& path, const std::string& json);
-  virtual std::unique_ptr<FirebasePush> pushPtr(const std::string& path, const std::string& json);
 
   // Delete value at `path`.
   FirebaseRemove remove(const std::string& path);
-  virtual std::unique_ptr<FirebaseRemove> removePtr(const std::string& path);
 
   // Start a stream of events that affect value at `path`.
   FirebaseStream stream(const std::string& path);
-  virtual std::unique_ptr<FirebaseStream> streamPtr(const std::string& path);
 
  protected:
   // Used for testing.
   Firebase() {}
 
  private:
-  std::unique_ptr<FirebaseHttpClient> http_;
+  std::shared_ptr<FirebaseHttpClient> http_;
   std::string host_;
   std::string auth_;
 };
@@ -76,7 +71,7 @@ class FirebaseCall {
   FirebaseCall(const std::string& host, const std::string& auth,
                const char* method, const std::string& path,
                const std::string& data = "",
-               FirebaseHttpClient* http = NULL);
+               const std::shared_ptr<FirebaseHttpClient> http = NULL);
   virtual ~FirebaseCall();
 
   virtual const FirebaseError& error() const {
@@ -90,17 +85,17 @@ class FirebaseCall {
   const JsonObject& json();
 
  protected:
-  FirebaseHttpClient* http_;
+  const std::shared_ptr<FirebaseHttpClient> http_;
   FirebaseError error_;
   std::string response_;
-  DynamicJsonBuffer buffer_;
+  std::shared_ptr<StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE>> buffer_;
 };
 
 class FirebaseGet : public FirebaseCall {
  public:
   FirebaseGet() {}
   FirebaseGet(const std::string& host, const std::string& auth,
-              const std::string& path, FirebaseHttpClient* http = NULL);
+              const std::string& path, const std::shared_ptr<FirebaseHttpClient> http = NULL);
 
  private:
   std::string json_;
@@ -110,7 +105,7 @@ class FirebaseSet: public FirebaseCall {
  public:
   FirebaseSet() {}
   FirebaseSet(const std::string& host, const std::string& auth,
-              const std::string& path, const std::string& value, FirebaseHttpClient* http = NULL);
+              const std::string& path, const std::string& value, const std::shared_ptr<FirebaseHttpClient> http = NULL);
 
 
  private:
@@ -121,7 +116,7 @@ class FirebasePush : public FirebaseCall {
  public:
   FirebasePush() {}
   FirebasePush(const std::string& host, const std::string& auth,
-               const std::string& path, const std::string& value, FirebaseHttpClient* http = NULL);
+               const std::string& path, const std::string& value, const std::shared_ptr<FirebaseHttpClient> http = NULL);
   virtual ~FirebasePush() {}
 
   virtual const std::string& name() const {
@@ -136,7 +131,7 @@ class FirebaseRemove : public FirebaseCall {
  public:
   FirebaseRemove() {}
   FirebaseRemove(const std::string& host, const std::string& auth,
-                 const std::string& path, FirebaseHttpClient* http = NULL);
+                 const std::string& path, const std::shared_ptr<FirebaseHttpClient> http = NULL);
 };
 
 
@@ -144,7 +139,7 @@ class FirebaseStream : public FirebaseCall {
  public:
   FirebaseStream() {}
   FirebaseStream(const std::string& host, const std::string& auth,
-                 const std::string& path, FirebaseHttpClient* http = NULL);
+                 const std::string& path, const std::shared_ptr<FirebaseHttpClient> http = NULL);
   virtual ~FirebaseStream() {}
 
   // Return if there is any event available to read.
