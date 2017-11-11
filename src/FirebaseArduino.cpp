@@ -131,6 +131,9 @@ void FirebaseArduino::stream(const String& path) {
 }
 
 bool FirebaseArduino::available() {
+  if (http_->getStreamPtr() == nullptr) {
+    return false;
+  }
   return http_->getStreamPtr()->available();
 }
 

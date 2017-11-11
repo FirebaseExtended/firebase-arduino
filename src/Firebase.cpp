@@ -92,6 +92,15 @@ FirebaseCall::FirebaseCall(const std::string& host, const std::string& auth,
                            const char* method, const std::string& path,
                            const std::string& data, FirebaseHttpClient* http) : http_(http) {
   std::string path_with_auth = makeFirebaseURL(path, auth);
+  if ((method == "STREAM") && (path == http->getStreamingPath())){
+    // already streaming requested path.
+    return;
+  }
+  if (http_->isStreaming()) {
+    // closing streaming connection.
+    http_->setReuseConnection(false);
+    http_->end();
+  }
   http_->setReuseConnection(true);
   http_->begin(host, path_with_auth);
 
@@ -130,11 +139,14 @@ FirebaseCall::FirebaseCall(const std::string& host, const std::string& auth,
   // if not streaming.
   if (!followRedirect) {
     response_ = http_->getString();
+    http_->setStreaming("");
+  } else {
+    http_->setStreaming(path);
   }
 }
 
 FirebaseCall::~FirebaseCall() {
-  if (http_) {
+  if (http_ && !http_->isStreaming()) {
     http_->end();
   }
 }
@@ -189,6 +201,9 @@ FirebaseStream::FirebaseStream(const std::string& host, const std::string& auth,
 }
 
 bool FirebaseStream::available() {
+  if (http_->getStreamPtr() == nullptr) {
+    return false;
+  }
   return http_->getStreamPtr()->available();
 }
 
