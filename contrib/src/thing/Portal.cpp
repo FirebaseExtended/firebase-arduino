@@ -1,5 +1,5 @@
 #include "thing/Portal.h"
-#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
+#include <ArduinoJson.h>
 
 namespace thing {
 
