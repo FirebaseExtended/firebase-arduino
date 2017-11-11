@@ -16,6 +16,7 @@
 
 #include "FirebaseObject.h"
 #include "gtest/gtest.h"
+#include "WString.h"
 
 TEST(FirebaseObjectTest, GetBool) {
   FirebaseObject obj("true");
