@@ -23,7 +23,7 @@ install:
 - ( cd ${ARDUINO_ESP8266_ROOT}/tools && python get.py )
 before_script:
 - mkdir -p ${ARDUINO_HOME}/libraries
-- ( cd ${ARDUINO_HOME}/libraries && ln -s ${TRAVIS_BUILD_DIR} firebase-arduino && ln -s ${TRAVIS_BUILD_DIR}/src/third-party/arduino-json-5.6.7 ArduinoJson && ln -s ${HOME}/SoftwareSerial ./ && ln -s ${HOME}/Adafruit_NeoPixel ./ && ln -s ${HOME}/Adafruit-GFX-Library ./ && ln -s ${HOME}/Adafruit_SSD1306 ./ && ln -s ${HOME}/ArduinoJson ./)
+- ( cd ${ARDUINO_HOME}/libraries && ln -s ${TRAVIS_BUILD_DIR} firebase-arduino && ln -s ${HOME}/SoftwareSerial ./ && ln -s ${HOME}/Adafruit_NeoPixel ./ && ln -s ${HOME}/Adafruit-GFX-Library ./ && ln -s ${HOME}/Adafruit_SSD1306 ./ && ln -s ${HOME}/ArduinoJson ./)
 script:
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseDemo_ESP8266/FirebaseDemo_ESP8266.ino
 - ${ARDUINO_ROOT}/arduino-builder -verbose  -hardware ${ARDUINO_ROOT}/hardware/ -tools ${ARDUINO_ESP8266_ROOT}/tools/ -tools ${ARDUINO_ROOT}/tools-builder/ -fqbn esp8266com:esp8266:nodemcuv2 -libraries ${ARDUINO_HOME}/libraries/ -prefs build.flash_ld=${ARDUINO_ESP8266_ROOT}/tools/sdk/ld/eagle.flash.4m.ld -prefs build.flash_freq=40 -prefs build.flash_size=4M examples/FirebaseNeoPixel_ESP8266/FirebaseNeoPixel_ESP8266.ino
