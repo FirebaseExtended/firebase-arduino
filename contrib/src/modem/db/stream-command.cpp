@@ -32,7 +32,7 @@ bool StreamCommand::execute(const String& command,
       out->print(FirebaseStream::EventToName(event).c_str());
       out->print(" ");
       const auto& object = buffer.parseObject(json.c_str());
-      String data = object["data"];
+      String data = object["data"].asString();
       out->println(object["path"].asString());
       out->println(data.length());
       out->println(data);

@@ -20,6 +20,7 @@
 #ifndef firebase_h
 #define firebase_h
 
+#include "WString.h"
 #include <Arduino.h>
 #include <memory>
 #include <ArduinoJson.h>
