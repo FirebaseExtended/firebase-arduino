@@ -46,21 +46,47 @@ FirebaseGet Firebase::get(const std::string& path) {
   return FirebaseGet(host_, auth_, path, http_);
 }
 
+unique_ptr<FirebaseGet> Firebase::getPtr(const std::string& path) {		
+  return unique_ptr<FirebaseGet>(new FirebaseGet(host_, auth_, path, http_));
+}
+
 FirebaseSet Firebase::set(const std::string& path, const std::string& value) {
   return FirebaseSet(host_, auth_, path, value, http_);
+}
+
+unique_ptr<FirebaseSet> Firebase::setPtr(const std::string& path,		
+                                         const std::string& value) {		
+  return unique_ptr<FirebaseSet>(		
+      new FirebaseSet(host_, auth_, path, value, http_));		
 }
 
 FirebasePush Firebase::push(const std::string& path, const std::string& value) {
   return FirebasePush(host_, auth_, path, value, http_);
 }
 
+unique_ptr<FirebasePush> Firebase::pushPtr(const std::string& path, const std::string& value) {		
+  return unique_ptr<FirebasePush>(		
+      new FirebasePush(host_, auth_, path, value, http_));		
+}
+
 FirebaseRemove Firebase::remove(const std::string& path) {
   return FirebaseRemove(host_, auth_, path, http_);
+}
+
+unique_ptr<FirebaseRemove> Firebase::removePtr(const std::string& path) {		
+  return unique_ptr<FirebaseRemove>(		
+      new FirebaseRemove(host_, auth_, path, http_));		
 }
 
 FirebaseStream Firebase::stream(const std::string& path) {
   // TODO: create new client dedicated to stream.
   return FirebaseStream(host_, auth_, path, http_);
+}
+
+unique_ptr<FirebaseStream> Firebase::streamPtr(const std::string& path) {		
+  // TODO: create new client dedicated to stream.		
+  return unique_ptr<FirebaseStream>(		
+      new FirebaseStream(host_, auth_, path, http_));		
 }
 
 // FirebaseCall

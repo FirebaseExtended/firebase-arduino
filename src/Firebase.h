@@ -43,17 +43,23 @@ class Firebase {
 
   // Fetch json encoded `value` at `path`.
   FirebaseGet get(const std::string& path);
+  virtual std::unique_ptr<FirebaseGet> getPtr(const std::string& path);
+
   // Set json encoded `value` at `path`.
   FirebaseSet set(const std::string& path, const std::string& json);
+  virtual std::unique_ptr<FirebaseSet> setPtr(const std::string& path, const std::string& json);
 
   // Add new json encoded `value` to list at `path`.
   FirebasePush push(const std::string& path, const std::string& json);
+  virtual std::unique_ptr<FirebasePush> pushPtr(const std::string& path, const std::string& json);
 
   // Delete value at `path`.
   FirebaseRemove remove(const std::string& path);
+  virtual std::unique_ptr<FirebaseRemove> removePtr(const std::string& path);
 
   // Start a stream of events that affect value at `path`.
   FirebaseStream stream(const std::string& path);
+  virtual std::unique_ptr<FirebaseStream> streamPtr(const std::string& path);
 
  protected:
   // Used for testing.
