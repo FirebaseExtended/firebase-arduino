@@ -17,14 +17,18 @@
 #ifndef FIREBASE_OBJECT_H
 #define FIREBASE_OBJECT_H
 
-#include <ArduinoJson.h>
+
+#include "WString.h"
 #include <memory>
+
+#include <ArduinoJson.h>
+
 
 #ifndef FIREBASE_JSONBUFFER_SIZE
 #define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(32)
 #endif // FIREBASE_JSONBUFFER_SIZE
 
-using std::shared_ptr;
+
 
 /**
  * Represents value stored in firebase, may be a singular value (leaf node) or
