@@ -193,11 +193,15 @@ FirebaseStream::FirebaseStream(const std::string& host, const std::string& auth,
 }
 
 bool FirebaseStream::available() {
-  return http_->getStreamPtr()->available();
+  auto client = http_->getStreamPtr();
+  return (client == nullptr) ? false : client->available();
 }
 
 FirebaseStream::Event FirebaseStream::read(std::string& event) {
   auto client = http_->getStreamPtr();
+  if (client == nullptr) { 
+      return Event();
+  } 
   Event type;
   std::string typeStr = client->readStringUntil('\n').substring(7).c_str();
   if (typeStr == "put") {

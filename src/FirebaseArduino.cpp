@@ -131,11 +131,15 @@ void FirebaseArduino::stream(const String& path) {
 }
 
 bool FirebaseArduino::available() {
-  return http_->getStreamPtr()->available();
+  auto client = http_->getStreamPtr();
+  return (client == nullptr) ? false : client->available();
 }
 
 FirebaseObject FirebaseArduino::readEvent() {
   auto client = http_->getStreamPtr();
+  if (client == nullptr) { 
+      return FirebaseObject("");
+  } 
   String type = client->readStringUntil('\n').substring(7);;
   String event = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
