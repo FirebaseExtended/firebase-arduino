@@ -58,7 +58,7 @@ sensor data to Firebase, and trigger actuators from Firebase.
 - Add Grove modules to modules interactions.
 - Connect other Grove modules to the room and submit new [PRs](https://github.com/googlesamples/firebase-arduino/pulls)
 - Reduce the number of Firebase API calls using `FirebaseObject` or `FirebaseStream`.
-- Watch or star the [GitHub repo repo](https://github.com/googlesamples/firebase-arduino)
+- Watch or star the [GitHub repo](https://github.com/googlesamples/firebase-arduino)
 - Give [feedback](https://gitter.im/googlesamples/firebase-arduino)
 - Report [bugs](https://github.com/googlesamples/firebase-arduino/issues/new)
 - [Fork](https://github.com/googlesamples/firebase-arduino#fork-destination-box) and [contribute](https://github.com/googlesamples/firebase-arduino/blob/master/CONTRIBUTING.md)
