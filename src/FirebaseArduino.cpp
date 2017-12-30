@@ -75,6 +75,13 @@ void FirebaseArduino::set(const String& path, const JsonVariant& value) {
   error_ = set.error();
 }
 
+void FirebaseArduino::update(const String& path, const JsonVariant& value) {
+  String buf;
+  value.printTo(buf);
+  auto set = FirebaseUpdate(host_, auth_, path.c_str(), buf.c_str(), http_.get());
+  error_ = set.error();
+}
+
 FirebaseObject FirebaseArduino::get(const String& path) {
   auto get = FirebaseGet(host_, auth_, path.c_str(), http_.get());
   error_ = get.error();
@@ -157,6 +164,10 @@ bool FirebaseArduino::failed() {
 
 const String& FirebaseArduino::error() {
   return error_.message().c_str();
+}
+
+const FirebaseError& FirebaseArduino::errorObj() {
+  return error_;
 }
 
 FirebaseArduino Firebase;

@@ -92,7 +92,7 @@ FirebaseCall::FirebaseCall(const std::string& host, const std::string& auth,
                            const char* method, const std::string& path,
                            const std::string& data, FirebaseHttpClient* http) : http_(http) {
   std::string path_with_auth = makeFirebaseURL(path, auth);
-  if ((method == "STREAM") && (path == http->getStreamingPath())){
+  if (strcmp(method, "STREAM") == 0 && (path == http->getStreamingPath())){
     // already streaming requested path.
     return;
   }
@@ -170,6 +170,17 @@ FirebaseSet::FirebaseSet(const std::string& host, const std::string& auth,
        const std::string& path, const std::string& value,
        FirebaseHttpClient* http)
   : FirebaseCall(host, auth, "PUT", path, value, http) {
+  if (!error()) {
+    // TODO: parse json
+    json_ = response();
+  }
+}
+
+// FirebaseUpdate
+FirebaseUpdate::FirebaseUpdate(const std::string& host, const std::string& auth,
+       const std::string& path, const std::string& value,
+       FirebaseHttpClient* http)
+  : FirebaseCall(host, auth, "PATCH", path, value, http) {
   if (!error()) {
     // TODO: parse json
     json_ = response();

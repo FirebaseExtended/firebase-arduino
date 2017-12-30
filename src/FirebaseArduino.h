@@ -134,6 +134,14 @@ class FirebaseArduino {
    */
   void set(const String& path, const JsonVariant& value);
 
+  /**
+   * Writes the JSON data to the node located at path.
+   * Equivalent to the REST API's PATCH.
+   * You should check success() after calling.
+   * \param path The path inside of your db to the node you wish to update.
+   * \param value JSON data that you wish to write.
+   */
+  void update(const String& path, const JsonVariant& value);
 
   /**
    * Gets the integer value located at path.
@@ -222,6 +230,7 @@ class FirebaseArduino {
    * \return Error message from last command if failed() is true.
    */
   const String& error();
+  const FirebaseError &errorObj();
  private:
   std::string host_;
   std::string auth_;
