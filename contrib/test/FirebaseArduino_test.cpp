@@ -17,6 +17,7 @@
 #include "FirebaseObject.h"
 #include "gtest/gtest.h"
 
+
 TEST(FirebaseObjectTest, GetBool) {
   FirebaseObject obj("true");
   EXPECT_EQ(true, obj.getBool());

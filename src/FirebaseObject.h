@@ -17,84 +17,98 @@
 #ifndef FIREBASE_OBJECT_H
 #define FIREBASE_OBJECT_H
 
-#define ARDUINOJSON_USE_ARDUINO_STRING 1
-#include "third-party/arduino-json-5.6.7/include/ArduinoJson.h"
+
+#include "WString.h"
+#include <memory>
+
+#include <ArduinoJson.h>
+
 
 #ifndef FIREBASE_JSONBUFFER_SIZE
 #define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(32)
 #endif // FIREBASE_JSONBUFFER_SIZE
+
+
 
 /**
  * Represents value stored in firebase, may be a singular value (leaf node) or
  * a tree structure.
  */
 class FirebaseObject {
- public:
-  /**
+  public:
+    /**
    * Construct from json.
    * \param data JSON formatted string.
-   */
-  FirebaseObject(const char* data);
+    */
+    FirebaseObject(const char* data);
 
-  /**
+    /**
    * Return the value as a boolean.
    * \param optional path in the JSON object.
    * \return result as a bool.
-   */
-  bool getBool(const String& path = "") const;
+    */
+    bool getBool(const String& path = "") const;
 
-  /**
+    /**
+   * Returns true if specified path is NULL string.
+   * Useful to detect tree deletions.
+   * \param optional path in the JSON object.
+   * \return result as a bool.
+    */
+    bool isNullString(const String& path = "") const;
+
+    /**
    * Return the value as an int.
    * \param optional path in the JSON object.
    * \return result as an integer.
-   */
-  int getInt(const String& path = "") const;
+    */
+    int getInt(const String& path = "") const;
 
-  /**
+    /**
    * Return the value as a float.
    * \param optional path in the JSON object.
    * \return result as a float.
-   */
-  float getFloat(const String& path = "") const;
+    */
+    float getFloat(const String& path = "") const;
 
-  /**
+    /**
    * Return the value as a String.
    * \param optional path in the JSON object.
    * \return result as a String.
-   */
-  String getString(const String& path = "") const;
+    */
+    String getString(const String& path = "") const;
 
-  /**
+    /**
    * Return the value as a JsonVariant.
    * \param optional path in the JSON object.
    * \return result as a JsonVariant.
-   */
-  JsonVariant getJsonVariant(const String& path = "") const;
+    */
+    JsonVariant getJsonVariant(const String& path = "") const;
 
 
-  /**
+    /**
    *
    * \return Whether there was an error decoding or accessing the JSON object.
-   */
-  bool success() const;
+    */
+    bool success() const;
 
-  /**
+    /**
    *
    * \return Whether there was an error decoding or accessing the JSON object.
-   */
-  bool failed() const;
+    */
+    bool failed() const;
 
-  /**
+    /**
    *
    * \return Error message if failed() is true.
-   */
-  const String& error() const;
+    */
+    const String& error() const;
 
- private:
-  String data_;
-  StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE> buffer_;
-  JsonVariant json_;
-  mutable String error_;
+  private:
+    String data_;
+    std::shared_ptr<StaticJsonBuffer<FIREBASE_JSONBUFFER_SIZE>> buffer_;
+    JsonVariant json_;
+    mutable String error_;
 };
 
 #endif // FIREBASE_OBJECT_H
