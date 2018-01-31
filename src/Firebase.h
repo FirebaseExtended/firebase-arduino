@@ -31,6 +31,7 @@
 
 class FirebaseGet;
 class FirebaseSet;
+class FirebaseUpdate;
 class FirebasePush;
 class FirebaseRemove;
 class FirebaseStream;
@@ -49,6 +50,10 @@ class Firebase {
   // Set json encoded `value` at `path`.
   FirebaseSet set(const std::string& path, const std::string& json);
   virtual std::unique_ptr<FirebaseSet> setPtr(const std::string& path, const std::string& json);
+
+  // Update json encoded `value` at `path`.
+  FirebaseSet update(const std::string& path, const std::string& json);
+  virtual std::unique_ptr<FirebaseSet> updatePtr(const std::string& path, const std::string& json);
 
   // Add new json encoded `value` to list at `path`.
   FirebasePush push(const std::string& path, const std::string& json);
@@ -113,6 +118,17 @@ class FirebaseSet: public FirebaseCall {
   FirebaseSet() {}
   FirebaseSet(const std::string& host, const std::string& auth,
               const std::string& path, const std::string& value, const std::shared_ptr<FirebaseHttpClient> http = NULL);
+
+
+ private:
+  std::string json_;
+};
+
+class FirebaseUpdate: public FirebaseCall {
+ public:
+  FirebaseUpdate() {}
+  FirebaseUpdate(const std::string& host, const std::string& auth,
+              const std::string& path, const std::string& value, FirebaseHttpClient* http = NULL);
 
 
  private:
