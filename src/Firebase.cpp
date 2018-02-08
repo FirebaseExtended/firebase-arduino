@@ -26,7 +26,7 @@ std::string makeFirebaseURL(const std::string& path, const std::string& auth) {
   }
   url += path + ".json";
   if (auth.length() > 0) {
-    url += "?auth=" + auth;
+    url += "?api_key=" + auth;    
   }
   return url;
 }
