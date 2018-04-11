@@ -17,7 +17,7 @@ using ::testing::_;
 class PushCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    push_.reset(new MockFirebasePush());
+    push_.reset(new MockFirebaseRequest());
   }
 
   void FeedCommand(const String& path, const String& data) {
@@ -54,7 +54,7 @@ class PushCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebasePush> push_;
+  std::unique_ptr<MockFirebaseRequest> push_;
 };
 
 TEST_F(PushCommandTest, sendsData) {

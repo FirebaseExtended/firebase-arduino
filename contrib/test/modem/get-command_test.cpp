@@ -16,7 +16,7 @@ using ::testing::_;
 class GetCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    get_.reset(new MockFirebaseGet());
+    get_.reset(new MockFirebaseRequest());
   }
 
   void FeedCommand(const String& path) {
@@ -39,7 +39,7 @@ class GetCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseGet> get_;
+  std::unique_ptr<MockFirebaseRequest> get_;
 };
 
 TEST_F(GetCommandTest, gets) {

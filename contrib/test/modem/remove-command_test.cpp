@@ -16,7 +16,7 @@ using ::testing::_;
 class RemoveCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    remove_.reset(new MockFirebaseRemove());
+    remove_.reset(new MockFirebaseRequest());
   }
 
   void FeedCommand(const String& path) {
@@ -39,7 +39,7 @@ class RemoveCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseRemove> remove_;
+  std::unique_ptr<MockFirebaseRequest> remove_;
 };
 
 TEST_F(RemoveCommandTest, success) {
