@@ -20,10 +20,20 @@
 template class std::basic_string<char>;
 
 void FirebaseArduino::begin(const String& host, const String& auth) {
-  http_.reset(FirebaseHttpClient::create());
-  http_->setReuseConnection(true);
   host_ = host.c_str();
   auth_ = auth.c_str();
+}
+
+void FirebaseArduino::initStream() {
+  stream_http_.reset(FirebaseHttpClient::create());
+  stream_http_->setReuseConnection(true);
+  stream_.reset(new FirebaseStream(stream_http_));
+}
+
+void FirebaseArduino::initRequest() {
+  req_http_.reset(FirebaseHttpClient::create());
+  req_http_->setReuseConnection(true);
+  req_.reset(new FirebaseRequest(req_http_));
 }
 
 String FirebaseArduino::pushInt(const String& path, int value) {
@@ -46,9 +56,11 @@ String FirebaseArduino::pushString(const String& path, const String& value) {
 String FirebaseArduino::push(const String& path, const JsonVariant& value) {
   String buf;
   value.printTo(buf);
-  auto push = FirebasePush(host_, auth_, path.c_str(), buf.c_str(), http_);
-  error_ = push.error();
-  return push.name().c_str();
+  initRequest();
+  int status = req_.get()->sendRequest(host_, auth_, "POST", path.c_str(), buf.c_str());
+  error_ = req_.get()->error();
+  const char* name = req_.get()->json()["name"].as<const char*>();
+  return name;
 }
 
 void FirebaseArduino::setInt(const String& path, int value) {
@@ -71,72 +83,82 @@ void FirebaseArduino::setString(const String& path, const String& value) {
 void FirebaseArduino::set(const String& path, const JsonVariant& value) {
   String buf;
   value.printTo(buf);
-  auto set = FirebaseSet(host_, auth_, path.c_str(), buf.c_str(), http_);
-  error_ = set.error();
+  initRequest();
+  req_.get()->sendRequest(host_, auth_, "PUT", path.c_str(), buf.c_str());
+  error_ = req_.get()->error();
+}
+
+void FirebaseArduino::getRequest(const String& path) {
+  initRequest();
+  req_.get()->sendRequest(host_, auth_, "GET", path.c_str());
+  error_ = req_.get()->error();
 }
 
 FirebaseObject FirebaseArduino::get(const String& path) {
-  auto get = FirebaseGet(host_, auth_, path.c_str(), http_);
-  error_ = get.error();
+  getRequest(path);
   if (failed()) {
     return FirebaseObject{""};
   }
-  return FirebaseObject(get.response().c_str());
+  return FirebaseObject(req_.get()->response().c_str());
 }
 
 int FirebaseArduino::getInt(const String& path) {
-  auto get = FirebaseGet(host_, auth_, path.c_str(), http_);
-  error_ = get.error();
+  getRequest(path);
   if (failed()) {
     return 0;
   }
-  return FirebaseObject(get.response().c_str()).getInt();
+  return FirebaseObject(req_.get()->response().c_str()).getInt();
 }
 
 
 float FirebaseArduino::getFloat(const String& path) {
-  auto get = FirebaseGet(host_, auth_, path.c_str(), http_);
-  error_ = get.error();
+  getRequest(path);
   if (failed()) {
     return 0.0f;
   }
-  return FirebaseObject(get.response().c_str()).getFloat();
+  return FirebaseObject(req_.get()->response().c_str()).getFloat();
 }
 
 String FirebaseArduino::getString(const String& path) {
-  auto get = FirebaseGet(host_, auth_, path.c_str(), http_);
-  error_ = get.error();
+  getRequest(path);
   if (failed()) {
     return "";
   }
-  return FirebaseObject(get.response().c_str()).getString();
+  return FirebaseObject(req_.get()->response().c_str()).getString();
 }
 
 bool FirebaseArduino::getBool(const String& path) {
-  auto get = FirebaseGet(host_, auth_, path.c_str(), http_);
-  error_ = get.error();
+  getRequest(path);
   if (failed()) {
     return "";
   }
-  return FirebaseObject(get.response().c_str()).getBool();
+  return FirebaseObject(req_.get()->response().c_str()).getBool();
 }
 void FirebaseArduino::remove(const String& path) {
-  auto remove = FirebaseRemove(host_, auth_, path.c_str(), http_);
-  error_ = remove.error();
+  initRequest();
+  req_.get()->sendRequest(host_, auth_, "DELETE", path.c_str());
+  error_ = req_.get()->error();
 }
 
 void FirebaseArduino::stream(const String& path) {
-  auto stream = FirebaseStream(host_, auth_, path.c_str(), http_);
-  error_ = stream.error();
+  initStream();
+  stream_.get()->startStreaming(host_, auth_, path.c_str());
+  error_ = stream_.get()->error();
 }
 
 bool FirebaseArduino::available() {
-  auto client = http_->getStreamPtr();
+  if (stream_http_.get() == nullptr) {
+    return 0;
+  }
+  auto client = stream_http_.get()->getStreamPtr();
   return (client == nullptr) ? false : client->available();
 }
 
 FirebaseObject FirebaseArduino::readEvent() {
-  auto client = http_->getStreamPtr();
+  if (stream_http_.get() == nullptr) {
+    return FirebaseObject("");
+  }
+  auto client = stream_http_.get()->getStreamPtr();
   if (client == nullptr) { 
       return FirebaseObject("");
   } 

@@ -226,7 +226,14 @@ class FirebaseArduino {
   std::string host_;
   std::string auth_;
   FirebaseError error_;
-  std::shared_ptr<FirebaseHttpClient> http_;
+  std::shared_ptr<FirebaseHttpClient> req_http_;
+  std::shared_ptr<FirebaseRequest> req_;
+  std::shared_ptr<FirebaseHttpClient> stream_http_;
+  std::shared_ptr<FirebaseStream> stream_;
+
+  void initStream();
+  void initRequest();
+  void getRequest(const String& path);
 };
 
 extern FirebaseArduino Firebase;
