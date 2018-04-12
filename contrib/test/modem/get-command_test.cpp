@@ -29,9 +29,6 @@ class GetCommandTest : public ::testing::Test {
     EXPECT_CALL(*get_, error())
       .WillRepeatedly(ReturnRef(error));
 
-    EXPECT_CALL(fbase_, getPtr(_))
-        .WillOnce(Return(ByMove(std::move(get_))));
-
     GetCommand getCmd(&fbase_);
     return getCmd.execute("GET", &in_, &out_);
   }
