@@ -16,7 +16,7 @@ class MockFirebase : public Firebase {
 class MockFirebaseRequest : public FirebaseRequest {
  public:
   MOCK_CONST_METHOD0(name, const std::string&());
-  MOCK_CONST_METHOD0(reponse, const std::string&());
+  MOCK_CONST_METHOD0(response, const std::string&());
   MOCK_CONST_METHOD0(error, const FirebaseError&());
 };
 
