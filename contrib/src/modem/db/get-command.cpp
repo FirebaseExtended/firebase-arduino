@@ -13,16 +13,15 @@ bool GetCommand::execute(const String& command,
     return false;
   }
 
-  std::string path = in->readLine().c_str();
-  std::unique_ptr<FirebaseGet> get(fbase().getPtr(path));
+  String path = in->readLine();
+  String value = fbase().getString(path);
 
-  if (get->error()) {
+  if (fbase().error()) {
     out->print("-FAIL ");
-    out->println(get->error().message().c_str());
+    out->println(fbase().error().c_str());
     return false;
   }
 
-  String value(get->response().c_str());
   // TODO implement json parsing to pull and process value.
   out->print("+");
   out->println(value);

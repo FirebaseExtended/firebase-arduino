@@ -14,26 +14,24 @@ bool StreamCommand::execute(const String& command,
   }
 
   std::string path = in->readLine().c_str();
-  std::unique_ptr<FirebaseStream> stream(fbase().streamPtr(path));
+  fbase().stream(path);  
 
-  if (stream->error()) {
+  if (fbase().error()) {
     out->print("-FAIL ");
-    out->println(stream->error().message().c_str());
+    out->println(fbase().error().c_str());
     return false;
   }
 
   bool running = true;
   DynamicJsonBuffer buffer;
   while(running) {
-    if (stream->available()) {
-      std::string json;
-      FirebaseStream::Event event = stream->read(json);
+    if (fbase().available()) {
+      FirebaseObject event = fbase().readEvent();
       out->print("+");
-      out->print(FirebaseStream::EventToName(event).c_str());
+      out->print(event.getString("event").c_str());
       out->print(" ");
-      const auto& object = buffer.parseObject(json.c_str());
-      String data = object["data"].asString();
-      out->println(object["path"].asString());
+      String data = event.getString("data");
+      out->println(event.getString("path"));
       out->println(data.length());
       out->println(data);
     } else if (in->available()) {

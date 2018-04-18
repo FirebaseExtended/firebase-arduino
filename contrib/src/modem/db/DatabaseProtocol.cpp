@@ -42,7 +42,7 @@ void DatabaseProtocol::Execute(const String& command_name, InputStream* in,
 }
 
 std::unique_ptr<Command> DatabaseProtocol::CreateCommand(const String& text,
-                                                         Firebase* fbase) {
+                                                         FirebaseArduino* fbase) {
   std::unique_ptr<Command> command;
   if (text == "GET") {
     command.reset(new GetCommand(fbase));
