@@ -3,13 +3,21 @@
 
 #include <memory>
 #include "gtest/gtest.h"
-#include "Firebase.h"
+#include "FirebaseArduino.h"
 
 namespace firebase {
 namespace modem {
 
-class MockFirebase : public Firebase {
+class MockFirebase : public FirebaseArduino {
  public:
+  MOCK_CONST_METHOD0(error, const FirebaseError&());
+  MOCK_CONST_METHOD1(getString, String ());
+  MOCK_CONST_METHOD2(pushString, void());
+  MOCK_CONST_METHOD1(remove, void());
+  MOCK_CONST_METHOD2(setString, void());
+  MOCK_CONST_METHOD0(available, bool ());
+  MOCK_CONST_METHOD0(readEvent, FirebaseObject ());
+  MOCK_CONST_METHOD2(begin, void ());
 };
 
 
