@@ -25,15 +25,19 @@ void FirebaseArduino::begin(const String& host, const String& auth) {
 }
 
 void FirebaseArduino::initStream() {
-  stream_http_.reset(FirebaseHttpClient::create());
-  stream_http_->setReuseConnection(true);
-  stream_.reset(new FirebaseStream(stream_http_));
+  if (stream_http_.get() == nullptr) {
+    stream_http_.reset(FirebaseHttpClient::create());
+    stream_http_->setReuseConnection(true);
+    stream_.reset(new FirebaseStream(stream_http_));
+  }
 }
 
 void FirebaseArduino::initRequest() {
-  req_http_.reset(FirebaseHttpClient::create());
-  req_http_->setReuseConnection(true);
-  req_.reset(new FirebaseRequest(req_http_));
+  if (req_http_.get() == nullptr) {
+    req_http_.reset(FirebaseHttpClient::create());
+    req_http_->setReuseConnection(true);
+    req_.reset(new FirebaseRequest(req_http_));
+  }
 }
 
 String FirebaseArduino::pushInt(const String& path, int value) {
