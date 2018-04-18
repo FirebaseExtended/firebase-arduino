@@ -16,7 +16,7 @@ bool GetCommand::execute(const String& command,
   String path = in->readLine();
   String value = fbase().getString(path);
 
-  if (fbase().error()) {
+  if (fbase().error() != "") {
     out->print("-FAIL ");
     out->println(fbase().error().c_str());
     return false;

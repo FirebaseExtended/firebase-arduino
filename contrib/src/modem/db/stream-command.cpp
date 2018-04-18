@@ -13,10 +13,10 @@ bool StreamCommand::execute(const String& command,
     return false;
   }
 
-  std::string path = in->readLine().c_str();
+  String path = in->readLine().c_str();
   fbase().stream(path);  
 
-  if (fbase().error()) {
+  if (fbase().error() != "") {
     out->print("-FAIL ");
     out->println(fbase().error().c_str());
     return false;
