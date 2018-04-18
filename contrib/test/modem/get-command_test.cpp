@@ -16,7 +16,6 @@ using ::testing::_;
 class GetCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    get_.reset(new MockFirebaseRequest());
   }
 
   void FeedCommand(const String& path) {
@@ -26,9 +25,6 @@ class GetCommandTest : public ::testing::Test {
   }
 
   bool RunCommand(const FirebaseError& error) {
-    EXPECT_CALL(*get_, error())
-      .WillRepeatedly(ReturnRef(error));
-
     GetCommand getCmd(&fbase_);
     return getCmd.execute("GET", &in_, &out_);
   }
@@ -36,7 +32,6 @@ class GetCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseRequest> get_;
 };
 
 TEST_F(GetCommandTest, gets) {
@@ -44,8 +39,6 @@ TEST_F(GetCommandTest, gets) {
   FeedCommand(path);
 
   const String value("Test value");
-  EXPECT_CALL(*get_, response())
-      .WillOnce(ReturnRef(value));
 
   EXPECT_CALL(out_, print(String("+")))
       .WillOnce(Return(1));

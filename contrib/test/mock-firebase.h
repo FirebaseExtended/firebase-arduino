@@ -20,21 +20,6 @@ class MockFirebase : public FirebaseArduino {
   MOCK_CONST_METHOD2(begin, void (const String& host, const String& auth));
 };
 
-
-class MockFirebaseRequest : public FirebaseRequest {
- public:
-  MOCK_CONST_METHOD0(name, const std::string&());
-  MOCK_CONST_METHOD0(response, const std::string&());
-  MOCK_CONST_METHOD0(error, const FirebaseError&());
-};
-
-class MockFirebaseStream : public FirebaseStream {
- public:
-  MOCK_METHOD0(available, bool());
-  MOCK_METHOD1(read, Event(std::string& event));
-  MOCK_CONST_METHOD0(error, const FirebaseError&());
-};
-
 }  // modem
 }  // firebase
 #endif  // TEST_MOCK_FIREBASE_H

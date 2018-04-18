@@ -17,7 +17,6 @@ using ::testing::_;
 class SetCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    set_.reset(new MockFirebaseRequest());
   }
 
   void FeedCommand(const String& path, const String& data) {
@@ -41,11 +40,6 @@ class SetCommandTest : public ::testing::Test {
   }
 
   bool RunExpectingData(const String& data, const FirebaseError& error) {
-    EXPECT_CALL(*set_, error())
-      .WillRepeatedly(ReturnRef(error));
-
-    EXPECT_CALL(fbase_, setPtr(_, EncodeForJson(data)))
-        .WillOnce(Return(ByMove(std::move(set_))));
 
     SetCommand setCmd(&fbase_);
     return setCmd.execute("SET", &in_, &out_);
@@ -54,7 +48,6 @@ class SetCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseRequest> set_;
 };
 
 TEST_F(SetCommandTest, sendsData) {

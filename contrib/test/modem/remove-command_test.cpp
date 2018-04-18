@@ -16,7 +16,6 @@ using ::testing::_;
 class RemoveCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    remove_.reset(new MockFirebaseRequest());
   }
 
   void FeedCommand(const String& path) {
@@ -26,11 +25,6 @@ class RemoveCommandTest : public ::testing::Test {
   }
 
   bool RunCommand(const FirebaseError& error) {
-    EXPECT_CALL(*remove_, error())
-      .WillRepeatedly(ReturnRef(error));
-
-    EXPECT_CALL(fbase_, removePtr(_))
-        .WillOnce(Return(ByMove(std::move(remove_))));
 
     RemoveCommand command(&fbase_);
     return command.execute("REMOVE", &in_, &out_);
@@ -39,7 +33,6 @@ class RemoveCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseRequest> remove_;
 };
 
 TEST_F(RemoveCommandTest, success) {
