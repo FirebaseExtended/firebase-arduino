@@ -16,7 +16,7 @@ bool StreamCommand::execute(const String& command,
   String path = in->readLine().c_str();
   fbase().stream(path);  
 
-  if (fbase().error() != "") {
+  if (fbase().error().length() == 0) {
     out->print("-FAIL ");
     out->println(fbase().error().c_str());
     return false;

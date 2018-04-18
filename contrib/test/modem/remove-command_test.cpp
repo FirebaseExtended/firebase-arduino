@@ -2,7 +2,7 @@
 #include "test/modem/mock-output-stream.h"
 #include "test/modem/mock-input-stream.h"
 #include "test/mock-firebase.h"
-#include "Firebase.h"
+#include "FirebaseArduino.h"
 #include "modem/db/commands.h"
 
 namespace firebase {

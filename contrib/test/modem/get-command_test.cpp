@@ -1,4 +1,4 @@
-#include "Firebase.h"
+#include "FirebaseArduino.h"
 #include "gtest/gtest.h"
 #include "modem/db/commands.h"
 #include "test/modem/mock-input-stream.h"

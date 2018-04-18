@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "Firebase.h"
+#include "FirebaseArduino.h"
 #include "gtest/gtest.h"
 #include "modem/SerialTransceiver.h"
 

@@ -1,4 +1,4 @@
-#include "Firebase.h"
+#include "FirebaseArduino.h"
 #include "gtest/gtest.h"
 #include "modem/db/commands.h"
 #include "modem/json_util.h"

@@ -130,8 +130,8 @@ arduino_mock_all.a : ArduinoMockAll.o
 
 # Builds shared objects.
 
-Firebase.o : $(FIREBASE_SRC_ROOT)/Firebase.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(FIREBASE_SRC_ROOT)/Firebase.cpp
+Firebase.o : $(FIREBASE_SRC_ROOT)/FirebaseArduino.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(FIREBASE_SRC_ROOT)/FirebaseArduino.cpp
 
 FirebaseHttpClient_dummy.o : $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(PROJECT_ROOT)/test/dummies/FirebaseHttpClient_dummy.cpp
