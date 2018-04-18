@@ -10,7 +10,7 @@ namespace modem {
 
 class MockFirebase : public FirebaseArduino {
  public:
-  MOCK_CONST_METHOD0(error, const FirebaseError&());
+  MOCK_CONST_METHOD0(error, const String &());
   MOCK_CONST_METHOD1(getString, String (const String& path));
   MOCK_CONST_METHOD2(pushString, void(const String& path, const String& data));
   MOCK_CONST_METHOD1(remove, void(const String& path));
