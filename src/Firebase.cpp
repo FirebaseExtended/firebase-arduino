@@ -97,27 +97,3 @@ void FirebaseStream::startStreaming(const std::string& host, const std::string& 
       status = http_->sendRequest("GET", std::string());
   }
 }
-
-bool FirebaseStream::available() {
-  auto client = http_->getStreamPtr();
-  return (client == nullptr) ? false : client->available();
-}
-
-FirebaseStream::Event FirebaseStream::read(std::string& event) {
-  auto client = http_->getStreamPtr();
-  if (client == nullptr) { 
-      return Event();
-  } 
-  Event type;
-  std::string typeStr = client->readStringUntil('\n').substring(7).c_str();
-  if (typeStr == "put") {
-    type = Event::PUT;
-  } else if (typeStr == "patch") {
-    type = Event::PATCH;
-  } else {
-    type = Event::UNKNOWN;
-  }
-  event = client->readStringUntil('\n').substring(6).c_str();
-  client->readStringUntil('\n'); // consume separator
-  return type;
-}

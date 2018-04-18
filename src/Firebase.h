@@ -99,32 +99,7 @@ class FirebaseStream : public FirebaseCall {
   FirebaseStream(const std::shared_ptr<FirebaseHttpClient> http = NULL) : FirebaseCall(http) { }
   virtual ~FirebaseStream() {}
 
-  // Return if there is any event available to read.
-  bool available();
   void startStreaming(const std::string& host, const std::string& auth, const std::string& path);
-
-  // Event type.
-  enum Event {
-    UNKNOWN,
-    PUT,
-    PATCH
-  };
-
-  static inline std::string EventToName(Event event) {
-    switch(event)  {
-      case UNKNOWN:
-        return "UNKNOWN";
-      case PUT:
-        return "PUT";
-      case PATCH:
-        return "PATCH";
-      default:
-        return "INVALID_EVENT_" + event;
-    }
-  }
-
-  // Read next json encoded `event` from stream.
-  virtual Event read(std::string& event);
 };
 
 #endif // firebase_h
