@@ -20,7 +20,7 @@ class GetCommandTest : public ::testing::Test {
 
   void FeedCommand(const String& path) {
     const String command_fragment(String(" ") + path);
-    EXPECT_CALL(in_, readLine())
+     EXPECT_CALL(in_, readLine())
         .WillOnce(Return(command_fragment));
   }
 
@@ -36,9 +36,13 @@ class GetCommandTest : public ::testing::Test {
 
 TEST_F(GetCommandTest, gets) {
   const String path("/test/path");
+  const String command_fragment(" /test/path");
+  const String no_error = "";
   FeedCommand(path);
 
   const String value("Test value");
+  EXPECT_CALL(fbase_, getString(command_fragment)).WillOnce(Return("Test value"));
+  EXPECT_CALL(fbase_, error()).WillOnce(ReturnRef(no_error));
 
   EXPECT_CALL(out_, print(String("+")))
       .WillOnce(Return(1));
@@ -51,13 +55,18 @@ TEST_F(GetCommandTest, gets) {
 
 TEST_F(GetCommandTest, handlesError) {
   FirebaseError error(-200, "Test Error.");
+  const String command_fragment(" /test/path");
   const String path("/test/path");
+  const String error_value = "Test Error.";
   FeedCommand(path);
+
+  EXPECT_CALL(fbase_, error()).WillRepeatedly(ReturnRef(error_value));
+  EXPECT_CALL(fbase_, getString(command_fragment)).WillOnce(Return(""));
 
   EXPECT_CALL(out_, print(String("-FAIL ")))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out_, println(String(error.message().c_str())))
+  EXPECT_CALL(out_, println(error_value))
       .WillOnce(Return(1));
   ASSERT_FALSE(RunCommand(error));
 

@@ -58,12 +58,14 @@ String FirebaseArduino::pushString(const String& path, const String& value) {
 }
 
 String FirebaseArduino::push(const String& path, const JsonVariant& value) {
-  String buf;
-  value.printTo(buf);
+  int size = value.measureLength()+1;
+  char * buf = new char[size];
+  value.printTo(buf, size);
   initRequest();
-  int status = req_.get()->sendRequest(host_, auth_, "POST", path.c_str(), buf.c_str());
+  int status = req_.get()->sendRequest(host_, auth_, "POST", path.c_str(), buf);
   error_ = req_.get()->error();
   const char* name = req_.get()->json()["name"].as<const char*>();
+  delete buf;
   return name;
 }
 
@@ -85,11 +87,13 @@ void FirebaseArduino::setString(const String& path, const String& value) {
 }
 
 void FirebaseArduino::set(const String& path, const JsonVariant& value) {
-  String buf;
-  value.printTo(buf);
+  int size = value.measureLength()+1;
+  char* buf= new char[size];
+  value.printTo(buf, size);
   initRequest();
-  req_.get()->sendRequest(host_, auth_, "PUT", path.c_str(), buf.c_str());
+  req_.get()->sendRequest(host_, auth_, "PUT", path.c_str(), buf);
   error_ = req_.get()->error();
+  delete buf;
 }
 
 void FirebaseArduino::getRequest(const String& path) {
@@ -163,14 +167,14 @@ FirebaseObject FirebaseArduino::readEvent() {
     return FirebaseObject("");
   }
   auto client = stream_http_.get()->getStreamPtr();
-  if (client == nullptr) { 
+  if (client == nullptr) {
       return FirebaseObject("");
-  } 
+  }
   String type = client->readStringUntil('\n').substring(7);;
   String event = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
   FirebaseObject obj = FirebaseObject(event.c_str());
-  obj.getJsonVariant().asObject()["type"] = type;
+  obj.getJsonVariant().asObject()["type"] = type.c_str();
   return obj;
 }
 

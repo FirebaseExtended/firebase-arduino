@@ -19,7 +19,7 @@ bool SetCommand::execute(const String& command,
 
   fbase().setString(path, data);
 
-  if (fbase().error().length() == 0) {
+  if (fbase().error().length() != 0) {
     out->print("-FAIL ");
     out->println(fbase().error().c_str());
     return false;
