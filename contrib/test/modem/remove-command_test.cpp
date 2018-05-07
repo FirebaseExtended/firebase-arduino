@@ -24,8 +24,7 @@ class RemoveCommandTest : public ::testing::Test {
         .WillOnce(Return(command_fragment));
   }
 
-  bool RunCommand(const FirebaseError& error) {
-
+  bool RunCommand() {
     RemoveCommand command(&fbase_);
     return command.execute("REMOVE", &in_, &out_);
   }
@@ -39,23 +38,28 @@ TEST_F(RemoveCommandTest, success) {
   const String path("/test/path");
   FeedCommand(path);
 
+  const String no_error = "";
+  EXPECT_CALL(fbase_, error()).WillOnce(ReturnRef(no_error));
+
   EXPECT_CALL(out_, println(String("+OK")))
       .WillOnce(Return(3));
 
-  ASSERT_TRUE(RunCommand(FirebaseError()));
+  ASSERT_TRUE(RunCommand());
 }
 
 TEST_F(RemoveCommandTest, handlesError) {
-  FirebaseError error(-200, "Test Error.");
   const String path("/test/path");
   FeedCommand(path);
 
   EXPECT_CALL(out_, print(String("-FAIL ")))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out_, println(String(error.message().c_str())))
+  const String error = "Test Error.";
+  EXPECT_CALL(fbase_, error()).WillRepeatedly(ReturnRef(error));
+
+  EXPECT_CALL(out_, println(String(error.c_str())))
       .WillOnce(Return(1));
-  ASSERT_FALSE(RunCommand(error));
+  ASSERT_FALSE(RunCommand());
 }
 
 }  // modem

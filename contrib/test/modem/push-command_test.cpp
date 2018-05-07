@@ -39,7 +39,7 @@ class PushCommandTest : public ::testing::Test {
         .WillOnce(Return(error_message.length()));
   }
 
-  bool RunExpectingData(const String& data, const FirebaseError& error) {
+  bool RunCommand() {
     PushCommand pushCmd(&fbase_);
     return pushCmd.execute("PUSH", &in_, &out_);
   }
@@ -54,22 +54,26 @@ TEST_F(PushCommandTest, sendsData) {
   const String data("This is a test payload.");
 
   FeedCommand(path, data);
+  const String no_error = "";
+  EXPECT_CALL(fbase_, error()).WillOnce(ReturnRef(no_error));
+
   ExpectOutput("+OK");
 
-  ASSERT_TRUE(RunExpectingData(data, FirebaseError()));
+  ASSERT_TRUE(RunCommand());
 }
 
 TEST_F(PushCommandTest, HandlesError) {
   const String path("/test/path");
   const String data("This is a test payload.");
-  FirebaseError error(-200, "Test error.");
 
   FeedCommand(path, data);
-  ExpectErrorOutput(error.message());
+  const String error = "Test Error.";
+  EXPECT_CALL(fbase_, error()).WillRepeatedly(ReturnRef(error));
 
-  ASSERT_FALSE(RunExpectingData(data, error));
+  ExpectErrorOutput(error);
+
+  ASSERT_FALSE(RunCommand());
 }
 
 }  // modem
 }  // firebase
-

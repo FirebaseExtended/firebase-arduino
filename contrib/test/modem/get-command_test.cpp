@@ -37,11 +37,12 @@ class GetCommandTest : public ::testing::Test {
 TEST_F(GetCommandTest, gets) {
   const String path("/test/path");
   const String command_fragment(" /test/path");
-  const String no_error = "";
   FeedCommand(path);
 
   const String value("Test value");
   EXPECT_CALL(fbase_, getString(command_fragment)).WillOnce(Return("Test value"));
+
+  const String no_error = "";
   EXPECT_CALL(fbase_, error()).WillOnce(ReturnRef(no_error));
 
   EXPECT_CALL(out_, print(String("+")))
@@ -57,10 +58,11 @@ TEST_F(GetCommandTest, handlesError) {
   FirebaseError error(-200, "Test Error.");
   const String command_fragment(" /test/path");
   const String path("/test/path");
-  const String error_value = "Test Error.";
   FeedCommand(path);
 
+  const String error_value = "Test Error.";
   EXPECT_CALL(fbase_, error()).WillRepeatedly(ReturnRef(error_value));
+
   EXPECT_CALL(fbase_, getString(command_fragment)).WillOnce(Return(""));
 
   EXPECT_CALL(out_, print(String("-FAIL ")))
