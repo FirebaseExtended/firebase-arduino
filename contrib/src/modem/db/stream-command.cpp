@@ -21,14 +21,13 @@ bool StreamCommand::execute(const String& command,
     out->println(fbase().error().c_str());
     return false;
   }
-
   bool running = true;
   DynamicJsonBuffer buffer;
   while(running) {
     if (fbase().available()) {
       FirebaseObject event = fbase().readEvent();
       out->print("+");
-      out->print(event.getString("event").c_str());
+      out->print(event.getString("type").c_str());
       out->print(" ");
       String data = event.getString("data");
       out->println(event.getString("path"));

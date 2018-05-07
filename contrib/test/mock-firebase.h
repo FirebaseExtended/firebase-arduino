@@ -18,6 +18,7 @@ class MockFirebase : public FirebaseArduino {
   MOCK_METHOD0(available, bool ());
   MOCK_METHOD0(readEvent, FirebaseObject ());
   MOCK_METHOD2(begin, void (const String& host, const String& auth));
+  MOCK_METHOD1(stream, void (const String& path));
 };
 
 }  // modem

@@ -191,7 +191,7 @@ class FirebaseArduino {
    * monitoring available() and calling readEvent() to get new events.
    * \param path The path inside of your db to the node you wish to monitor.
    */
-  void stream(const String& path);
+  virtual void stream(const String& path);
 
   /**
    * Checks if there are new events available. This is only meaningful once

@@ -17,10 +17,9 @@ using ::testing::_;
 class StreamCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    stream_.reset(new FirebaseStream());
   }
 
-  bool RunCommand(const FirebaseError& error) {
+  bool RunCommand() {
     StreamCommand cmd(&fbase_);
     return cmd.execute("BEGIN_STREAM", &in_, &out_);
   }
@@ -28,11 +27,20 @@ class StreamCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<FirebaseStream> stream_;
 };
 
 TEST_F(StreamCommandTest, streams) {
   const String path("/test/path");
+
+  const String no_error = "";
+  EXPECT_CALL(fbase_, error()).WillRepeatedly(ReturnRef(no_error));
+
+  const String data = "TestValue";
+  const String value(String("{\"path\":\"/test/path\",\"data\":\"") + data + "\",\"type\":\"PUT\"}");
+
+  const FirebaseObject fo = FirebaseObject(value.c_str());
+  EXPECT_CALL(fbase_, readEvent()).WillRepeatedly(Return(fo));
+
   EXPECT_CALL(in_, available())
       .WillRepeatedly(Return(true));
 
@@ -40,18 +48,10 @@ TEST_F(StreamCommandTest, streams) {
       .WillOnce(Return(path))
       .WillOnce(Return("END_STREAM"));
 
-  const String data = "Test Value";
-  const String value(String("{\"path\" : \"/test/path\", \"data\" : \"") + data + "\"}");
-    EXPECT_CALL(fbase_, available())
+  EXPECT_CALL(fbase_, available())
      .WillOnce(Return(true))
      .WillRepeatedly(Return(false));
-
-  EXPECT_CALL(fbase_, startStreaming());
-  EXPECT_CALL(*stream_, read(_))
-      .WillOnce(Invoke([&value](std::string& json) {
-        json = value.c_str();
-        return FirebaseStream::PUT;
-      }));
+  EXPECT_CALL(fbase_, stream(path));
 
   EXPECT_CALL(out_, print(String("+")))
       .WillOnce(Return(1));
@@ -70,21 +70,23 @@ TEST_F(StreamCommandTest, streams) {
   EXPECT_CALL(out_, println(String("+OK")))
       .WillOnce(Return(1));
 
-  ASSERT_TRUE(RunCommand(FirebaseError()));
+  ASSERT_TRUE(RunCommand());
 }
 
 TEST_F(StreamCommandTest, handlesError) {
-  FirebaseError error(-200, "Test Error.");
+  const String error("Test Error.");
   const String path("/test/path");
   EXPECT_CALL(in_, readLine())
       .WillOnce(Return(path));
 
+  EXPECT_CALL(fbase_, error()).WillRepeatedly(ReturnRef(error));
+
   EXPECT_CALL(out_, print(String("-FAIL ")))
       .WillOnce(Return(1));
 
-  EXPECT_CALL(out_, println(String(error.message().c_str())))
+  EXPECT_CALL(out_, println(String(error.c_str())))
       .WillOnce(Return(1));
-  ASSERT_FALSE(RunCommand(error));
+  ASSERT_FALSE(RunCommand());
 }
 
 }  // modem
