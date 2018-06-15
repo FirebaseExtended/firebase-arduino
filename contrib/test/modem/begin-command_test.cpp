@@ -1,4 +1,4 @@
-#include "Firebase.h"
+#include "FirebaseArduino.h"
 #include "gtest/gtest.h"
 #include "modem/db/commands.h"
 #include "test/modem/mock-input-stream.h"
@@ -52,8 +52,7 @@ TEST_F(BeginCommandTest, hostOnly) {
   BeginCommand command;
   ASSERT_TRUE(command.execute("BEGIN_DB", &in_, &out_));
 
-  std::unique_ptr<Firebase> firebase(command.firebase());
-  EXPECT_EQ("", firebase->auth());
+  std::unique_ptr<FirebaseArduino> firebase(command.firebase());
 }
 
 TEST_F(BeginCommandTest, hostAndAuth) {
@@ -66,8 +65,7 @@ TEST_F(BeginCommandTest, hostAndAuth) {
   BeginCommand command;
   ASSERT_TRUE(command.execute("BEGIN_DB", &in_, &out_));
 
-  std::unique_ptr<Firebase> firebase(command.firebase());
-  EXPECT_EQ(auth, firebase->auth());
+  std::unique_ptr<FirebaseArduino> firebase(command.firebase());
 }
 
 TEST_F(BeginCommandTest, neitherHostNorAuth) {
@@ -77,7 +75,7 @@ TEST_F(BeginCommandTest, neitherHostNorAuth) {
   BeginCommand command;
   ASSERT_FALSE(command.execute("BEGIN_DB", &in_, &out_));
 
-  std::unique_ptr<Firebase> firebase(command.firebase());
+  std::unique_ptr<FirebaseArduino> firebase(command.firebase());
   EXPECT_FALSE(firebase);
 }
 }  // modem

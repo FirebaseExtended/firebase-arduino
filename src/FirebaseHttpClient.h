@@ -33,18 +33,7 @@ class FirebaseHttpClient {
 
   virtual std::string errorToString(int error_code) = 0;
 
-  bool isStreaming() const {
-    return _streaming != "";
-  }
-  std::string getStreamingPath() const {
-    return _streaming;
-  }
-  void setStreaming(const std::string& path) {
-    _streaming = path;
-  }
  protected:
-  std::string _streaming = "";
-
   static const uint16_t kFirebasePort = 443;
 };
 
