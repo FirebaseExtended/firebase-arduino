@@ -26,6 +26,8 @@ FirebaseObject::FirebaseObject(const char* data) : data_{data} {
   // See: https://github.com/bblanchon/ArduinoJson/issues/279
 }
 
+FirebaseObject::FirebaseObject(const String& data) : FirebaseObject(data.c_str()) {}
+
 bool FirebaseObject::getBool(const String& path) const {
   JsonVariant variant = getJsonVariant(path);
   if (!variant.is<bool>()) {

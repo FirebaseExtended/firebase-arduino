@@ -43,6 +43,12 @@ class FirebaseObject {
     FirebaseObject(const char* data);
 
     /**
+   * Construct from json.
+   * \param data JSON formatted string.
+    */
+    FirebaseObject(const String& data);
+
+    /**
    * Return the value as a boolean.
    * \param optional path in the JSON object.
    * \return result as a bool.

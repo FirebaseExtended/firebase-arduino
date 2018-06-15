@@ -20,7 +20,12 @@ The Arduino library is [under heavy development](https://github.com/googlesample
 - [FirebaseArduino API Reference](http://firebase-arduino.readthedocs.io/)
 
 ## Dependencies
-- FirebaseArduino now depends on [ArduinoJson library](https://github.com/bblanchon/ArduinoJson) instead of containing it's own version of it. Please either use Library Manager or download specific version of the library from github.
+
+FirebaseArduino depends on the following libraries:
+- [ArduinoJson library](https://github.com/bblanchon/ArduinoJson)
+- [ArduinoHttpClient library](https://github.com/arduino-libraries/ArduinoHttpClient/)
+
+Please either use Library Manager or download specific version of the library from github.
 
 ## Disclaimer
 

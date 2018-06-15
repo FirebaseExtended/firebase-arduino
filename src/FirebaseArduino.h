@@ -19,7 +19,9 @@
 
 #include <string>
 
-#include "Firebase.h"
+#include <ArduinoHttpClient.h>
+
+#include "FirebaseError.h"
 #include "FirebaseObject.h"
 
 /**
@@ -31,13 +33,15 @@
  */
 class FirebaseArduino {
  public:
+  FirebaseArduino(Client& client);
+
   /**
    * Must be called first. This initialize the client with the given
    * firebase host and credentials.
    * \param host Your firebase db host, usually X.firebaseio.com.
    * \param auth Optional credentials for the db, a secret or token.
    */
-  virtual void begin(const String& host, const String& auth = "");
+  void begin(const String& host, const String& auth = "");
 
   /**
    * Appends the integer value to the node at path.
@@ -77,7 +81,7 @@ class FirebaseArduino {
    * \param value String value that you wish to append to the node.
    * \return The unique key of the new child node.
    */
-  virtual String pushString(const String& path, const String& value);
+  String pushString(const String& path, const String& value);
 
   /**
    * Appends the JSON data to the node at path.
@@ -123,7 +127,7 @@ class FirebaseArduino {
    * \param path The path inside of your db to the node you wish to update.
    * \param value String value that you wish to write.
    */
-  virtual void setString(const String& path, const String& value);
+  void setString(const String& path, const String& value);
 
   /**
    * Writes the JSON data to the node located at path.
@@ -157,7 +161,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to retrieve.
    * \return The string value located at that path. Will only be populated if success() is true.
    */
-  virtual String getString(const String& path);
+  String getString(const String& path);
 
   /**
    * Gets the boolean value located at path.
@@ -181,7 +185,7 @@ class FirebaseArduino {
    * \param path The path to the node you wish to remove,
    * including all of its children.
    */
-  virtual void remove(const String& path);
+  void remove(const String& path);
 
   /**
    * Starts streaming any changes made to the node located at path, including
@@ -191,14 +195,14 @@ class FirebaseArduino {
    * monitoring available() and calling readEvent() to get new events.
    * \param path The path inside of your db to the node you wish to monitor.
    */
-  virtual void stream(const String& path);
+  void stream(const String& path);
 
   /**
    * Checks if there are new events available. This is only meaningful once
    * stream() has been called.
    * \return If a new event is ready.
    */
-  virtual bool available();
+  bool available();
 
   /**
    * Reads the next event in a stream. This is only meaningful once stream() has
@@ -206,7 +210,7 @@ class FirebaseArduino {
    * \return FirebaseObject will have ["type"] that describes the event type, ["path"]
    * that describes the effected path and ["data"] that was updated.
    */
-  virtual FirebaseObject readEvent();
+  FirebaseObject readEvent();
 
   /**
    * \return Whether the last command was successful.
@@ -221,15 +225,15 @@ class FirebaseArduino {
   /**
    * \return Error message from last command if failed() is true.
    */
-  virtual const String& error();
+  const String& error();
  private:
-  std::string host_;
-  std::string auth_;
+  Client& client_;
+
+  String host_;
+  String auth_;
   FirebaseError error_;
-  std::shared_ptr<FirebaseHttpClient> req_http_;
-  std::shared_ptr<FirebaseRequest> req_;
-  std::shared_ptr<FirebaseHttpClient> stream_http_;
-  std::shared_ptr<FirebaseStream> stream_;
+  std::shared_ptr<HttpClient> req_http_;
+  std::shared_ptr<HttpClient> stream_http_;
 
   void initStream();
   void initRequest();
