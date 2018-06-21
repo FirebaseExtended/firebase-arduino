@@ -156,6 +156,11 @@ void FirebaseArduino::stream(const String& path) {
 
 bool FirebaseArduino::available() {
   if (stream_http_.get() == nullptr) {
+    error_ = FirebaseError(FIREBASE_ERROR_CODES::STREAM_NOT_INITIALIZED, "HTTP stream is not initialized");
+    return 0;
+  }
+  if (!stream_http_.get()->connected()) {
+    error_ = FirebaseError(FIREBASE_ERROR_CODES::HTTP_CONNECTION_LOST, "Connection Lost");
     return 0;
   }
   auto client = stream_http_.get()->getStreamPtr();

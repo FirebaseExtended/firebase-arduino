@@ -33,6 +33,8 @@ class FirebaseHttpClient {
 
   virtual std::string errorToString(int error_code) = 0;
 
+  virtual bool connected() = 0;
+
  protected:
   static const uint16_t kFirebasePort = 443;
 };

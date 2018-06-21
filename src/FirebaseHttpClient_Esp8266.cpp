@@ -83,6 +83,10 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
    return HTTPClient::errorToString(error_code).c_str();
   }
 
+  bool connected() override {
+    return http_.connected();
+  }
+
  private:
   ForceReuseHTTPClient http_;
 };

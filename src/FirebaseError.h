@@ -1,6 +1,14 @@
 #ifndef firebase_error_h
 #define firebase_error_h
 
+
+// These error codes are used in addition to regular HTTP error codes.
+// Same error space is shared between HTTP errors and these values. 
+enum FIREBASE_ERROR_CODES {
+  HTTP_CONNECTION_LOST = -5,
+  STREAM_NOT_INITIALIZED = -6
+};
+
 class FirebaseError {
  public:
   // Make it explicit that the empty constructor mean no error.
