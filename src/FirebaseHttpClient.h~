@@ -32,7 +32,7 @@ class FirebaseHttpClient {
   virtual Stream* getStreamPtr() = 0;
 
   virtual std::string errorToString(int error_code) = 0;
-
+  
   virtual bool connected() = 0;
 
  protected:

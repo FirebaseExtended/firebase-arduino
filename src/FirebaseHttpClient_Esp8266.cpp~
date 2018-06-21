@@ -86,7 +86,7 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
   bool connected() override {
     return http_.connected();
   }
-
+  
  private:
   ForceReuseHTTPClient http_;
 };
