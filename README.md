@@ -20,7 +20,10 @@ The Arduino library is [under heavy development](https://github.com/googlesample
 - [FirebaseArduino API Reference](http://firebase-arduino.readthedocs.io/)
 
 ## Dependencies
-- FirebaseArduino now depends on [ArduinoJson library](https://github.com/bblanchon/ArduinoJson) instead of containing it's own version of it. Please either use Library Manager or download specific version of the library from github.
+- FirebaseArduino now depends on [ArduinoJson library](https://github.com/bblanchon/ArduinoJson) instead of containing it's own version of it. Please either use Library Manager or download specific version of the library from github. We recommend that ArduinoJson is at least version [5.13.1](https://github.com/bblanchon/ArduinoJson/tree/v5.13.1)
+
+- ESP8266 Core SDK. We recommend using officially tagged releases and it should be at least [2.4.1]
+(https://github.com/esp8266/Arduino/tree/2.4.1)
 
 ## Disclaimer
 
