@@ -183,8 +183,9 @@ FirebaseObject FirebaseArduino::readEvent() {
   // required to have a copy of the string but use a char[] format which is
   // the only supported format for JsonObject#set (it does not like the std::string of the test env)
   char *cstr = new char[type.length() + 1];
-  strcpy(cstr, type.c_str());
+  strncpy(cstr, type.c_str(), type.length() + 1);
   obj.getJsonVariant().as<JsonObject&>().set("type", cstr);
+  delete[] cstr;
   return obj;
 }
 
