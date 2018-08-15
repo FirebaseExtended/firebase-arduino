@@ -179,9 +179,9 @@ FirebaseObject FirebaseArduino::readEvent() {
   String event = client->readStringUntil('\n').substring(6);
   client->readStringUntil('\n'); // consume separator
   FirebaseObject obj = FirebaseObject(event.c_str());
-  if (type.length() > 0) {
-    obj.getJsonVariant().as<JsonObject&>().set("type", type);
-  }
+  JsonObject& jsonObject = obj.getJsonVariant().as<JsonObject&>();
+  jsonObject.set("type", "");
+  jsonObject.set("type", type);
   return obj;
 }
 
