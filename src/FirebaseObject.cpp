@@ -32,6 +32,7 @@ bool FirebaseObject::getBool(const String& path) const {
     error_ = "failed to convert to bool";
     return 0;
   }
+  error_ = "";
   return static_cast<bool>(variant);
 }
 
@@ -41,6 +42,7 @@ int FirebaseObject::getInt(const String& path) const {
     error_ = "failed to convert to number";
     return 0;
   }
+  error_ = "";
   return static_cast<int>(variant);
 }
 
@@ -50,6 +52,7 @@ float FirebaseObject::getFloat(const String& path) const {
     error_ = "failed to convert to number";
     return 0;
   }
+  error_ = "";
   return static_cast<float>(variant);
 }
 
@@ -59,6 +62,7 @@ String FirebaseObject::getString(const String& path) const {
     error_ = "failed to convert to string";
     return "";
   }
+  error_ = "";
   return static_cast<const char*>(variant);
 }
 
