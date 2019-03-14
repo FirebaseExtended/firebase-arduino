@@ -31,7 +31,6 @@
  */
 
 #include <SoftwareSerial.h>
-#include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 SoftwareSerial esp(D5,D6); // rx,tx
