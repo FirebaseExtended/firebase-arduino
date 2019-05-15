@@ -8,9 +8,10 @@ FirebaseCloudMessage FirebaseCloudMessage::SimpleNotification(
   return message;
 }
 
-FirebaseCloudMessaging::FirebaseCloudMessaging(const std::string& server_key) {
+FirebaseCloudMessaging::FirebaseCloudMessaging(WiFiClient* client, const std::string& server_key) {
   auth_header_ = "key=";
   auth_header_ += server_key;
+  client_ = client;
 }
 
 const FirebaseError FirebaseCloudMessaging::SendMessageToUser(
@@ -63,7 +64,7 @@ const FirebaseError FirebaseCloudMessaging::SendMessageToTopic(
 
 const FirebaseError FirebaseCloudMessaging::SendPayload(
     const char* payload) {
-  std::shared_ptr<FirebaseHttpClient> client(FirebaseHttpClient::create());
+  std::shared_ptr<FirebaseHttpClient> client(FirebaseHttpClient::create(client_));
   client->begin("http://fcm.googleapis.com/fcm/send");
   client->addHeader("Authorization", auth_header_.c_str());
   client->addHeader("Content-Type", "application/json");

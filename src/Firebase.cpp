@@ -33,8 +33,8 @@ std::string makeFirebaseURL(const std::string& path, const std::string& auth) {
 
 }  // namespace
 
-Firebase::Firebase(const std::string& host, const std::string& auth) : host_(host), auth_(auth) {
-  http_.reset(FirebaseHttpClient::create());
+Firebase::Firebase(WiFiClient* client, const std::string& host, const std::string& auth) : host_(host), auth_(auth) {
+  http_.reset(FirebaseHttpClient::create(client));
   http_->setReuseConnection(true);
 }
 

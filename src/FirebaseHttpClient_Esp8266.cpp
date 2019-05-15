@@ -36,7 +36,9 @@ protected:
 
 class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
  public:
-  FirebaseHttpClientEsp8266() {}
+  FirebaseHttpClientEsp8266(WiFiClient* client) {
+    client_ = client;
+  }
 
   void setReuseConnection(bool reuse) override {
     http_.setReuse(reuse);
@@ -44,11 +46,11 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
   }
 
   void begin(const std::string& url) override {
-    http_.begin(url.c_str(), kFirebaseFingerprint);
+    http_.begin(*client_, url.c_str());
   }
 
   void begin(const std::string& host, const std::string& path) override {
-    http_.begin(host.c_str(), kFirebasePort, path.c_str(), kFirebaseFingerprint);
+    http_.begin(*client_, host.c_str(), kFirebasePort, path.c_str());
   }
 
   void end() override {
@@ -89,9 +91,10 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
 
  private:
   ForceReuseHTTPClient http_;
+  WiFiClient* client_;
 };
 
-FirebaseHttpClient* FirebaseHttpClient::create() {
-  return new FirebaseHttpClientEsp8266();
+FirebaseHttpClient* FirebaseHttpClient::create(WiFiClient* client) {
+  return new FirebaseHttpClientEsp8266(client);
 }
  
