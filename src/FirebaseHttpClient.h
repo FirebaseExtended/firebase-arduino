@@ -5,6 +5,7 @@
 
 #include "Arduino.h"
 #include "Stream.h"
+#include <WiFiClient.h>
 
 struct HttpStatus {
   static const int TEMPORARY_REDIRECT = 307;
@@ -12,7 +13,7 @@ struct HttpStatus {
 
 class FirebaseHttpClient {
  public:
-  static FirebaseHttpClient* create();
+  static FirebaseHttpClient* create(WiFiClient* client);
 
   virtual void setReuseConnection(bool reuse) = 0;
   virtual void begin(const std::string& url) = 0;
@@ -38,8 +39,5 @@ class FirebaseHttpClient {
  protected:
   static const uint16_t kFirebasePort = 443;
 };
-
-static const char kFirebaseFingerprint[] =
-      "B6 F5 80 C8 B1 DA 61 C1 07 9D 80 42 D8 A9 1F AF 9F C8 96 7D"; // 2019-04
 
 #endif  // FIREBASE_HTTP_CLIENT_H

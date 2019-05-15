@@ -19,14 +19,15 @@
 // This is needed to compile std::string on esp8266.
 template class std::basic_string<char>;
 
-void FirebaseArduino::begin(const String& host, const String& auth) {
+void FirebaseArduino::begin(WiFiClient* client, const String& host, const String& auth) {
   host_ = host.c_str();
   auth_ = auth.c_str();
+  client_ = client;
 }
 
 void FirebaseArduino::initStream() {
   if (stream_http_.get() == nullptr) {
-    stream_http_.reset(FirebaseHttpClient::create());
+    stream_http_.reset(FirebaseHttpClient::create(client_));
     stream_http_->setReuseConnection(true);
     stream_.reset(new FirebaseStream(stream_http_));
   }
@@ -34,7 +35,7 @@ void FirebaseArduino::initStream() {
 
 void FirebaseArduino::initRequest() {
   if (req_http_.get() == nullptr) {
-    req_http_.reset(FirebaseHttpClient::create());
+    req_http_.reset(FirebaseHttpClient::create(client_));
     req_http_->setReuseConnection(true);
     req_.reset(new FirebaseRequest(req_http_));
   }
@@ -197,8 +198,9 @@ bool FirebaseArduino::failed() {
   return error_.code() != 0;
 }
 
-const String& FirebaseArduino::error() {
-  return error_.message().c_str();
+void FirebaseArduino::error(std::string* buf) {
+    std::string err = error_.message();
+    *buf = err;
 }
 
 FirebaseArduino Firebase;

@@ -37,7 +37,7 @@ class FirebaseArduino {
    * \param host Your firebase db host, usually X.firebaseio.com.
    * \param auth Optional credentials for the db, a secret or token.
    */
-  virtual void begin(const String& host, const String& auth = "");
+  virtual void begin(WiFiClient* client, const String& host, const String& auth = "");
 
   /**
    * Appends the integer value to the node at path.
@@ -221,7 +221,8 @@ class FirebaseArduino {
   /**
    * \return Error message from last command if failed() is true.
    */
-  virtual const String& error();
+  virtual void error(std::string* buf);
+
  private:
   std::string host_;
   std::string auth_;
@@ -230,6 +231,7 @@ class FirebaseArduino {
   std::shared_ptr<FirebaseRequest> req_;
   std::shared_ptr<FirebaseHttpClient> stream_http_;
   std::shared_ptr<FirebaseStream> stream_;
+  WiFiClient* client_;
 
   void initStream();
   void initRequest();

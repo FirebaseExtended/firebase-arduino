@@ -32,7 +32,7 @@
 // Firebase REST API client.
 class Firebase {
  public:
-  Firebase(const std::string& host, const std::string& auth = "");
+  Firebase(WiFiClient* client, const std::string& host, const std::string& auth = "");
 
   const std::string& auth() const;
 

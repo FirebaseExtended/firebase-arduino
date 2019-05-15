@@ -64,7 +64,7 @@ struct FirebaseCloudMessage {
 // Firebase REST API client.
 class FirebaseCloudMessaging {
  public:
-  FirebaseCloudMessaging(const std::string& server_key);
+  FirebaseCloudMessaging(WiFiClient* client, const std::string& server_key);
   const FirebaseError SendMessageToUser(const std::string& registration_id,
                                         const FirebaseCloudMessage& message);
   const FirebaseError SendMessageToUsers(const std::vector<std::string>& registration_ids,
@@ -82,5 +82,6 @@ class FirebaseCloudMessaging {
   const void AddToJson(const FirebaseCloudMessage& message, JsonObject& json) const;
 
   std::string auth_header_;
+  WiFiClient* client_;
 };
 #endif  // firebase_cloud_messaging_h
