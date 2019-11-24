@@ -7,8 +7,8 @@
 #include "Stream.h"
 
 struct HttpStatus {
-  static const int TEMPORARY_REDIRECT = 307;
-};
+  static const int TEMPORARY_RE DIRECT = 307;
+};  
 
 class FirebaseHttpClient {
  public:
