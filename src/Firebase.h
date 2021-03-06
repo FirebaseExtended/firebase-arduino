@@ -23,7 +23,7 @@
 #include "WString.h"
 #include <Arduino.h>
 #include <memory>
-#include <ArduinoJson.h>
+#include "ArduinoJson-v5.13.5.h"
 
 #include "FirebaseHttpClient.h"
 #include "FirebaseError.h"
