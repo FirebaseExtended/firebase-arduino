@@ -34,7 +34,6 @@ FIREBASE_ROOT = ../../..
 PROJECT_ROOT = ../..
 SRC_ROOT = $(PROJECT_ROOT)/src
 FIREBASE_SRC_ROOT = $(FIREBASE_ROOT)/src
-ARDUINOJSON_DIR=$(ARDUINO_HOME)/libraries/ArduinoJson
 
 # Flags passed to the preprocessor.
 # Set Google Test and Google Mock's header directories as system
@@ -46,7 +45,6 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include \
 		-I$(PROJECT_ROOT)/test/dummies \
 		-I$(PROJECT_ROOT)/src \
 		-I$(FIREBASE_ROOT)/src \
-        -I$(ARDUINOJSON_DIR)/src \
 		-I$(PROJECT_ROOT)
 
 # Flags passed to the C++ compiler.

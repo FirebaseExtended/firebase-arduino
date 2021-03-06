@@ -21,7 +21,7 @@
 #include "WString.h"
 #include <memory>
 
-#include <ArduinoJson.h>
+#include "ArduinoJson-v5.13.5.h"
 
 
 #ifndef FIREBASE_JSONBUFFER_SIZE
