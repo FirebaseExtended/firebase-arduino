@@ -1,4 +1,4 @@
-#include "Firebase.h"
+#include "FirebaseArduino.h"
 #include "gtest/gtest.h"
 #include "modem/db/commands.h"
 #include "modem/json_util.h"
@@ -17,7 +17,6 @@ using ::testing::_;
 class SetCommandTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    set_.reset(new MockFirebaseSet());
   }
 
   void FeedCommand(const String& path, const String& data) {
@@ -40,13 +39,7 @@ class SetCommandTest : public ::testing::Test {
         .WillOnce(Return(error_message.length()));
   }
 
-  bool RunExpectingData(const String& data, const FirebaseError& error) {
-    EXPECT_CALL(*set_, error())
-      .WillRepeatedly(ReturnRef(error));
-
-    EXPECT_CALL(fbase_, setPtr(_, EncodeForJson(data)))
-        .WillOnce(Return(ByMove(std::move(set_))));
-
+  bool RunCommand() {
     SetCommand setCmd(&fbase_);
     return setCmd.execute("SET", &in_, &out_);
   }
@@ -54,28 +47,30 @@ class SetCommandTest : public ::testing::Test {
   MockInputStream in_;
   MockOutputStream out_;
   MockFirebase fbase_;
-  std::unique_ptr<MockFirebaseSet> set_;
 };
 
 TEST_F(SetCommandTest, sendsData) {
   const String path("/test/path");
   const String data("This is a test payload.");
+  const String no_error = "";
+  EXPECT_CALL(fbase_, error()).WillOnce(ReturnRef(no_error));
 
   FeedCommand(path, data);
   ExpectOutput("+OK");
 
-  ASSERT_TRUE(RunExpectingData(data, FirebaseError()));
+  ASSERT_TRUE(RunCommand());
 }
 
 TEST_F(SetCommandTest, HandlesError) {
   const String path("/test/path");
   const String data("This is a test payload.");
-  FirebaseError error(-200, "Test error.");
+  const String error = "TestError";
+  EXPECT_CALL(fbase_, error()).WillRepeatedly(ReturnRef(error));
 
   FeedCommand(path, data);
-  ExpectErrorOutput(error.message());
+  ExpectErrorOutput(error);
 
-  ASSERT_FALSE(RunExpectingData(data, error));
+  ASSERT_FALSE(RunCommand());
 }
 }  // modem
 }  // firebase

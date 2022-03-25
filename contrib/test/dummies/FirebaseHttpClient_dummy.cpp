@@ -23,6 +23,10 @@ class FirebaseHttpClientDummy : public FirebaseHttpClient {
   void addHeader(const std::string& UNUSED_ARG(name), const std::string& UNUSED_ARG(value)) override {
   }
 
+  bool connected() override {
+    return true;
+  }
+
   void collectHeaders(const char* UNUSED_ARG(header_keys[]), const int UNUSED_ARG(count)) override {
   }
 

@@ -14,11 +14,11 @@ bool RemoveCommand::execute(const String& command,
   }
 
   String path = in->readLine();
-  std::unique_ptr<FirebaseRemove> get(fbase().removePtr(path.c_str()));
+  fbase().remove(path);
 
-  if (get->error()) {
+  if (fbase().error().length() != 0) {
     out->print("-FAIL ");
-    out->println(get->error().message().c_str());
+    out->println(fbase().error().c_str());
     return false;
   }
 

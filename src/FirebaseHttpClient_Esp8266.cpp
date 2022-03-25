@@ -15,12 +15,32 @@
 #define USE_ESP_ARDUINO_CORE_2_0_0
 #endif
 
+// Firebase now returns `Connection: close` after REST streaming redirection.
+//
+// Override the built-in ESP8266HTTPClient to *not* close the
+// connection if forceReuse it set to `true`.
+class ForceReuseHTTPClient : public HTTPClient {
+public:
+  void end() {
+    if (_forceReuse) {
+      _canReuse = true;
+    }
+    HTTPClient::end();
+  }
+  void forceReuse(bool forceReuse) {
+    _forceReuse = forceReuse;
+  }
+protected:
+  bool _forceReuse = false;
+};
+
 class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
  public:
   FirebaseHttpClientEsp8266() {}
 
   void setReuseConnection(bool reuse) override {
     http_.setReuse(reuse);
+    http_.forceReuse(reuse);
   }
 
   void begin(const std::string& url) override {
@@ -63,8 +83,12 @@ class FirebaseHttpClientEsp8266 : public FirebaseHttpClient {
    return HTTPClient::errorToString(error_code).c_str();
   }
 
+  bool connected() override {
+    return http_.connected();
+  }
+
  private:
-  HTTPClient http_;
+  ForceReuseHTTPClient http_;
 };
 
 FirebaseHttpClient* FirebaseHttpClient::create() {

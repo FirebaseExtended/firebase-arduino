@@ -63,7 +63,7 @@ const FirebaseError FirebaseCloudMessaging::SendMessageToTopic(
 
 const FirebaseError FirebaseCloudMessaging::SendPayload(
     const char* payload) {
-  std::unique_ptr<FirebaseHttpClient> client(FirebaseHttpClient::create());
+  std::shared_ptr<FirebaseHttpClient> client(FirebaseHttpClient::create());
   client->begin("http://fcm.googleapis.com/fcm/send");
   client->addHeader("Authorization", auth_header_.c_str());
   client->addHeader("Content-Type", "application/json");

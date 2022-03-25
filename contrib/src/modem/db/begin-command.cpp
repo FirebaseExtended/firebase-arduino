@@ -33,13 +33,14 @@ bool BeginCommand::execute(const String& command,
     return false;
   }
 
-  new_firebase_.reset(new Firebase(host.c_str(), auth.c_str()));
+  new_firebase_.reset(new FirebaseArduino());
+  new_firebase_.get()->begin(host.c_str(), auth.c_str());
 
   out->println("+OK");
   return true;
 }
 
-std::unique_ptr<Firebase> BeginCommand::firebase() {
+std::unique_ptr<FirebaseArduino> BeginCommand::firebase() {
   return std::move(new_firebase_);
 }
 

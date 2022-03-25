@@ -6,7 +6,15 @@
 
 This repo contains a collection of samples and an Arduino library that show how to call the [Firebase](https://www.firebase.com/) API from the [ESP8266 Arduino core](https://github.com/esp8266/Arduino).
 
-The Arduino library is [under heavy development](https://github.com/googlesamples/firebase-arduino/issues), **experimental**, **unversioned** and its API is **not stable**.
+
+## Status
+
+![Status: Frozen](https://img.shields.io/badge/Status-Frozen-yellow)
+
+This repository is no longer under active development. No new features will be added and issues are not actively triaged. Pull Requests which fix bugs are welcome and will be reviewed on a best-effort basis.
+
+If you maintain a fork of this repository that you believe is healthier than the official version, we may consider recommending your fork. Please open a Pull Request if you believe that is the case.
+
 
 ## Samples
 
@@ -18,6 +26,11 @@ The Arduino library is [under heavy development](https://github.com/googlesample
 ## Documentation
 
 - [FirebaseArduino API Reference](http://firebase-arduino.readthedocs.io/)
+
+## Dependencies
+- FirebaseArduino now depends on [ArduinoJson library](https://github.com/bblanchon/ArduinoJson) instead of containing it's own version of it. Please either use Library Manager or download specific version of the library from github. We recommend that ArduinoJson is at least version [5.13.1](https://github.com/bblanchon/ArduinoJson/tree/v5.13.1)
+
+- ESP8266 Core SDK. We recommend using officially tagged releases and it should be at least [2.4.1](https://github.com/esp8266/Arduino/tree/2.4.1)
 
 ## Disclaimer
 

@@ -17,6 +17,7 @@
 #include "FirebaseObject.h"
 #include "gtest/gtest.h"
 
+
 TEST(FirebaseObjectTest, GetBool) {
   FirebaseObject obj("true");
   EXPECT_EQ(true, obj.getBool());
@@ -44,15 +45,15 @@ TEST(FirebaseObjectTest, GetInt) {
 
 TEST(FirebaseObjectTest, GetFloat) {
   {
-    FirebaseObject obj("43.0");
-    EXPECT_EQ(43, obj.getFloat());
+    FirebaseObject obj("43.1");
+    EXPECT_FLOAT_EQ(43.1, obj.getFloat());
     EXPECT_TRUE(obj.success());
     EXPECT_FALSE(obj.failed());
     EXPECT_EQ(obj.error(), "");
   }
   {
     FirebaseObject obj("43");
-    EXPECT_EQ(43, obj.getFloat());
+    EXPECT_FLOAT_EQ(43, obj.getFloat());
     EXPECT_TRUE(obj.success());
     EXPECT_FALSE(obj.failed());
     EXPECT_EQ(obj.error(), "");
@@ -110,6 +111,59 @@ TEST(FirebaseObjectTest, GetStringFailure) {
   EXPECT_TRUE(obj.failed());
   EXPECT_EQ(obj.error(), "failed to convert to string");
 }
+
+TEST(FirebaseObjectTest, GetTwice) {
+  {
+    FirebaseObject obj("{\"foo\":\"bar\"}");
+    EXPECT_EQ(obj.getString("hop"), "");
+    EXPECT_FALSE(obj.success());
+    EXPECT_TRUE(obj.failed());
+    EXPECT_EQ(obj.error(), "failed to convert to string");
+
+    EXPECT_EQ(obj.getString("foo"), "bar");
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+  {
+    FirebaseObject obj("{\"foo\": 42}");
+    EXPECT_EQ(obj.getInt("hop"), 0);
+    EXPECT_FALSE(obj.success());
+    EXPECT_TRUE(obj.failed());
+    EXPECT_EQ(obj.error(), "failed to convert to number");
+
+    EXPECT_EQ(obj.getInt("foo"), 42);
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+  {
+    FirebaseObject obj("{\"foo\": true}");
+    EXPECT_EQ(obj.getBool("hop"), 0);
+    EXPECT_FALSE(obj.success());
+    EXPECT_TRUE(obj.failed());
+    EXPECT_EQ(obj.error(), "failed to convert to bool");
+
+    EXPECT_EQ(obj.getBool("foo"), true);
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+  {
+    FirebaseObject obj("{\"foo\": 43.1}");
+    EXPECT_FLOAT_EQ(obj.getFloat("hop"), 0);
+    EXPECT_FALSE(obj.success());
+    EXPECT_TRUE(obj.failed());
+    EXPECT_EQ(obj.error(), "failed to convert to number");
+
+    EXPECT_FLOAT_EQ(obj.getFloat("foo"), 43.1);
+    EXPECT_TRUE(obj.success());
+    EXPECT_FALSE(obj.failed());
+    EXPECT_EQ(obj.error(), "");
+  }
+}
+
+
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

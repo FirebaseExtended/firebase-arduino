@@ -13,9 +13,9 @@ class DatabaseProtocol : public SerialProtocol {
   const std::vector<String>& commands() const override;
   void Execute(const String& command, InputStream* in, OutputStream* out) override;
  private:
-  std::unique_ptr<Command> CreateCommand(const String& text, Firebase* fbase);
+  std::unique_ptr<Command> CreateCommand(const String& text, FirebaseArduino* fbase);
 
-  std::unique_ptr<Firebase> fbase_;
+  std::unique_ptr<FirebaseArduino> fbase_;
 };
 
 
