@@ -32,6 +32,10 @@ If you maintain a fork of this repository that you believe is healthier than the
 
 - ESP8266 Core SDK. We recommend using officially tagged releases and it should be at least [2.4.1](https://github.com/esp8266/Arduino/tree/2.4.1)
 
+## Note for Handling Fingerprint Errors
+
+If you encounter a fingerprint error, you can update the fingerprint in the `FirebaseHttpClient.h` file located at `Documents > Arduino > libraries > FirebaseArduino > src > FirebaseHttpClient.h`. Update the fingerprint to the latest one by visiting [this link](https://www.grc.com/fingerprints.htm).
+
 ## Disclaimer
 
 *This is not an official Google product*.
