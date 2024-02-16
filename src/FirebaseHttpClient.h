@@ -40,6 +40,8 @@ class FirebaseHttpClient {
 };
 
 static const char kFirebaseFingerprint[] =
-      "03:D6:42:23:03:D1:0C:06:73:F7:E2:BD:29:47:13:C3:22:71:37:1B"; // 2020-02
+      "0E:50:70:F6:8F:5D:B3:66:B2:37:F5:63:C5:8C:48:FE:75:1D:32:D5"; // 2024-02
+//8B:30:7C:08:62:CD:FF:07:0B:02:0D:1F:16:CB:2B:56:01:24:C7:3B for *.asia-southeast1.firebasedatabase.app
+//0E:50:70:F6:8F:5D:B3:66:B2:37:F5:63:C5:8C:48:FE:75:1D:32:D5 for *.us-central1.firebasedatabase.app
 
 #endif  // FIREBASE_HTTP_CLIENT_H
